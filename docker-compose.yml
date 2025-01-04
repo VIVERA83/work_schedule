@@ -1,0 +1,21 @@
+services:
+  postgres_workspace:
+    restart: always
+    container_name: postgres_workspace
+    image: postgres:15
+    volumes:
+      - postgres_ii_volume:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -V" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: -p ${POSTGRES_PORT}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+
+
+volumes:
+  postgres_ii_volume:
