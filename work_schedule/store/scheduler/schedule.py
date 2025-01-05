@@ -60,8 +60,8 @@ def is_working_day(schedule_start_date: datetime,
                    date: datetime = datetime.now(),
                    is_working: bool = True,
                    what_day: int = 1,
-                   ) -> bool:
-    """Проверка даты на рабочий день.
+                   ) -> tuple[bool, int]:
+    """Проверка даты на рабочий день, и какой день счету работает(отдыхает).
 
     Считывается, что дата рабочего дня равна дате начала расписания.
 
@@ -71,7 +71,7 @@ def is_working_day(schedule_start_date: datetime,
     :param date: Дата, которую нужно проверить.
     :param is_working: Рабочий день = True, Не рабочий день = False
     :param what_day: Какой день по счету. Если is_working = True, какой день счету работает.
-    :return: True - рабочий день, False - не рабочий день
+    :return: True - рабочий день, False - не рабочий день и какой день счету работает(отдыхает).
     """
     total = (date - schedule_start_date).days + 1
     work_day_number = what_day - 1 if is_working else 0
@@ -83,4 +83,4 @@ def is_working_day(schedule_start_date: datetime,
         work_day_number = work_day_number + 1 if is_working else 0
         weekend_day_number = weekend_day_number + 1 if not is_working else 0
         schedule_start_date += timedelta(days=1)
-    return is_working
+    return is_working, work_day_number if is_working else weekend_day_number
