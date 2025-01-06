@@ -19,6 +19,8 @@ data = [
 
 
 class ScheduleTypeDB(BaseDB):
+    """Типы графиков рабочего времени."""
+
     class Meta:
         db = data
         dataclass = ScheduleType

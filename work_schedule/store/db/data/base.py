@@ -32,7 +32,7 @@ class BaseDB:
             result = self.db[id_]
             return self.Meta.dataclass(**result)
         except IndexError:
-            raise DBNotFoundException
+            raise DBNotFoundException(f"<{self.__class__.__name__}> : Запись с id {id_} не найдена" )
         except AttributeError:
             return result
 
@@ -45,3 +45,12 @@ class BaseDB:
             if (not value is None) and (value == field_value):
                 result.append(item)
         return result
+
+    def create(self, data: dict) -> Union[dict, dataclass]:
+        """Создание записи."""
+        data["id"] = len(self.db)
+        self.db.append(data)
+        try:
+            return self.Meta.dataclass(**data)
+        except AttributeError:
+            return data

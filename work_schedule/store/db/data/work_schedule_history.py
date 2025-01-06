@@ -13,12 +13,12 @@ data = [
         "what_day": 1,
     },
     {
-        "id": 0,
+        "id": 1,
         "id_driver": 1,
         "id_schedule_type": 0,
         "date": datetime.now(),
         "is_working": True,
-        "what_day": 1,
+        "what_day": 4,
     },
 ]
 

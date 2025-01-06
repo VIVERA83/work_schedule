@@ -84,3 +84,46 @@ def is_working_day(schedule_start_date: datetime,
         weekend_day_number = weekend_day_number + 1 if not is_working else 0
         schedule_start_date += timedelta(days=1)
     return is_working, work_day_number if is_working else weekend_day_number
+
+
+def get_timetable_period(
+        schedule_start_date: datetime,
+        work_days: int,
+        weekend_days: int,
+        is_working: bool,
+        what_day: int,
+        start_date: datetime,
+        end_date: datetime
+):
+    """Получить расписание работы за период.
+
+    Расчет производится на основании даты начала расписания. Для расчета используется параметры
+     schedule_start_date, work_days, weekend_days, is_working, what_day: это данные с начала расписания.
+
+    :param schedule_start_date: Дата начала расписания.
+    :param work_days: Количество рабочих дней в смене.
+    :param weekend_days: Количество выходных дней в смене.
+    :param is_working: Рабочий день = True, Не рабочий день = False
+    :param what_day: Какой день по счету. Если is_working = True, какой день счету работает.
+    :param start_date: Дата начала периода.
+    :param end_date: Дата окончания периода.
+    :return: Словарь, где ключ - дата, значение - 'P' (рабочий день) или 'B' (не рабочий день).
+    """
+    # находим заданию дату работает или нет и какой день
+    is_work, day = is_working_day(
+        schedule_start_date=schedule_start_date,
+        work_days=work_days,
+        weekend_days=weekend_days,
+        date=start_date,
+        is_working=is_working,
+        what_day=what_day,
+    )
+    return timetable_work(
+        start=start_date,
+        end=end_date,
+        is_working=is_work,
+        what_day=day,
+        work_days=work_days,
+        weekend_days=weekend_days,
+
+    )

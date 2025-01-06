@@ -1,5 +1,10 @@
-from work_schedule.store.db.data.dc import DriverFullData
+from datetime import datetime
+
+from work_schedule.store.db.data.car import CarDB
+from work_schedule.store.db.data.car_driver_assign import CarDriverAssignDB
+from work_schedule.store.db.data.dc import DriverFullData, CarDriverAssign
 from work_schedule.store.db.data.driver import DriverDB, Driver
+from work_schedule.store.db.data.exceptions import DBNotFoundException
 from work_schedule.store.db.data.schedule_type import ScheduleTypeDB, ScheduleType
 from work_schedule.store.db.data.work_schedule_history import WorkScheduleHistoryDB, WorkScheduleHistory
 
@@ -9,6 +14,8 @@ class DB:
         self.driver_db = DriverDB()
         self.schedule_type_db = ScheduleTypeDB()
         self.work_schedule_history_db = WorkScheduleHistoryDB()
+        self.car_db = CarDB()
+        self.car_driver_assign = CarDriverAssignDB()
 
     def get_driver_by_id(self, id_: int) -> Driver:
         return self.driver_db.get_by_id(id_)
@@ -19,12 +26,63 @@ class DB:
     def get_schedule_type_by_id(self, id_: int) -> ScheduleType:
         return self.schedule_type_db.get_by_id(id_)
 
+    def get_car_driver_assign_by_id(self, id_: int) -> CarDriverAssign:
+        return self.car_driver_assign.get_by_id(id_)
+
     def get_full_data_driver_by_id(self, id_: int) -> DriverFullData:
         driver = self.get_driver_by_id(id_)
         work_schedule_history = self.get_work_schedule_history_by_id(driver.id)
-        schedule_type = self.get_schedule_type_by_id(work_schedule_history.id)
+        schedule_type = self.get_schedule_type_by_id(work_schedule_history.id_schedule_type)
+        try:
+            car_driver_assign = self.get_car_driver_assign_by_id(driver.id)
+            car = self.car_db.get_by_id(car_driver_assign.id_car)
+        except DBNotFoundException:
+            car = None
+
+        return DriverFullData(
+            driver,
+            work_schedule_history,
+            schedule_type,
+            car,
+        )
+
+    def creat_driver(self, name: str,
+                     schedule_type_id: int,
+                     is_working: bool = True,
+                     what_day: int = 1
+                     ) -> DriverFullData:
+        """Создать запись о водителе.
+
+        Идентификатор создаётся автоматически. Так же добавляется запись о типе расписания.
+
+        :param name: Имя водителя.
+        :param schedule_type_id: Идентификатор типа расписания.
+        :param is_working: Флаг, работающий ли водитель.
+        :param what_day: Который день, водитель работает.
+        :return DriverFullData: Полные данные о водителе.
+        """
+        schedule_type = self.get_schedule_type_by_id(schedule_type_id)
+        validate_schedule_data(is_working, what_day, schedule_type.work_days, schedule_type.weekend_days)
+
+        driver: Driver = self.driver_db.create({'name': name})
+        work_schedule_history = self.work_schedule_history_db.create(
+            {
+                "id_driver": driver.id,
+                "id_schedule_type": schedule_type.id,
+                "date": datetime.now(),
+                "is_working": is_working,
+                "what_day": what_day
+            }
+        )
         return DriverFullData(
             driver,
             work_schedule_history,
             schedule_type,
         )
+
+
+def validate_schedule_data(is_working: bool, what_day: int, work_days: int, weekend_days: int) -> None:
+    if is_working and not (work_days >= what_day > 0):
+        raise ValueError(f"Неверное значение параметра {what_day=} в диапазоне от 1 до {work_days=}.")
+    elif not (weekend_days >= what_day > 0):
+        raise ValueError(f"Неверное значение параметра {what_day=} в диапазоне от 1 до {weekend_days=}.")
