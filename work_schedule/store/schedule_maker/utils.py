@@ -127,3 +127,15 @@ def get_timetable_period(
         weekend_days=weekend_days,
 
     )
+
+
+def dates_comparison(date_1: datetime, date_2: datetime) -> bool:
+    """Сравнение дат.
+    :param date_1:
+    :param date_2:
+    :return: True, если дата_1 >= дата_2, False, если дата_1 < дата_2
+
+    """
+    date_1 = datetime(year=date_1.year, month=date_1.month, day=date_1.day)
+    date_2 = datetime(year=date_2.year, month=date_2.month, day=date_2.day)
+    return date_1 >= date_2
