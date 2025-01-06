@@ -2,7 +2,7 @@ from datetime import datetime
 
 from work_schedule.store.db.data.car import CarDB
 from work_schedule.store.db.data.car_driver_assign import CarDriverAssignDB
-from work_schedule.store.db.data.dc import DriverFullData, CarDriverAssign
+from work_schedule.store.db.data.dc import DriverFullData, CarDriverAssign, Car
 from work_schedule.store.db.data.driver import DriverDB, Driver
 from work_schedule.store.db.data.exceptions import DBNotFoundException
 from work_schedule.store.db.data.schedule_type import ScheduleTypeDB, ScheduleType
@@ -80,3 +80,6 @@ class DB:
             work_schedule_history,
             schedule_type,
         )
+
+    def get_car_by_id(self, id_: int) -> Car:
+        return self.car_db.get_by_id(id_)

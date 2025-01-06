@@ -39,7 +39,7 @@ class Car:
     id: int
     car_number: str
     car_model: str
-
+    name: str
 
 @dataclass
 class CarDriverAssign:

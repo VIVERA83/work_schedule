@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from work_schedule.store.schedule_maker.utils import get_timetable_period, is_working_day, dates_comparison
+from work_schedule.store.scheduler.utils import get_timetable_period
 
 
 class ScheduleMaker:
@@ -34,33 +34,25 @@ class ScheduleMaker:
             end_date=end_date,
         )
 
-    def is_working_day(self, date: datetime) -> bool:
-        return is_working_day(
-            schedule_start_date=self.schedule_start_date,
-            work_days=self.work_days,
-            weekend_days=self.weekend_days,
-            date=date,
-            is_working=self.is_working,
-            what_day=self.what_day,
-        )[0]
-
     def validate_make_data(self, start_date: datetime, end_date: datetime):
+        start_date = datetime(year=start_date.year, month=start_date.month, day=start_date.day)
+        end_date = datetime(year=end_date.year, month=end_date.month, day=end_date.day)
         err_msg = "\n"
         index = 0
-        if not dates_comparison(start_date, self.schedule_start_date):
+        if start_date < self.schedule_start_date:
             index += 1
             err_msg += (
-                f"{index}. Значение start_date должно быть больше schedule_start_date.\n"
+                f"{index}. Значение start_date должно быть больше или равно schedule_start_date.\n"
             )
-        if not dates_comparison(end_date, self.schedule_start_date):
+        if end_date < self.schedule_start_date:
             index += 1
             err_msg += (
-                f"{index}. Значение end_date должно быть больше schedule_start_date\n"
+                f"{index}. Значение end_date должно быть больше или равно schedule_start_date\n"
             )
-        if dates_comparison(start_date, end_date):
+        if start_date > end_date:
             index += 1
             err_msg += (
-                f"{index}. Значение start_date должно быть меньше end_date.\n"
+                f"{index}. Значение start_date должно быть меньше или равно end_date.\n"
             )
         if err_msg != "\n":
             raise ValueError(err_msg)
