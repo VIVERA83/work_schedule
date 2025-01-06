@@ -7,6 +7,7 @@ from work_schedule.store.db.data.driver import DriverDB, Driver
 from work_schedule.store.db.data.exceptions import DBNotFoundException
 from work_schedule.store.db.data.schedule_type import ScheduleTypeDB, ScheduleType
 from work_schedule.store.db.data.work_schedule_history import WorkScheduleHistoryDB, WorkScheduleHistory
+from work_schedule.store.db.utils import validate_schedule_data
 
 
 class DB:
@@ -79,10 +80,3 @@ class DB:
             work_schedule_history,
             schedule_type,
         )
-
-
-def validate_schedule_data(is_working: bool, what_day: int, work_days: int, weekend_days: int) -> None:
-    if is_working and not (work_days >= what_day > 0):
-        raise ValueError(f"Неверное значение параметра {what_day=} в диапазоне от 1 до {work_days=}.")
-    elif not (weekend_days >= what_day > 0):
-        raise ValueError(f"Неверное значение параметра {what_day=} в диапазоне от 1 до {weekend_days=}.")
