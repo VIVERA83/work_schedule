@@ -2,12 +2,14 @@ from datetime import datetime, timedelta
 from typing import Literal
 
 DATE = str
-CONVENTIONAL_SIGNS = Literal["Р", "В"]
+SIGNAL_WEEKEND: str = "B"
+SIGNAL_WORK: str = "P"
+CONVENTIONAL_SIGNS = Literal[SIGNAL_WEEKEND, SIGNAL_WORK]  # noqa
 
 
 def timetable_work(
-        start: datetime.date = datetime.now(),
-        end: datetime.date = datetime.now(),
+        start: datetime = datetime.now(),
+        end: datetime = datetime.now(),
         is_working: bool = True,
         what_day: int = 1,
         work_days: int = 4,
@@ -40,7 +42,8 @@ def timetable_work(
     """
 
     result: dict[DATE, CONVENTIONAL_SIGNS] = {}
-    total = (end - start).days + 1
+    total = date_subtraction(end, start) + 1
+
     work_day_number = what_day - 1 if is_working else 0
     weekend_day_number = what_day - 1 if not is_working else 0
 
@@ -49,7 +52,7 @@ def timetable_work(
             is_working = not is_working
         work_day_number = work_day_number + 1 if is_working else 0
         weekend_day_number = weekend_day_number + 1 if not is_working else 0
-        result[start.date().strftime(date_format)] = "Р" if is_working else "В"
+        result[start.date().strftime(date_format)] = SIGNAL_WORK if is_working else SIGNAL_WEEKEND
         start += timedelta(days=1)
     return result
 
@@ -73,7 +76,7 @@ def is_working_day(schedule_start_date: datetime,
     :param what_day: Какой день по счету. Если is_working = True, какой день счету работает.
     :return: True - рабочий день, False - не рабочий день и какой день счету работает(отдыхает).
     """
-    total = (date - schedule_start_date).days + 1
+    total = date_subtraction(date, schedule_start_date) + 1
     work_day_number = what_day - 1 if is_working else 0
     weekend_day_number = what_day - 1 if not is_working else 0
 
@@ -107,7 +110,7 @@ def get_timetable_period(
     :param what_day: Какой день по счету. Если is_working = True, какой день счету работает.
     :param start_date: Дата начала периода.
     :param end_date: Дата окончания периода.
-    :return: Словарь, где ключ - дата, значение - 'P' (рабочий день) или 'B' (не рабочий день).
+    :return: Словарь, где ключ - дата, значение - SIGNAL_WORK (рабочий день) или SIGNAL_WEEKEND (не рабочий день).
     """
     # находим заданию дату работает или нет и какой день
     is_work, day = is_working_day(
@@ -127,3 +130,14 @@ def get_timetable_period(
         weekend_days=weekend_days,
 
     )
+
+
+def date_subtraction(date_1: datetime, date_2: datetime) -> int:
+    """Вычитает две даты, при расчетах отбрасываются часы.
+
+    :param date_1: Дата из которой вычитаем.
+    :param date_2: Дата, которую вычитаем
+    :return int: Разность дней.
+    """
+    return (datetime(year=date_1.year, month=date_1.month, day=date_1.day) -
+            datetime(year=date_2.year, month=date_2.month, day=date_2.day)).days
