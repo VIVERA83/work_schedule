@@ -10,6 +10,7 @@ date_17_01_2021 = datetime(2021, 1, 17)
 
 date_06_01_2025 = datetime(2025, 1, 6)
 date_10_01_2025 = datetime(2025, 1, 10)
+date_17_01_2025 = datetime(2025, 1, 17)
 today_2 = datetime.now()
 
 weekend_days_2 = 2
@@ -38,7 +39,7 @@ driver_id_0 = 0
 car_id_0 = 0
 car_0_schedule_start_date = date_06_01_2025
 car_0_name = "MAN TGM А124МК196"
-
+car_1_name = "MAN TGS А777НН198"
 days = 4
 today = datetime.now()
 other_date = today + timedelta(days=days)
@@ -84,8 +85,17 @@ car_0_s = ScheduleMaker(
     is_working=True,
     what_day=1,
 )
+car_1_s = ScheduleMaker(
+    name=car_1_name,
+    schedule_start_date=car_0_schedule_start_date,
+    work_days=-1,
+    weekend_days=-1,
+    is_working=True,
+    what_day=1,
+)
+
 driver_0_s = ScheduleMaker(
-    name=driver_0_name,
+    name="driver_0_name",
     schedule_start_date=driver_0_work_schedule_history_date,
     work_days=driver_0_schedule_type_work_days,
     weekend_days=driver_0_schedule_type_weekend_days,
@@ -93,10 +103,29 @@ driver_0_s = ScheduleMaker(
     what_day=driver_0_work_schedule_history_what_day,
 )
 driver_1_s = ScheduleMaker(
-    name=driver_1_name,
+    name="driver_1_name",
     schedule_start_date=driver_1_work_schedule_history_date,
     work_days=driver_1_schedule_type_work_days,
     weekend_days=driver_1_schedule_type_weekend_days,
     is_working=driver_1_work_schedule_history_is_working,
     what_day=driver_1_work_schedule_history_what_day,
 )
+# график такой же как у 0
+driver_2_s = ScheduleMaker(
+    name="driver_2_name",
+    schedule_start_date=driver_0_work_schedule_history_date,
+    work_days=driver_0_schedule_type_work_days,
+    weekend_days=driver_0_schedule_type_weekend_days,
+    is_working=driver_0_work_schedule_history_is_working,
+    what_day=driver_0_work_schedule_history_what_day,
+)
+a = {'07-01-2025': 'B',
+     '08-01-2025': 'P',
+     '09-01-2025': 'P',
+     '10-01-2025': 'P',
+     '11-01-2025': 'P',
+     '12-01-2025': 'B',
+     '13-01-2025': 'B',
+     '14-01-2025': 'P',
+     '15-01-2025': 'P',
+     '16-01-2025': 'P'}

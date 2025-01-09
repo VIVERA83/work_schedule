@@ -32,17 +32,17 @@ def test_schedule_maker__validate_make_data():
 
 def test_schedule_maker__make():
     # проверка, что можно задать все рабочие дни
-    assert car_0_schedule_make_result == car_0_s.make(date_06_01_2025, date_10_01_2025)
+    assert car_0_schedule_make_result == car_0_s.make_schedule(date_06_01_2025, date_10_01_2025)
     # проверка, проверка на корректность составления расписания
-    assert driver_0_schedule_make_result == driver_0_s.make(date_06_01_2025, date_10_01_2025)
+    assert driver_0_schedule_make_result == driver_0_s.make_schedule(date_06_01_2025, date_10_01_2025)
     print("test_schedule_maker__make OK")
 
 
 def test_schedule_maker_1():
     """Наложение расписаний Водителя и машины."""
     result = []
-    for car, driver in zip(car_0_s.make(date_06_01_2025, date_10_01_2025).items(),
-                           driver_0_s.make(date_06_01_2025, date_10_01_2025).items()):
+    for car, driver in zip(car_0_s.make_schedule(date_06_01_2025, date_10_01_2025).items(),
+                           driver_0_s.make_schedule(date_06_01_2025, date_10_01_2025).items()):
         if car == driver:
             result.append(driver_0_s.name)
         else:
