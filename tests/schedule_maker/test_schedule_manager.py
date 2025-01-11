@@ -4,12 +4,12 @@ from icecream import ic
 
 from tests.schedule_maker.data import driver_0_id, driver_0_s, car_id_0, car_0_s, date_06_01_2025, date_10_01_2025, \
     merged_schedule, driver_1_s, driver_1_id, date_17_01_2025, today_1, car_0_name
-from work_schedule.store.scheduler.schedule_maker import ScheduleMaker
+from work_schedule.store.scheduler.schedule_maker import WorkerSchedule
 from work_schedule.store.scheduler.schedule_manager import ScheduleManager
 
 
 def test_schedule_manager():
-    car_schedule = ScheduleMaker(
+    car_schedule = WorkerSchedule(
         car_0_name,
         date_06_01_2025,
         work_days=-1,

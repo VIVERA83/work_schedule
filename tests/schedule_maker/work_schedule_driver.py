@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from work_schedule.store.scheduler.schedule_maker import ScheduleMaker
+from work_schedule.store.scheduler.schedule_maker import WorkerSchedule
 
 
 class WorkScheduleDriver:
     def __init__(self,
-                 driver_schedules: dict[int, ScheduleMaker],
-                 car_schedules: dict[int, ScheduleMaker],
+                 driver_schedules: dict[int, WorkerSchedule],
+                 car_schedules: dict[int, WorkerSchedule],
                  relationships: dict[int, list[int]],  # car, driver
                  ) -> None:
         self.driver_schedules = driver_schedules

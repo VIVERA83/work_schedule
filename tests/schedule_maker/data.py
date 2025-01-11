@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from work_schedule.store.scheduler.schedule_maker import ScheduleMaker
+from work_schedule.store.scheduler.schedule_maker import WorkerSchedule
 
 today_1 = datetime.now()
 date_17_01_2020 = datetime(2020, 1, 17)
@@ -68,7 +68,7 @@ merged_schedule = ['Р',
                    'Иванов Иван Иванович',
                    'Иванов Иван Иванович']
 
-schedule = ScheduleMaker(
+schedule = WorkerSchedule(
     name=driver_0_name,
     schedule_start_date=date_17_01_2020,
     work_days=driver_0_schedule_type_work_days,
@@ -77,7 +77,7 @@ schedule = ScheduleMaker(
     what_day=what_day_1
 )
 
-car_0_s = ScheduleMaker(
+car_0_s = WorkerSchedule(
     name=car_0_name,
     schedule_start_date=car_0_schedule_start_date,
     work_days=-1,
@@ -85,7 +85,7 @@ car_0_s = ScheduleMaker(
     is_working=True,
     what_day=1,
 )
-car_1_s = ScheduleMaker(
+car_1_s = WorkerSchedule(
     name=car_1_name,
     schedule_start_date=car_0_schedule_start_date,
     work_days=-1,
@@ -94,7 +94,7 @@ car_1_s = ScheduleMaker(
     what_day=1,
 )
 
-driver_0_s = ScheduleMaker(
+driver_0_s = WorkerSchedule(
     name="driver_0_name",
     schedule_start_date=driver_0_work_schedule_history_date,
     work_days=driver_0_schedule_type_work_days,
@@ -102,7 +102,7 @@ driver_0_s = ScheduleMaker(
     is_working=driver_0_work_schedule_history_is_working,
     what_day=driver_0_work_schedule_history_what_day,
 )
-driver_1_s = ScheduleMaker(
+driver_1_s = WorkerSchedule(
     name="driver_1_name",
     schedule_start_date=driver_1_work_schedule_history_date,
     work_days=driver_1_schedule_type_work_days,
@@ -111,7 +111,7 @@ driver_1_s = ScheduleMaker(
     what_day=driver_1_work_schedule_history_what_day,
 )
 # график такой же как у 0
-driver_2_s = ScheduleMaker(
+driver_2_s = WorkerSchedule(
     name="driver_2_name",
     schedule_start_date=driver_0_work_schedule_history_date,
     work_days=driver_0_schedule_type_work_days,
