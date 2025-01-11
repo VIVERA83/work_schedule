@@ -2,14 +2,15 @@ from datetime import datetime
 from functools import wraps
 from typing import Generator, Callable, ParamSpec, TypeVar
 
-from work_schedule.store.scheduler.utils import get_timetable_period, SIGNAL_WEEKEND, SIGNAL_WORK, \
+from work_schedule.store.scheduler.utils import get_timetable_period, \
     generator_timetable_period, validate_make_date, DATE_FORMAT, DATE, SIGN
 
 _PWrapped = ParamSpec('_PWrapped')
 _RWrapped = TypeVar('_RWrapped')
 
 
-class ScheduleMaker:
+class WorkerSchedule:
+    """График работы."""
 
     def __init__(self,
                  name: str,
@@ -32,7 +33,7 @@ class ScheduleMaker:
         """Проверка корректности введенных дат."""
 
         @wraps(self)
-        def wrapper(cls, start_date: datetime, end_date: datetime):
+        def wrapper(cls, start_date: datetime, end_date: datetime, *args, **kwargs):
             """Проверка корректности введенных дат.
 
             Дата начало периода должна быть в границах даты начала расписания и даты окончания периода
@@ -45,7 +46,7 @@ class ScheduleMaker:
 
             """
             validate_make_date(cls.schedule_start_date, start_date, end_date)
-            return self(cls, start_date, end_date)
+            return self(cls, start_date, end_date, *args, **kwargs)
 
         return wrapper
 
@@ -101,67 +102,3 @@ class ScheduleMaker:
                                                                                                       self.date_format):
                 continue
             next_date = (yield date, signal)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # # TODO  нужны  ли эти методы здесь?
-
-    def merge(self,
-              merging_schedule: dict[str, str],
-              start_date: datetime,
-              end_date: datetime,
-              name: str,
-              ) -> dict[str, str]:
-        timetable = {}
-        for inner, merging in zip(
-                self.make_schedule(start_date, end_date).items(),
-                merging_schedule.items()):
-            cur_date = inner[0]
-
-            if inner[1] in [SIGNAL_WEEKEND] and merging[1] in [SIGNAL_WORK]:
-                timetable[cur_date] = name
-            elif inner[1] in [SIGNAL_WORK]:
-                timetable[cur_date] = self.name
-            else:
-                timetable[cur_date] = inner[1]
-        return timetable
-
-    def merge_a(self,
-                merging_schedule: dict[str, str],
-                start_date: datetime,
-                end_date: datetime,
-                name: str,
-                ) -> dict[str, str]:
-        timetable = {}
-        for inner, merging in zip(
-                self.make_schedule(start_date, end_date).items(),
-                merging_schedule.items()):
-            cur_date = inner[0]
-            print(inner[1], merging[1])
-            if inner[1] in [SIGNAL_WORK] and merging[1] in [SIGNAL_WORK]:
-                timetable[cur_date] = name
-            else:
-                timetable[cur_date] = inner[1]
-        return timetable
