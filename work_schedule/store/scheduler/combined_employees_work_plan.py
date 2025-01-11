@@ -25,47 +25,28 @@ class CombinedEmployeesWorkPlan:
         self.__employee_work_plan = defaultdict(dict)
         self.__merge_unused_employees()
 
-        for (date_1, name_1), (date_2, name_2) in zip(self.employee_1.get_employee_work_plan().items(),
-                                                      self.employee_2.get_employee_work_plan().items()):
+        for (date_1, name_1), (_, name_2) in zip(self.employee_1.get_employee_work_plan().items(),
+                                                 self.employee_2.get_employee_work_plan().items()):
 
+            temp = {self.employee_1.name: name_1}
             if name_1 != name_2:
-                temp = {}
-                # 1
                 if name_1 in [SIGNAL_WEEKEND]:
                     if today_unused := list(self.__unused_employees.get(date_1).keys()):
-                        new_worker = today_unused[0]
-                        temp.update({
-                            self.employee_1.name: name_1,
-                            self.employee_2.name: new_worker
-                        })
-                        self.__unused_employees.get(date_1).pop(new_worker)
+                        temp[self.employee_2.name] = today_unused[0]
                     else:
-                        temp.update({self.employee_2.name: name_2})
+                        temp = {self.employee_2.name: name_2}
                 else:
-                    temp = {
-                        self.employee_1.name: name_1,
-                        self.employee_2.name: name_2,
-                    }
-                self.__employee_work_plan[date_1].update(temp)
-
+                    temp[self.employee_2.name] = name_2
 
             else:
                 if name_1 in [SIGNAL_WEEKEND] and name_2 in [SIGNAL_WEEKEND]:
-                    self.__employee_work_plan[date_1] = {
-                        self.employee_1.name: name_1,
-                        self.employee_2.name: name_2,
-                    }
+                    temp.update({self.employee_2.name: name_2})
                 else:
                     if data := list(self.__unused_employees.pop(date_1, {}).keys()):
-                        self.__employee_work_plan[date_1] = {
-                            self.employee_1.name: name_1,
-                            self.employee_2.name: data[-1],
-                        }
+                        temp.update({self.employee_2.name: data[-1]})
                     else:
-                        self.__employee_work_plan[date_1] = {
-                            self.employee_1.name: name_1,
-                            self.employee_2.name: SIGNAL_WORK,
-                        }
+                        temp.update({self.employee_2.name: SIGNAL_WORK})
+            self.__employee_work_plan[date_1].update(temp)
 
             # удаление повторов
             self.__removing_duplicates_from_unused(date_1)

@@ -129,13 +129,13 @@ if __name__ == '__main__':
                                          work_days=5,
                                          weekend_days=2,
                                          is_working=True,
-                                         what_day=1,
+                                         what_day=2,
                                          )
     work_schedule_car_2 = WorkerSchedule("Car_2",
                                          datetime(year=2025, month=1, day=1),
                                          work_days=5,
                                          weekend_days=2,
-                                         is_working=False,
+                                         is_working=True,
                                          what_day=2
                                          )
     employee_1 = EmployeeWorkPlan(
@@ -154,9 +154,10 @@ if __name__ == '__main__':
         work_schedule_driver_2,
         work_schedule_driver_3,
     )
-    CombinedEmployeesWorkPlan(employee_1, employee_2)
+    result = CombinedEmployeesWorkPlan(employee_1, employee_2)
     # result = merge_employee_work_plan(employee_1, employee_2)
-    # ic(result)
+    ic(result.get_employee_work_plan())
+    ic(result.get_unused_employees())
     iters = zip(work_schedule_driver_1.make_schedule(today_1, date_17_01_2025, ).values(),
                 work_schedule_driver_2.make_schedule(today_1, date_17_01_2025, ).values(),
                 work_schedule_driver_3.make_schedule(today_1, date_17_01_2025, ).values(),
@@ -178,8 +179,8 @@ if __name__ == '__main__':
          '14-01-2025': {'driver_1': 'P', 'driver_2': 'P'},
          '15-01-2025': {'driver_1': 'P'}}
 
-    # assert a == result[0]
-    # assert b == result[1]
+    # assert a == result.get_employee_work_plan()
+    # assert b == result.get_unused_employees()
 
     a = {'11-01-2025': {'Car_1': 'driver_2', 'Car_2': 'driver_3'},
          '12-01-2025': {'Car_1': 'driver_2', 'Car_2': 'driver_3'},
