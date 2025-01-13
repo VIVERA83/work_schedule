@@ -72,19 +72,3 @@ class CombinedEmployeesWorkPlan:
                     del data[element]
             if not self.__unused_employees[date]:
                 del self.__unused_employees[date]
-
-    def add_combined_employees_work_plan(self, employee: "CombinedEmployeesWorkPlan") -> None:
-        """Добавляет к текущему объекту новый объект CombinedEmployeesWorkPlan."""
-        temp = defaultdict(dict)
-        temp2 = defaultdict(dict)
-        for em1, em2 in zip(self.get_schedule().items(), employee.get_schedule().items()):
-            temp[em1[0]].update(em1[1])
-            temp[em1[0]].update(em2[1])
-
-        for date, em in self.get_unused_employees().items():
-            for name, status in em.items():
-                temp2[date][name] = status
-        for date, em in employee.get_unused_employees().items():
-            for name, status in em.items():
-                temp2[date][name] = status
-        return temp, temp2
