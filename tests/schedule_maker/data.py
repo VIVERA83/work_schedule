@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from work_schedule.store.scheduler.schedule_maker import WorkerSchedule
+from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 
 today_1 = datetime.now()
 date_17_01_2020 = datetime(2020, 1, 17)

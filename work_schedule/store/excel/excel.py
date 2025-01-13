@@ -1,4 +1,5 @@
 import openpyxl
+from openpyxl.styles import PatternFill
 
 from .utils import center_alignment, border
 
@@ -12,10 +13,10 @@ class Excel:
     def save(self):
         self.wb.save(self.file)
 
-    def add_row(self, row):
+    def add_row(self, row: list[str]):
         self.sheet.append(row)
 
-    def add_color_to_row_cells(self, row, colors):
+    def add_color_to_row_cells(self, row: int, colors: list[PatternFill]):
         length = len(colors)
         for index, cell in enumerate(self.sheet[row]):
             if index >= length:
@@ -23,7 +24,7 @@ class Excel:
             elif fill := colors[index]:
                 cell.fill = fill
 
-    def add_cell(self, row, column, value):
+    def add_cell(self, row: int, column: int, value: str):
         self.sheet.cell(row=row, column=column, value=value)
 
     def auto_alignment_column_width(self):

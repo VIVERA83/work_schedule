@@ -6,7 +6,7 @@ from icecream import ic
 from tests.schedule_maker.data import today_1, date_17_01_2025
 from work_schedule.store.scheduler.combined_employees_work_plan import CombinedEmployeesWorkPlan
 from work_schedule.store.scheduler.employee_work_plan import EmployeeWorkPlan
-from work_schedule.store.scheduler.schedule_maker import WorkerSchedule
+from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 from work_schedule.store.scheduler.utils import SIGNAL_WEEKEND, SIGNAL_WORK
 
 
@@ -22,8 +22,8 @@ def merge_employee_work_plan(employee_1: EmployeeWorkPlan, employee_2: EmployeeW
     total = defaultdict(dict)
     unused = merge_dict(employee_1.get_unused_employees(), employee_2.get_unused_employees())
 
-    for (date_1, name_1), (date_2, name_2) in zip(employee_1.get_employee_work_plan().items(),
-                                                  employee_2.get_employee_work_plan().items()):
+    for (date_1, name_1), (date_2, name_2) in zip(employee_1.get_schedule().items(),
+                                                  employee_2.get_schedule().items()):
 
         if name_1 != name_2:
             temp = {}
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     work_schedule_driver_1 = WorkerSchedule("driver_1",
                                             datetime(year=2025, month=1, day=1),
                                             work_days=4,
-                                            weekend_days=2,
+                                            weekend_days=4,
                                             is_working=True,
                                             what_day=1,
                                             )
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     work_schedule_driver_3 = WorkerSchedule("driver_3",
                                             datetime(year=2025, month=1, day=1),
                                             work_days=4,
-                                            weekend_days=2,
+                                            weekend_days=4,
                                             is_working=False,
                                             what_day=1,
                                             )
@@ -154,10 +154,18 @@ if __name__ == '__main__':
         work_schedule_driver_2,
         work_schedule_driver_3,
     )
+
+
+
     result = CombinedEmployeesWorkPlan(employee_1, employee_2)
+
     # result = merge_employee_work_plan(employee_1, employee_2)
-    ic(result.get_employee_work_plan())
-    ic(result.get_unused_employees())
+    # result.set_date(datetime(year=2025, month=1, day=1), datetime(year=2025, month=1, day=10))
+    ic(result.get_schedule())
+    # ic(result.get_unused_employees())
+    ic(result.add_combined_employees_work_plan())
+
+
     iters = zip(work_schedule_driver_1.make_schedule(today_1, date_17_01_2025, ).values(),
                 work_schedule_driver_2.make_schedule(today_1, date_17_01_2025, ).values(),
                 work_schedule_driver_3.make_schedule(today_1, date_17_01_2025, ).values(),

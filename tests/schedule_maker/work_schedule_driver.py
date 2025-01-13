@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from work_schedule.store.scheduler.schedule_maker import WorkerSchedule
+from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 
 
 class WorkScheduleDriver:

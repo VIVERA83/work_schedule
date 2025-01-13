@@ -2,7 +2,7 @@ from collections import defaultdict
 from datetime import datetime
 from typing import Generator
 
-from work_schedule.store.scheduler.schedule_maker import WorkerSchedule
+from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 from work_schedule.store.scheduler.utils import DATE, SIGN, SIGNAL_WORK
 
 
@@ -13,50 +13,46 @@ class EmployeeWorkPlan:
     __unused_employees: dict[DATE, dict[str, SIGNAL_WORK]]
 
     def __init__(self,
-                 start: datetime,
-                 end: datetime,
                  main_worker_schedule: "WorkerSchedule",
                  *worker_schedule: "WorkerSchedule"
                  ):
         """
-        :param start: Дата начала цикла работы.
-        :param end: Дата окончания цикла работы.
         :param main_worker_schedule: Рабочее расписание некого оборудования или основного сотрудника,
         на цикле работы которого формируется план. Как пример использования можно посмотреть
         вариант построения работы экипажа машины. В main_worker_schedule можно указать
         дни в которые оборудование, будет находиться на техническом обслуживании.
         :param worker_schedule: Рабочее расписание сотрудников.
         """
-        self.__start = start
-        self.__end = end
         self.__main_worker_schedule = main_worker_schedule
         self.__workers_schedules = worker_schedule
-        self.__create_employee_work_plan()
 
     @property
     def name(self) -> str:
         return self.__main_worker_schedule.name
 
-    def get_employee_work_plan(self) -> dict[DATE, SIGN]:
-        """Возвращает план работы сотрудников."""
+    def get_schedule(self, start: datetime = datetime.now(), end: datetime = datetime.now()) -> dict[DATE, SIGN]:
+        """Возвращает расписание работы сотрудников."""
+        self.__create_employee_work_plan(start, end)
         return self.__employee_work_plan
 
-    def get_unused_employees(self) -> dict[DATE, dict[str, SIGNAL_WORK]]:
+    def get_unused_employees(self, start: datetime = datetime.now(), end: datetime = datetime.now()) -> dict[
+        DATE, dict[str, SIGNAL_WORK]]:
         """Возвращает сотрудников, которые не были задействованы в работе."""
+        self.__create_employee_work_plan(start, end)
         return self.__unused_employees
 
-    def __create_employee_work_plan(self):
+    def __create_employee_work_plan(self, start: datetime, end: datetime):
         """Формирует план работы сотрудников."""
         self.__employee_work_plan = {}
         self.__unused_employees = defaultdict(dict)
         if not self.__workers_schedules:
-            self.__employee_work_plan = self.__main_worker_schedule.make_schedule(self.__start, self.__end)
+            self.__employee_work_plan = self.__main_worker_schedule.make_schedule(start, end)
             return
 
-        works_schedules_gens = self._make_schedule_generators()
-        main_worker_schedule_gen = self.__main_worker_schedule.make_schedule_generator(self.__start, self.__end)
+        works_schedules_gens = self._make_schedule_generators(start, end)
+        main_worker_schedule_gen = self.__main_worker_schedule.make_schedule_generator(start, end)
         current_worker_id = self.__workers_schedules[0].name
-        date = self.__start.strftime(self.__main_worker_schedule.date_format)
+        date = start.strftime(self.__main_worker_schedule.date_format)
         current_worker_index = 0
 
         while True:
@@ -104,11 +100,12 @@ class EmployeeWorkPlan:
             except StopIteration:
                 break
 
-    def _make_schedule_generators(self) -> dict[str, Generator[
-        tuple[DATE, SIGN], DATE, None]]:
+    def _make_schedule_generators(self, start: datetime = datetime.now(), end: datetime = datetime.now()) -> dict[
+        str, Generator[
+            tuple[DATE, SIGN], DATE, None]]:
         """Генератор расписания работы сотрудников."""
         return {
-            schedule.name: schedule.make_schedule_generator(self.__start, self.__end)
+            schedule.name: schedule.make_schedule_generator(start, end)
             for schedule in
             self.__workers_schedules
         }

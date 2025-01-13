@@ -5,7 +5,7 @@ from icecream import ic
 
 from tests.schedule_maker.data import today_1, date_17_01_2025
 from work_schedule.store.scheduler.employee_work_plan import EmployeeWorkPlan
-from work_schedule.store.scheduler.schedule_maker import WorkerSchedule
+from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 from work_schedule.store.scheduler.utils import SIGNAL_WEEKEND, SIGNAL_WORK
 
 ic.includeContext = True
@@ -37,8 +37,8 @@ def merge_employee_work_plan(employee_1: EmployeeWorkPlan, employee_2: EmployeeW
     total = defaultdict(dict)
     unused = merge_dict(employee_1.get_unused_employees(), employee_2.get_unused_employees())
 
-    for (date_1, name_1), (date_2, name_2) in zip(employee_1.get_employee_work_plan().items(),
-                                                  employee_2.get_employee_work_plan().items()):
+    for (date_1, name_1), (date_2, name_2) in zip(employee_1.get_schedule().items(),
+                                                  employee_2.get_schedule().items()):
         if name_1 != name_2:
             temp = {}
             # 1
