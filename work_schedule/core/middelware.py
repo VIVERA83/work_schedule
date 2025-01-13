@@ -7,6 +7,8 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
+from core import logger
+
 HTTP_EXCEPTIONS = {
     status.HTTP_404_NOT_FOUND: "Not Found",
     status.HTTP_400_BAD_REQUEST: "Bad Request",
@@ -26,11 +28,12 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             return response
         except Exception as error:
+            logger.logger.error(f"Error: {error}", exc_info=True)
             code = getattr(error, "code", status.HTTP_500_INTERNAL_SERVER_ERROR)
             return JSONResponse(
                 status_code=code,
                 content=jsonable_encoder(
-                    {"detail": HTTP_EXCEPTIONS.get(code), "message": str(error.args[0])}
+                    {"detail": HTTP_EXCEPTIONS.get(code), "message": str(error.args)}
                 ),
             )
 

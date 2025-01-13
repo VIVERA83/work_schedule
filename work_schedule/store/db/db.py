@@ -47,11 +47,11 @@ class DB:
             car,
         )
 
-    def creat_driver(self, name: str,
-                     schedule_type_id: int,
-                     is_working: bool = True,
-                     what_day: int = 1
-                     ) -> DriverFullData:
+    def create_driver(self, name: str,
+                      schedule_type_id: int,
+                      is_working: bool = True,
+                      what_day: int = 1
+                      ) -> DriverFullData:
         """Создать запись о водителе.
 
         Идентификатор создаётся автоматически. Так же добавляется запись о типе расписания.
