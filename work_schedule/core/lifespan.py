@@ -1,26 +1,15 @@
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
-
 from core.logger import setup_logging
-from store.db.db import DB
 
-# from store.db.postgres_db.accessor import PostgresAccessor
-# from store.product.brand.accessor import BrandAccessor
-# from store.product.category.accessor import CategoryAccessor
-# from store.product.product.accessor import ProductAccessor
+from store.db.utils import DB
+from store.db.postgres.accessor import PostgresAccessor
 
-loger = setup_logging()
-db = DB()
-# postgres_accessor = PostgresAccessor(loger)
-#
-# brand_accessor = BrandAccessor(postgres_accessor, loger)
-# category_accessor = CategoryAccessor(postgres_accessor, loger)
-# product_accessor = ProductAccessor(postgres_accessor, loger)
+db = DB(PostgresAccessor(setup_logging()), setup_logging())
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    # await postgres_accessor.connect()
+    await db.connect()
     yield
-    # await postgres_accessor.disconnect()
+    await db.disconnect()

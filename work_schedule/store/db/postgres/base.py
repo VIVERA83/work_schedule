@@ -1,0 +1,37 @@
+from dataclasses import dataclass, asdict
+
+from sqlalchemy import MetaData
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.dialects.postgresql import INTEGER
+
+from core.settings import PostgresSettings
+
+
+@dataclass
+class Base(DeclarativeBase):
+    metadata = MetaData(
+        schema=PostgresSettings().postgres_schema,  # noqa
+        quote_schema=True,
+    )
+    __table_args__ = {"extend_existing": True}
+
+    @property
+    def as_dict(self) -> dict:
+        return asdict(self)  # noqa type: ignore
+
+
+@dataclass
+class BaseModel:
+    id: Mapped[INTEGER] = mapped_column(
+        INTEGER,
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    def __repr__(self):
+        return "{class_name}(id={id})".format(
+            id=self.id,
+            class_name=self.__class__.__name__,
+        )
+
+    __str__ = __repr__

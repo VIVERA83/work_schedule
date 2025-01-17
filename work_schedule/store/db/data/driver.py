@@ -1,5 +1,5 @@
-from work_schedule.store.db.data.base import BaseDB
-from work_schedule.store.db.data.dc import Driver
+from store.db.data.base import BaseDB
+from store.db.data.dc import Driver
 
 data = [
     {
@@ -17,3 +17,5 @@ class DriverDB(BaseDB):
     class Meta:
         db = data
         dataclass = Driver
+
+

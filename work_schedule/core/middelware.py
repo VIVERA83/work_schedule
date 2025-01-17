@@ -28,12 +28,12 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             return response
         except Exception as error:
-            logger.logger.error(f"Error: {error}", exc_info=True)
+            print(error)
             code = getattr(error, "code", status.HTTP_500_INTERNAL_SERVER_ERROR)
             return JSONResponse(
                 status_code=code,
                 content=jsonable_encoder(
-                    {"detail": HTTP_EXCEPTIONS.get(code), "message": str(error.args)}
+                    {"detail": HTTP_EXCEPTIONS.get(code), "message": error.args}
                 ),
             )
 
