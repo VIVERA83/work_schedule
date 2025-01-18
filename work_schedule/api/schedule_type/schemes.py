@@ -1,6 +1,5 @@
-from pydantic import Field, BaseModel
-
 from api.base.schemes import IdSchema
+from pydantic import BaseModel, Field
 
 
 class ScheduleTypeCreateSchema(BaseModel):

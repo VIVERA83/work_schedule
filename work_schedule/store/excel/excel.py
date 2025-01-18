@@ -1,7 +1,7 @@
 import openpyxl
 from openpyxl.styles import PatternFill
 
-from .utils import center_alignment, border
+from .utils import border, center_alignment
 
 
 class Excel:

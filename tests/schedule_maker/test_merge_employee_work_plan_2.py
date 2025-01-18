@@ -3,13 +3,13 @@ from datetime import datetime
 
 from icecream import ic
 
-from tests.schedule_maker.data import today_1, date_17_01_2025
+from tests.schedule_maker.data import date_17_01_2025, today_1
 from work_schedule.store.scheduler.combined_employees_work_plan import (
     CombinedEmployeesWorkPlan,
 )
 from work_schedule.store.scheduler.employee_work_plan import EmployeeWorkPlan
-from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 from work_schedule.store.scheduler.utils import SIGNAL_WEEKEND, SIGNAL_WORK
+from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 
 
 def merge_dict(d1: dict, d2: dict):

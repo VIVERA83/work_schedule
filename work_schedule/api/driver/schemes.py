@@ -1,6 +1,5 @@
-from pydantic import BaseModel, Field
-
 from api.base.schemes import IdSchema
+from pydantic import BaseModel, Field
 
 
 class DriverCreateSchema(BaseModel):

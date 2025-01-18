@@ -1,8 +1,7 @@
-from fastapi import APIRouter
-
 from api.base.schemes import ID
 from api.driver.schemes import DriverCreateSchema, DriverSchema, DriverUpdateSchema
 from core.lifespan import db
+from fastapi import APIRouter
 
 driver_route = APIRouter(prefix="/driver", tags=["DRIVER"])
 

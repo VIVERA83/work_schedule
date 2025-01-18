@@ -1,17 +1,17 @@
 from tests.schedule_maker.data import (
-    date_17_01_2020,
+    car_0_s,
+    car_0_schedule_make_result,
     date_01_01_2020,
-    date_17_02_2020,
     date_06_01_2025,
     date_10_01_2025,
-    car_0_schedule_make_result,
+    date_17_01_2020,
+    date_17_02_2020,
+    driver_0_s,
     driver_0_schedule_make_result,
     merged_schedule,
     schedule,
-    car_0_s,
-    driver_0_s,
-    today_2,
     today_1,
+    today_2,
 )
 
 

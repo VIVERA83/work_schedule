@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from core.logger import setup_logging
 
+from core.logger import setup_logging
+from fastapi import FastAPI
 from store.db.postgres.accessor import PostgresAccessor
 from store.ws.store import DB
 

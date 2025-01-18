@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Literal, Generator
+from typing import Generator, Literal
 
 DATE_FORMAT = "%d-%m-%Y"
 DATE = str

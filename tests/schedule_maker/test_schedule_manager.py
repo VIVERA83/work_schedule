@@ -1,20 +1,20 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
 from icecream import ic
 
 from tests.schedule_maker.data import (
-    driver_0_id,
-    driver_0_s,
-    car_id_0,
+    car_0_name,
     car_0_s,
+    car_id_0,
     date_06_01_2025,
     date_10_01_2025,
-    merged_schedule,
-    driver_1_s,
-    driver_1_id,
     date_17_01_2025,
+    driver_0_id,
+    driver_0_s,
+    driver_1_id,
+    driver_1_s,
+    merged_schedule,
     today_1,
-    car_0_name,
 )
 from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 

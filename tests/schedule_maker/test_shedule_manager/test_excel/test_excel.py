@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from icecream import ic
+
 from tests.schedule_maker.data import date_06_01_2025, date_17_01_2025
 from tests.schedule_maker.test_combined_empoyees_work_plan import employee_3, employee_4
 from tests.schedule_maker.test_shedule_manager.test_shedule_manager import (
@@ -8,18 +10,16 @@ from tests.schedule_maker.test_shedule_manager.test_shedule_manager import (
 )
 from work_schedule.store.excel.excel import Excel
 from work_schedule.store.excel.utils import (
+    black_fill,
+    green_fill,
     orange_fill,
     red_fill,
-    green_fill,
-    black_fill,
 )
 from work_schedule.store.scheduler.combined_employees_work_plan import (
     CombinedEmployeesWorkPlan,
 )
 from work_schedule.store.scheduler.schedule_manager import ScheduleManager
-from icecream import ic
-
-from work_schedule.store.scheduler.utils import SIGNAL_WORK, SIGNAL_WEEKEND
+from work_schedule.store.scheduler.utils import SIGNAL_WEEKEND, SIGNAL_WORK
 
 ic.includeContext = True
 combined_employees_work_plan_1 = CombinedEmployeesWorkPlan(employee_1, employee_2)

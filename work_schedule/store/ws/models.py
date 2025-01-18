@@ -1,21 +1,18 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
-
-from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from sqlalchemy import (
-    ForeignKey,
     DATETIME,
-    func,
-    Index,
     CheckConstraint,
-    Table,
     Column,
+    ForeignKey,
+    Index,
     Integer,
+    Table,
+    func,
 )
 from sqlalchemy.dialects.postgresql import TIMESTAMP
-
+from sqlalchemy.orm import Mapped, mapped_column
 from store.db.postgres.base import Base, BaseModel
 
 car_driver_association_table = Table(
@@ -34,21 +31,12 @@ class CarModel(Base, BaseModel):
     car_model: Mapped[str] = mapped_column()
     car_number: Mapped[str] = mapped_column(unique=True)
 
-    # drivers = relationship("DriverModel",
-    #                        secondary=car_driver_association_table,
-    #                        back_populates="cars",
-    #                        )
-
 
 @dataclass
 class DriverModel(Base, BaseModel):
     __tablename__ = "driver"
 
     name: Mapped[str] = mapped_column()
-    # cars = relationship("CarModel",
-    #                     secondary=car_driver_association_table,
-    #                     back_populates="drivers",
-    #                     )
 
 
 @dataclass
@@ -78,5 +66,3 @@ class WorkScheduleHistoryModel(Base, BaseModel):
     )
     is_working: Mapped[bool] = mapped_column(default=True)
     what_day: Mapped[int] = mapped_column(default=1)
-
-    # driver: Mapped[Optional["DriverModel"]] = relationship("DriverModel", cascade="delete")

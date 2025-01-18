@@ -1,19 +1,20 @@
-import sys
-import os
-import dotenv
 import asyncio
-
+import os
+import sys
 from logging.config import fileConfig
+
+import dotenv
 from sqlalchemy import pool, text
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
+
 from alembic import context
 
 sys.path.insert(1, os.path.join(os.getcwd(), "work_schedule"))
 dotenv.load_dotenv()
 
-from work_schedule.store.ws.models import Base
 from work_schedule.core.settings import PostgresSettings
+from work_schedule.store.ws.models import Base
 
 config = context.config
 

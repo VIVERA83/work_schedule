@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import Optional, Union
 from logging import Logger
+from typing import Optional, Union
 
 from sqlalchemy import text
-
 from store.ws.models import DriverModel
+
 from work_schedule.store.db.data.exceptions import DBNotFoundException
 
 ANY_TYPE = Union[str, int, float, bool, list, dict]

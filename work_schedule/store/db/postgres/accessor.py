@@ -1,28 +1,19 @@
 import logging
+from typing import Any, Literal, Optional, Union
 
-from typing import Any, Optional, Union, Literal
-
+from core.settings import PostgresSettings
+from sqlalchemy import delete, func, insert, select, text, update
 from sqlalchemy.engine import Result
-from sqlalchemy.orm import MappedColumn
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
-    create_async_engine,
     AsyncSession,
     async_sessionmaker,
+    create_async_engine,
 )
+from sqlalchemy.orm import MappedColumn
 from sqlalchemy.sql.elements import TextClause
 
-from sqlalchemy import (
-    insert,
-    select,
-    update,
-    delete,
-    text,
-    func,
-)
-
 from .types import Model, Query
-from core.settings import PostgresSettings
 
 
 class PostgresAccessor:

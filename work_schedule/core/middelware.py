@@ -5,7 +5,6 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
-
 HTTP_EXCEPTIONS = {
     status.HTTP_404_NOT_FOUND: "Not Found",
     status.HTTP_400_BAD_REQUEST: "Bad Request",

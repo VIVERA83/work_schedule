@@ -1,8 +1,7 @@
-from fastapi import APIRouter
-
 from api.base.schemes import ID
-from api.car.schemes import CarSchema, CarCreateSchema, CarUpdateSchema
+from api.car.schemes import CarCreateSchema, CarSchema, CarUpdateSchema
 from core.lifespan import db
+from fastapi import APIRouter
 
 car_route = APIRouter(prefix="/car", tags=["CAR"])
 

@@ -2,8 +2,8 @@ from collections import defaultdict
 from datetime import datetime
 from typing import Generator
 
-from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 from work_schedule.store.scheduler.utils import DATE, SIGN, SIGNAL_WORK
+from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 
 
 class EmployeeWorkPlan:

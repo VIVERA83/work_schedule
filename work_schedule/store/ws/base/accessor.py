@@ -1,6 +1,6 @@
 from functools import wraps
 from logging import Logger
-from typing import Callable, ParamSpec, TypeVar, Type
+from typing import Callable, ParamSpec, Type, TypeVar
 from uuid import UUID
 
 from asyncpg import UniqueViolationError
@@ -8,8 +8,14 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 
 from store.db.postgres.accessor import PostgresAccessor
 from store.db.postgres.types import Model
-from store.ws.base.exceptions import NotFoundException, ExceptionBase, DuplicateException, \
-    ForeignKeyException, DataBaseConnectionException, DataBaseUnknownException
+from store.ws.base.exceptions import (
+    DataBaseConnectionException,
+    DataBaseUnknownException,
+    DuplicateException,
+    ExceptionBase,
+    ForeignKeyException,
+    NotFoundException,
+)
 
 _PWrapped = ParamSpec("_PWrapped")
 _RWrapped = TypeVar("_RWrapped")
@@ -35,11 +41,25 @@ class BaseAccessor:
             self.logger.error(f"Не указан класс модели {self.__class__.__name__}")
             raise AttributeError(f"Не указан класс модели {self.__class__.__name__}")
 
-        self.not_found = self.Meta.not_found if getattr(self.Meta, "not_found", None) else NotFoundException
-        self.duplicate = self.Meta.duplicate if getattr(self.Meta, "duplicate", None) else DuplicateException
-        self.foreign_key = self.Meta.foreign_key if getattr(self.Meta, "foreign_key", None) else ForeignKeyException
+        self.not_found = (
+            self.Meta.not_found
+            if getattr(self.Meta, "not_found", None)
+            else NotFoundException
+        )
+        self.duplicate = (
+            self.Meta.duplicate
+            if getattr(self.Meta, "duplicate", None)
+            else DuplicateException
+        )
+        self.foreign_key = (
+            self.Meta.foreign_key
+            if getattr(self.Meta, "foreign_key", None)
+            else ForeignKeyException
+        )
 
-    def __exception_handler(self: Callable[_PWrapped, _RWrapped]) -> Callable[_PWrapped, _RWrapped]:
+    def __exception_handler(
+        self: Callable[_PWrapped, _RWrapped]
+    ) -> Callable[_PWrapped, _RWrapped]:
 
         @wraps(self)
         async def wrapper(cls, *args, **kwargs):

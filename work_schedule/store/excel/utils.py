@@ -1,4 +1,4 @@
-from openpyxl.styles import PatternFill, Border, Alignment, Side
+from openpyxl.styles import Alignment, Border, PatternFill, Side
 
 black_fill = PatternFill(start_color="000000", end_color="000000", fill_type="solid")
 orange_fill = PatternFill(start_color="FFA500", end_color="FFA500", fill_type="solid")

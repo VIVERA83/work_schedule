@@ -1,10 +1,9 @@
-from dataclasses import dataclass, asdict
-
-from sqlalchemy import MetaData
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import INTEGER
+from dataclasses import asdict, dataclass
 
 from core.settings import PostgresSettings
+from sqlalchemy import MetaData
+from sqlalchemy.dialects.postgresql import INTEGER
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 @dataclass
