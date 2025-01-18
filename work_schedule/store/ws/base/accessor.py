@@ -20,6 +20,7 @@ class BaseAccessor:
     def accessor(self) -> "PostgresAccessor":
         return self.__accessor
 
+    @exception_handler()
     async def create(self, **fields: dict) -> Model:
         model = self.Meta.model(**fields)
         async with self.accessor.session as session:
@@ -30,26 +31,31 @@ class BaseAccessor:
 
     @exception_handler(NotFoundException)
     async def update(self, id_: int, **fields: dict) -> Model:
-        smtp = (self.accessor.get_query_update(self.Meta.model).
-                where(self.Meta.model.id == id_).  # noqa
-                values(**fields).
-                returning(self.Meta.model))
+        smtp = (
+            self.accessor.get_query_update(self.Meta.model)
+            .where(self.Meta.model.id == id_)  # noqa
+            .values(**fields)
+            .returning(self.Meta.model)
+        )
         result = await self.accessor.query_execute(smtp)
         self.logger.info(f"Обновлен {self.Meta.model.__name__} с id {id_}")
         return result.scalars().one()
 
-    @exception_handler(NotFoundException)
+    @exception_handler()
     async def delete_by_id(self, id_: int | str | UUID) -> Model:
-        smtp = (self.accessor.get_query_delete(self.Meta.model).
-                where(self.Meta.model.id == id_). # noqa
-                returning(self.Meta.model))
+        smtp = (
+            self.accessor.get_query_delete(self.Meta.model)
+            .where(self.Meta.model.id == id_)  # noqa
+            .returning(self.Meta.model)
+        )
         result = await self.accessor.query_execute(smtp)
         self.logger.info(f"Удален {self.Meta.model.__name__} с id {id_}")
         return result.scalars().one()
 
-    @exception_handler(NotFoundException)
+    @exception_handler()
     async def get_by_id(self, id_: int | str | UUID) -> Model:
-        smtp = (self.accessor.get_query_select_by_fields("*").
-                filter(self.Meta.model.id == id_))  # noqa
+        smtp = self.accessor.get_query_select_by_fields("*").filter(
+            self.Meta.model.id == id_
+        )  # noqa
         result = await self.accessor.query_execute(smtp)
         return self.Meta.model(**result.mappings().one())

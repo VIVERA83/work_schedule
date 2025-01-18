@@ -22,8 +22,6 @@ data = [
 ]
 
 
-
-
 class WorkScheduleHistoryDB(BaseDB):
     class Meta:
         db = data

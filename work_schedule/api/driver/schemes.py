@@ -8,16 +8,15 @@ class DriverCreateSchema(BaseModel):
         description="Фамилия Имя Отчество",
         examples=["Иванов Иван Иванович"],
         min_length=2,
-        max_length=70
+        max_length=70,
     )
 
 
-class DriverSchema(IdSchema, DriverCreateSchema):
-    ...
+class DriverSchema(IdSchema, DriverCreateSchema): ...
 
 
-class DriverUpdateSchema(DriverSchema):
-    ...
+class DriverUpdateSchema(DriverSchema): ...
+
 
 # from datetime import datetime
 # from typing import Optional

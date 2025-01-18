@@ -13,8 +13,7 @@ data = [
         "name": "4/4",
         "work_days": 4,
         "weekend_days": 4,
-    }
-
+    },
 ]
 
 

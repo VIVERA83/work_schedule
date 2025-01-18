@@ -9,7 +9,7 @@ data = [
     {
         "id": 1,
         "name": "Сидоров Сидор Сидорович",
-    }
+    },
 ]
 
 
@@ -17,5 +17,3 @@ class DriverDB(BaseDB):
     class Meta:
         db = data
         dataclass = Driver
-
-

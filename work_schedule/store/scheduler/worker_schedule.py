@@ -2,25 +2,32 @@ from datetime import datetime
 from functools import wraps
 from typing import Generator, Callable, ParamSpec, TypeVar
 
-from work_schedule.store.scheduler.utils import get_timetable_period, \
-    generator_timetable_period, validate_make_date, DATE_FORMAT, DATE, SIGN
+from work_schedule.store.scheduler.utils import (
+    get_timetable_period,
+    generator_timetable_period,
+    validate_make_date,
+    DATE_FORMAT,
+    DATE,
+    SIGN,
+)
 
-_PWrapped = ParamSpec('_PWrapped')
-_RWrapped = TypeVar('_RWrapped')
+_PWrapped = ParamSpec("_PWrapped")
+_RWrapped = TypeVar("_RWrapped")
 
 
 class WorkerSchedule:
     """График работы."""
 
-    def __init__(self,
-                 name: str,
-                 schedule_start_date: datetime,
-                 work_days: int,
-                 weekend_days: int,
-                 is_working: bool,
-                 what_day: int,
-                 date_format: str = DATE_FORMAT
-                 ):
+    def __init__(
+        self,
+        name: str,
+        schedule_start_date: datetime,
+        work_days: int,
+        weekend_days: int,
+        is_working: bool,
+        what_day: int,
+        date_format: str = DATE_FORMAT,
+    ):
         self.name = name
         self.schedule_start_date = schedule_start_date
         self.work_days = work_days
@@ -29,7 +36,9 @@ class WorkerSchedule:
         self.what_day = what_day
         self.date_format = date_format
 
-    def __check_make_data(self: Callable[_PWrapped, _RWrapped]) -> Callable[_PWrapped, _RWrapped]:
+    def __check_make_data(
+        self: Callable[_PWrapped, _RWrapped]
+    ) -> Callable[_PWrapped, _RWrapped]:
         """Проверка корректности введенных дат."""
 
         @wraps(self)
@@ -51,7 +60,9 @@ class WorkerSchedule:
         return wrapper
 
     @__check_make_data  # noqa
-    def make_schedule(self, start_date: datetime, end_date: datetime) -> dict[DATE, SIGN]:
+    def make_schedule(
+        self, start_date: datetime, end_date: datetime
+    ) -> dict[DATE, SIGN]:
         """Создание расписания по датам.
 
         :param start_date: Дата начала период.
@@ -71,8 +82,9 @@ class WorkerSchedule:
         )
 
     @__check_make_data  # noqa
-    def make_schedule_generator(self, start_date: datetime, end_date: datetime) -> Generator[
-        tuple[DATE, SIGN], DATE, None]:
+    def make_schedule_generator(
+        self, start_date: datetime, end_date: datetime
+    ) -> Generator[tuple[DATE, SIGN], DATE, None]:
         """Генератор расписания по датам.
 
         Генератор принимает дату next_date (строка) - пропускает выдачу следующих данных до указанной даты.
@@ -98,7 +110,8 @@ class WorkerSchedule:
         for date, signal in gen:
             if next_date is not None:
                 buffer = next_date
-            if buffer is not None and datetime.strptime(buffer, self.date_format) > datetime.strptime(date,
-                                                                                                      self.date_format):
+            if buffer is not None and datetime.strptime(
+                buffer, self.date_format
+            ) > datetime.strptime(date, self.date_format):
                 continue
             next_date = (yield date, signal)

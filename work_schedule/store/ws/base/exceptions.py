@@ -1,6 +1,8 @@
 from functools import wraps
 from typing import Type
 
+from asyncpg import UniqueViolationError
+from icecream import ic
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
 
@@ -57,7 +59,7 @@ def exception_handler(
         async def wrapper(self, *args, **kwargs):
             try:
                 return await func(self, *args, **kwargs)
-            except (IntegrityError, NoResultFound) as e:
+            except (IntegrityError, NoResultFound, UniqueViolationError) as e:
                 self.logger.warning(str(e))
                 if "duplicate key value violates unique constraint" in str(e):
                     raise duplicate(exception=e)

@@ -16,7 +16,9 @@ class CombinedEmployeesWorkPlan:
         self.employee_1 = employee_1
         self.employee_2 = employee_2
 
-    def get_schedule(self, start: datetime = datetime.now(), end: datetime = datetime.now()) -> dict[DATE, SIGN]:
+    def get_schedule(
+        self, start: datetime = datetime.now(), end: datetime = datetime.now()
+    ) -> dict[DATE, SIGN]:
         """Возвращает расписание работы сотрудников."""
         self.__create_employee_work_plan(start, end)
         return self.__employee_work_plan
@@ -29,8 +31,10 @@ class CombinedEmployeesWorkPlan:
         self.__employee_work_plan = defaultdict(dict)
         self.__merge_unused_employees(start, end)
 
-        for (date_1, name_1), (_, name_2) in zip(self.employee_1.get_schedule(start, end).items(),
-                                                 self.employee_2.get_schedule(start, end).items()):
+        for (date_1, name_1), (_, name_2) in zip(
+            self.employee_1.get_schedule(start, end).items(),
+            self.employee_2.get_schedule(start, end).items(),
+        ):
             temp = {self.employee_1.name: name_1}
             if name_1 != name_2:
                 if name_1 in [SIGNAL_WEEKEND]:
@@ -57,10 +61,10 @@ class CombinedEmployeesWorkPlan:
     def __merge_unused_employees(self, start: datetime, end: datetime):
         self.__unused_employees = {
             date_1: {**values_1, **values_2}
-            for (date_1, values_1), (date_2, values_2), in zip(self.employee_1.get_unused_employees(start, end).items(),
-                                                               self.employee_2.get_unused_employees(start, end).items(),
-                                                               )
-
+            for (date_1, values_1), (date_2, values_2), in zip(
+                self.employee_1.get_unused_employees(start, end).items(),
+                self.employee_2.get_unused_employees(start, end).items(),
+            )
         }
 
     def __removing_duplicates_from_unused(self, date: str):

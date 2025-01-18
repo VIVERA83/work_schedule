@@ -32,7 +32,7 @@ class BaseDB:
         smtp = text(f"""SELECT * FROM brands WHERE id = {brand_id}""")
         print(type(smtp))
         result = await self.db.query_execute(smtp)
-        print(1,result)
+        print(1, result)
         return DriverModel(**result.mappings().one())
 
     # def get_by_id(self, id_: int) -> Union[dict, dataclass]:
@@ -49,9 +49,10 @@ class BaseDB:
     #     except AttributeError:
     #         return result
 
-    def get_by_filter(self, field_name: str, field_value: ANY_TYPE = None) -> list[dict]:
-        """Вывод данных по значению поля.
-        """
+    def get_by_filter(
+        self, field_name: str, field_value: ANY_TYPE = None
+    ) -> list[dict]:
+        """Вывод данных по значению поля."""
         result = []
         for item in self.db:
             value = item.get(field_name, None)

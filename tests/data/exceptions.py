@@ -2,6 +2,7 @@ class DBException(Exception):
     """
     Базовый класс для всех исключений, создаваемых этим модулем.
     """
+
     message = "Ошибка базы данных"
 
     def __init__(self, message: str = None):

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from icecream import ic
 
+from api.base.schemes import ID
 from api.driver.schemes import DriverCreateSchema, DriverSchema, DriverUpdateSchema
 from core.lifespan import db
 
@@ -13,7 +13,7 @@ driver_route = APIRouter(prefix="/driver", tags=["DRIVER"])
     description="Получить данные по водителю.",
     response_model=DriverSchema,
 )
-async def get(id_: int):
+async def get(id_: ID):
     return await db.driver.get_by_id(id_)
 
 
@@ -23,8 +23,8 @@ async def get(id_: int):
     description="Добавить водителя.",
     response_model=DriverSchema,
 )
-async def create(driver: DriverCreateSchema):
-    return await db.driver.create(**driver.model_dump())
+async def create(data: DriverCreateSchema):
+    return await db.driver.create(**data.model_dump())
 
 
 @driver_route.put(
@@ -33,8 +33,8 @@ async def create(driver: DriverCreateSchema):
     description="Обновить водителя.",
     response_model=DriverSchema,
 )
-async def update(driver: DriverUpdateSchema):
-    return await db.driver.update(id_=driver.id, **driver.model_dump(exclude={"id"}))
+async def update(data: DriverUpdateSchema):
+    return await db.driver.update(id_=data.id, **data.model_dump(exclude={"id"}))
 
 
 @driver_route.delete(

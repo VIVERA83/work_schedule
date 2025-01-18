@@ -2,10 +2,20 @@ from collections import defaultdict
 
 from tests.schedule_maker.data import date_06_01_2025, date_17_01_2025
 from tests.schedule_maker.test_combined_empoyees_work_plan import employee_3, employee_4
-from tests.schedule_maker.test_shedule_manager.test_shedule_manager import employee_1, employee_2
+from tests.schedule_maker.test_shedule_manager.test_shedule_manager import (
+    employee_1,
+    employee_2,
+)
 from work_schedule.store.excel.excel import Excel
-from work_schedule.store.excel.utils import orange_fill, red_fill, green_fill, black_fill
-from work_schedule.store.scheduler.combined_employees_work_plan import CombinedEmployeesWorkPlan
+from work_schedule.store.excel.utils import (
+    orange_fill,
+    red_fill,
+    green_fill,
+    black_fill,
+)
+from work_schedule.store.scheduler.combined_employees_work_plan import (
+    CombinedEmployeesWorkPlan,
+)
 from work_schedule.store.scheduler.schedule_manager import ScheduleManager
 from icecream import ic
 
@@ -15,7 +25,7 @@ ic.includeContext = True
 combined_employees_work_plan_1 = CombinedEmployeesWorkPlan(employee_1, employee_2)
 combined_employees_work_plan_2 = CombinedEmployeesWorkPlan(employee_3, employee_4)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     excel = Excel("test.xlsx")
     manager = ScheduleManager()
 
@@ -46,21 +56,23 @@ if __name__ == '__main__':
             else:
                 statistic["Общий наряд"][date] += 1
 
-
     ic(statistic)
     for name, values in car_rows.items():
         excel.add_row([name, *values])
     # 3 служебная информация
     excel.add_row([])
-    excel.add_color_to_row_cells(excel.sheet.max_row + 1, [black_fill for _ in range(len(title))])
+    excel.add_color_to_row_cells(
+        excel.sheet.max_row + 1, [black_fill for _ in range(len(title))]
+    )
     for name, values in statistic.items():
         excel.add_row([name, *values.values()])
-        excel.add_color_to_row_cells(excel.sheet.max_row,
-                                     [orange_fill,
-                                         *[red_fill if value  else green_fill
-                                             for value in values.values()
-                                         ]
-                                     ])
+        excel.add_color_to_row_cells(
+            excel.sheet.max_row,
+            [
+                orange_fill,
+                *[red_fill if value else green_fill for value in values.values()],
+            ],
+        )
 
     # сохранение
 

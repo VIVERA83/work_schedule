@@ -1,7 +1,9 @@
 from collections import defaultdict
 from datetime import datetime
 
-from work_schedule.store.scheduler.combined_employees_work_plan import CombinedEmployeesWorkPlan
+from work_schedule.store.scheduler.combined_employees_work_plan import (
+    CombinedEmployeesWorkPlan,
+)
 from work_schedule.store.scheduler.utils import DATE, SIGN
 
 
@@ -11,14 +13,18 @@ class ScheduleManager:
     def __init__(self):
         self.__combined_employees_work_plans = {}
 
-    def get_schedule(self, start: datetime = datetime.now(), end: datetime = datetime.now()) -> dict[DATE, SIGN]:
+    def get_schedule(
+        self, start: datetime = datetime.now(), end: datetime = datetime.now()
+    ) -> dict[DATE, SIGN]:
         """Возвращает расписание сотрудников."""
         total_plan = defaultdict(dict)
         for plan in self.__combined_employees_work_plans.values():
-            for date, employee in plan.get_schedule(start,end).items():
+            for date, employee in plan.get_schedule(start, end).items():
                 total_plan[date].update(**employee)
         return total_plan
 
-    def add_combined_employees_work_plan(self, employee: "CombinedEmployeesWorkPlan") -> None:
+    def add_combined_employees_work_plan(
+        self, employee: "CombinedEmployeesWorkPlan"
+    ) -> None:
         """Добавить объединенный график работы сотрудников."""
         self.__combined_employees_work_plans[employee.name] = employee

@@ -63,7 +63,7 @@ class PostgresAccessor:
 
     @staticmethod
     def get_query_select_by_fields(
-            select_field: Union[MappedColumn, Literal["*"]], *select_fields: MappedColumn
+        select_field: Union[MappedColumn, Literal["*"]], *select_fields: MappedColumn
     ) -> Query:
         return select(select_field, *select_fields)
 

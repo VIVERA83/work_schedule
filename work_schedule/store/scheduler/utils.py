@@ -9,14 +9,13 @@ SIGN = Literal[SIGNAL_WEEKEND, SIGNAL_WORK]  # noqa
 
 
 def timetable_work(
-        start: datetime = datetime.now(),
-        end: datetime = datetime.now(),
-        is_working: bool = True,
-        what_day: int = 1,
-        work_days: int = 4,
-        weekend_days: int = 2,
-        date_format: str = DATE_FORMAT
-
+    start: datetime = datetime.now(),
+    end: datetime = datetime.now(),
+    is_working: bool = True,
+    what_day: int = 1,
+    work_days: int = 4,
+    weekend_days: int = 2,
+    date_format: str = DATE_FORMAT,
 ) -> dict[DATE, SIGN]:
     """Возвращает расписание работы.
 
@@ -53,18 +52,21 @@ def timetable_work(
             is_working = not is_working
         work_day_number = work_day_number + 1 if is_working else 0
         weekend_day_number = weekend_day_number + 1 if not is_working else 0
-        result[start.date().strftime(date_format)] = SIGNAL_WORK if is_working else SIGNAL_WEEKEND
+        result[start.date().strftime(date_format)] = (
+            SIGNAL_WORK if is_working else SIGNAL_WEEKEND
+        )
         start += timedelta(days=1)
     return result
 
 
-def is_working_day(schedule_start_date: datetime,
-                   work_days: int,
-                   weekend_days: int,
-                   date: datetime = datetime.now(),
-                   is_working: bool = True,
-                   what_day: int = 1,
-                   ) -> tuple[bool, int]:
+def is_working_day(
+    schedule_start_date: datetime,
+    work_days: int,
+    weekend_days: int,
+    date: datetime = datetime.now(),
+    is_working: bool = True,
+    what_day: int = 1,
+) -> tuple[bool, int]:
     """Проверка даты на рабочий день, и какой день счету работает(отдыхает).
 
     Считывается, что дата рабочего дня равна дате начала расписания.
@@ -91,15 +93,14 @@ def is_working_day(schedule_start_date: datetime,
 
 
 def get_timetable_period(
-        schedule_start_date: datetime,
-        work_days: int,
-        weekend_days: int,
-        is_working: bool,
-        what_day: int,
-        start_date: datetime,
-        end_date: datetime,
-        date_format: str = DATE_FORMAT
-
+    schedule_start_date: datetime,
+    work_days: int,
+    weekend_days: int,
+    is_working: bool,
+    what_day: int,
+    start_date: datetime,
+    end_date: datetime,
+    date_format: str = DATE_FORMAT,
 ):
     """Получить расписание работы за период.
 
@@ -132,8 +133,7 @@ def get_timetable_period(
         what_day=day,
         work_days=work_days,
         weekend_days=weekend_days,
-        date_format=date_format
-
+        date_format=date_format,
     )
 
 
@@ -144,19 +144,20 @@ def date_subtraction(date_1: datetime, date_2: datetime) -> int:
     :param date_2: Дата, которую вычитаем
     :return int: Разность дней.
     """
-    return (datetime(year=date_1.year, month=date_1.month, day=date_1.day) -
-            datetime(year=date_2.year, month=date_2.month, day=date_2.day)).days
+    return (
+        datetime(year=date_1.year, month=date_1.month, day=date_1.day)
+        - datetime(year=date_2.year, month=date_2.month, day=date_2.day)
+    ).days
 
 
 def generator_timetable_work(
-        start: datetime = datetime.now(),
-        end: datetime = datetime.now(),
-        is_working: bool = True,
-        what_day: int = 1,
-        work_days: int = 4,
-        weekend_days: int = 2,
-        date_format: str = DATE_FORMAT
-
+    start: datetime = datetime.now(),
+    end: datetime = datetime.now(),
+    is_working: bool = True,
+    what_day: int = 1,
+    work_days: int = 4,
+    weekend_days: int = 2,
+    date_format: str = DATE_FORMAT,
 ) -> Generator[tuple[DATE, SIGN], None, None]:
     """Генератор расписание работы.
 
@@ -192,19 +193,21 @@ def generator_timetable_work(
             is_working = not is_working
         work_day_number = work_day_number + 1 if is_working else 0
         weekend_day_number = weekend_day_number + 1 if not is_working else 0
-        yield start.date().strftime(date_format), SIGNAL_WORK if is_working else SIGNAL_WEEKEND
+        yield start.date().strftime(date_format), (
+            SIGNAL_WORK if is_working else SIGNAL_WEEKEND
+        )
         start += timedelta(days=1)
 
 
 def generator_timetable_period(
-        schedule_start_date: datetime,
-        work_days: int,
-        weekend_days: int,
-        is_working: bool,
-        what_day: int,
-        start_date: datetime,
-        end_date: datetime,
-        date_format: str = DATE_FORMAT
+    schedule_start_date: datetime,
+    work_days: int,
+    weekend_days: int,
+    is_working: bool,
+    what_day: int,
+    start_date: datetime,
+    end_date: datetime,
+    date_format: str = DATE_FORMAT,
 ) -> Generator[tuple[DATE, SIGN], None, None]:
     """Генератор расписание работы за период.
 
@@ -241,7 +244,9 @@ def generator_timetable_period(
     )
 
 
-def validate_make_date(schedule_start_date: datetime, start_date: datetime, end_date: datetime):
+def validate_make_date(
+    schedule_start_date: datetime, start_date: datetime, end_date: datetime
+):
     """Проверка корректности введенных дат.
 
     Дата начало периода должна быть в границах даты начала расписания и даты окончания периода
@@ -253,20 +258,18 @@ def validate_make_date(schedule_start_date: datetime, start_date: datetime, end_
     :param end_date: Дата окончания период.
 
     """
-    start_date = datetime(year=start_date.year, month=start_date.month, day=start_date.day)
+    start_date = datetime(
+        year=start_date.year, month=start_date.month, day=start_date.day
+    )
     end_date = datetime(year=end_date.year, month=end_date.month, day=end_date.day)
     err_msg = "\n"
     index = 0
     if start_date < schedule_start_date:
         index += 1
-        err_msg += (
-            f"{index}. Значение start_date должно быть больше или равно schedule_start_date.\n"
-        )
+        err_msg += f"{index}. Значение start_date должно быть больше или равно schedule_start_date.\n"
     if end_date < schedule_start_date:
         index += 1
-        err_msg += (
-            f"{index}. Значение end_date должно быть больше или равно schedule_start_date\n"
-        )
+        err_msg += f"{index}. Значение end_date должно быть больше или равно schedule_start_date\n"
     if start_date > end_date:
         index += 1
         err_msg += (

@@ -17,7 +17,7 @@ from work_schedule.core.settings import PostgresSettings
 
 config = context.config
 
-settings = PostgresSettings() # noqa
+settings = PostgresSettings()  # noqa
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 

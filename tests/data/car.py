@@ -13,8 +13,9 @@ data = [
         "name": "MAN TGS А777НН198",
         "car_number": "А777НН198",
         "car_model": "MAN TGS",
-    }
+    },
 ]
+
 
 class CarDB(BaseDB):
     class Meta:

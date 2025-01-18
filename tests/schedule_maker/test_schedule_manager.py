@@ -2,65 +2,93 @@ from datetime import timedelta, datetime
 
 from icecream import ic
 
-from tests.schedule_maker.data import driver_0_id, driver_0_s, car_id_0, car_0_s, date_06_01_2025, date_10_01_2025, \
-    merged_schedule, driver_1_s, driver_1_id, date_17_01_2025, today_1, car_0_name
+from tests.schedule_maker.data import (
+    driver_0_id,
+    driver_0_s,
+    car_id_0,
+    car_0_s,
+    date_06_01_2025,
+    date_10_01_2025,
+    merged_schedule,
+    driver_1_s,
+    driver_1_id,
+    date_17_01_2025,
+    today_1,
+    car_0_name,
+)
 from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
+
+
 class ScheduleManager:
 
-    def __init__(self,
-                 driver_schedules: dict[int, WorkerSchedule],
-                 car_schedules: dict[int, WorkerSchedule],
-                 ) -> None:
+    def __init__(
+        self,
+        driver_schedules: dict[int, WorkerSchedule],
+        car_schedules: dict[int, WorkerSchedule],
+    ) -> None:
         self.driver_schedules = driver_schedules
         self.car_schedules = car_schedules
 
-    def _get_schedule(self,
-                      id_: int,
-                      is_driver: bool) -> WorkerSchedule:
-        if schedule := self.driver_schedules.get(id_, None) if is_driver else self.car_schedules.get(id_, None):
+    def _get_schedule(self, id_: int, is_driver: bool) -> WorkerSchedule:
+        if schedule := (
+            self.driver_schedules.get(id_, None)
+            if is_driver
+            else self.car_schedules.get(id_, None)
+        ):
             return schedule
         error_msg = f"Не найдено расписание для {'Водителя' if is_driver else 'Автомобиля'} с id = {id_}"
         raise ValueError(error_msg)
 
-    def get_driver_schedule(self, id_: int, ) -> WorkerSchedule:
+    def get_driver_schedule(
+        self,
+        id_: int,
+    ) -> WorkerSchedule:
         return self._get_schedule(id_, is_driver=True)
 
-    def get_car_schedule(self, id_: int, ) -> WorkerSchedule:
+    def get_car_schedule(
+        self,
+        id_: int,
+    ) -> WorkerSchedule:
         return self._get_schedule(id_, is_driver=False)
 
-    def merge_driver_and_car_schedule(self,
-                                      driver_id: int,
-                                      car_id: int,
-                                      start_date: datetime,
-                                      end_date: datetime,
-                                      ) -> list[str]:
+    def merge_driver_and_car_schedule(
+        self,
+        driver_id: int,
+        car_id: int,
+        start_date: datetime,
+        end_date: datetime,
+    ) -> list[str]:
         car_schedule = self.get_car_schedule(car_id)
         driver_schedule = self.get_driver_schedule(driver_id)
         timetable = []
-        for car, driver in zip(car_schedule.make_schedule(start_date, end_date).items(),
-                               driver_schedule.make_schedule(start_date, end_date).items()):
+        for car, driver in zip(
+            car_schedule.make_schedule(start_date, end_date).items(),
+            driver_schedule.make_schedule(start_date, end_date).items(),
+        ):
             if car == driver:
                 timetable.append(driver_schedule.name)
             else:
                 timetable.append(car[1])
         return timetable
 
-    def update_driver_and_car_schedule(self,
-                                       driver_id: int,
-                                       car_id: int,
-                                       start_date: datetime,
-                                       end_date: datetime,
-                                       timetable: dict[str, str],
-                                       ) -> dict[str, str]:
+    def update_driver_and_car_schedule(
+        self,
+        driver_id: int,
+        car_id: int,
+        start_date: datetime,
+        end_date: datetime,
+        timetable: dict[str, str],
+    ) -> dict[str, str]:
         car_schedule = self.get_car_schedule(car_id)
         driver_schedule = self.get_driver_schedule(driver_id)
-        for car, driver, day in zip(car_schedule.make_schedule(start_date, end_date).items(),
-                               driver_schedule.make_schedule(start_date, end_date).items(),
-                               timetable.copy().items()):
+        for car, driver, day in zip(
+            car_schedule.make_schedule(start_date, end_date).items(),
+            driver_schedule.make_schedule(start_date, end_date).items(),
+            timetable.copy().items(),
+        ):
             if car == driver == day:
                 timetable[day[0]] = driver_schedule.name
         return timetable
-
 
 
 def test_schedule_manager():
@@ -78,14 +106,10 @@ def test_schedule_manager():
     }
     schedule = car_schedule.make_schedule(today_1, today_1 + timedelta(days=10))
 
-
     for driver_s in relationship[car_id_0]:
-            schedule = driver_s.make_schedule(date_10_01_2025, date_17_01_2025)
+        schedule = driver_s.make_schedule(date_10_01_2025, date_17_01_2025)
 
-            ic(schedule)
-
-
-
+        ic(schedule)
 
     # driver_schedules = {
     #     driver_0_id: driver_0_s,
@@ -99,9 +123,6 @@ def test_schedule_manager():
     #     driver_schedules=driver_schedules,
     #     car_schedules=car_schedules,
     # )
-
-
-
 
     # merged = manager.merge_driver_and_car_schedule(driver_0_id, car_id_0, date_06_01_2025, date_10_01_2025)
     # assert merged_schedule == merged
@@ -123,6 +144,6 @@ def test_schedule_manager():
     # ic(driver_1_s.make(date_06_01_2025, date_10_01_2025))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # TODO  остановился тут
     test_schedule_manager()
