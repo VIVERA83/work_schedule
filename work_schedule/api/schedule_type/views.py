@@ -34,7 +34,7 @@ endpoints = {
 
 schedule_type_route = BaseRoute(
     prefix="/schedule_type",
-    tags=["schedule_type"],
+    tags=["SCHEDULE TYPE"],
     db=db.schedule_type,
     endpoints=endpoints,
 )

@@ -5,4 +5,3 @@ from store.ws.models import ScheduleTypeModel
 class ScheduleTypeAccessor(BaseAccessor):
     class Meta:
         model = ScheduleTypeModel
-        ex = []

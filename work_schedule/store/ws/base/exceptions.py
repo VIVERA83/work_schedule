@@ -2,7 +2,6 @@ from functools import wraps
 from typing import Type
 
 from asyncpg import UniqueViolationError
-from icecream import ic
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
 
@@ -47,34 +46,3 @@ class NotFoundException(ExceptionBase):
 class ForeignKeyException(ExceptionBase):
     args = ("Не верно указана связь с таблицей.",)
     code = 400
-
-
-def exception_handler(
-    not_found: Type[ExceptionBase] = NotFoundException,
-    duplicate: Type[ExceptionBase] = DuplicateException,
-    foreign_key: Type[ExceptionBase] = ForeignKeyException,
-):
-    def inner(func):
-        @wraps(func)
-        async def wrapper(self, *args, **kwargs):
-            try:
-                return await func(self, *args, **kwargs)
-            except (IntegrityError, NoResultFound, UniqueViolationError) as e:
-                self.logger.warning(str(e))
-                if "duplicate key value violates unique constraint" in str(e):
-                    raise duplicate(exception=e)
-                if "violates foreign key constraint" in str(e):
-                    raise foreign_key(exception=e)
-                raise not_found(exception=e)
-            except IOError as e:
-                self.logger.error(str(e))
-                if e.errno == 111:
-                    raise DataBaseConnectionException(exception=e)
-                raise DataBaseUnknownException(exception=e)
-            except Exception as e:
-                self.logger.error(str(e))
-                raise DataBaseUnknownException(exception=e)
-
-        return wrapper
-
-    return inner
