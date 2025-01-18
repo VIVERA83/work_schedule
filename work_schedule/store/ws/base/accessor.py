@@ -5,7 +5,6 @@ from uuid import UUID
 
 from asyncpg import UniqueViolationError
 from sqlalchemy.exc import IntegrityError, NoResultFound
-
 from store.db.postgres.accessor import PostgresAccessor
 from store.db.postgres.types import Model
 from store.ws.base.exceptions import (

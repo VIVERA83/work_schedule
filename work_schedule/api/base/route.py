@@ -1,21 +1,22 @@
 from typing import Any
 
+from api.base.types import EndpointType
 from fastapi import APIRouter
 from store.ws.base.accessor import BaseAccessor
 
 
 class BaseRoute(APIRouter):
     def __init__(
-        self, prefix: str, tags: list[str], db: BaseAccessor, endpoints: dict[str, Any]
+        self, prefix: str, tags: list[str], db: BaseAccessor, endpoints: EndpointType
     ):
         super().__init__(prefix=prefix, tags=tags)
         self.db = db
         self.__add_api_route(endpoints)
 
-    def __add_api_route(self, endpoints: dict[str, Any]):
+    def __add_api_route(self, endpoints: EndpointType):
         for endpoint, values in endpoints.items():
-            if func := values.get(endpoint, getattr(self, endpoint, None)):  # noqa
-                func.__annotations__.update(values.get("annotations", {}))  # noqa
+            if func := values.get(endpoint, getattr(self, endpoint, None)):
+                func.__annotations__.update(values.get("annotations", {}))
                 self.add_api_route(
                     methods=values.get("methods", []),
                     path=values["path"] if values.get("path") else "",

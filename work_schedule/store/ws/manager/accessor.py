@@ -9,7 +9,7 @@ class ManagerAccessor(BaseAccessor):
     ) -> tuple[DriverModel, WorkScheduleHistoryModel]:
         driver = DriverModel(name=name)
         work_schedule_history = WorkScheduleHistoryModel(
-            driver=driver,
+            # driver=driver,
             is_working=is_working,
             id_schedule_type=id_schedule_type,
             what_day=what_day,
