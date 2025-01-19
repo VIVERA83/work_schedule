@@ -1,8 +1,10 @@
+import re
 from functools import wraps
 from typing import Type
 
-from asyncpg import UniqueViolationError
 from sqlalchemy.exc import IntegrityError, NoResultFound
+
+pattern = r'\((.*?)\)'
 
 
 class ExceptionBase(Exception):
@@ -37,6 +39,13 @@ class DuplicateException(ExceptionBase):
     args = ("Повторяющие значение в таблице. Придумайте другое значение.",)
     code = 400
 
+    def __init__(self, *args, code: int = None, exception: Exception = None):
+        super().__init__(*args, code=code, exception=exception)
+        matches = re.findall(pattern, self.exception.args[0])
+        self.args = (f"Вы пытаетесь вставить значение в базу данных,"
+                     f" которое уже существует и нарушает ограничение уникальности."
+                     f" Введите другое значение: {matches[1]}.",)
+
 
 class NotFoundException(ExceptionBase):
     args = ("Запись не найдена.",)
@@ -46,3 +55,39 @@ class NotFoundException(ExceptionBase):
 class ForeignKeyException(ExceptionBase):
     args = ("Не верно указана связь с таблицей.",)
     code = 400
+
+    def __init__(self, *args, code: int = None, exception: Exception = None):
+        super().__init__(*args, code=code, exception=exception)
+        matches = re.findall(pattern, self.exception.args[0])
+        self.args = (f"Нет записи с указанным {matches[1]}: {matches[2]}",)
+
+
+def exception_handler(
+        not_found: Type[ExceptionBase] = NotFoundException,
+        duplicate: Type[ExceptionBase] = DuplicateException,
+        foreign_key: Type[ExceptionBase] = ForeignKeyException,
+):
+    def inner(func):
+        @wraps(func)
+        async def wrapper(self, *args, **kwargs):
+            try:
+                return await func(self, *args, **kwargs)
+            except (IntegrityError, NoResultFound) as e:
+                self.logger.warning(str(e))
+                if "duplicate key value violates unique constraint" in str(e):
+                    raise duplicate(exception=e)
+                if "violates foreign key constraint" in str(e):
+                    raise foreign_key(exception=e)
+                raise not_found(exception=e)
+            except IOError as e:
+                self.logger.error(str(e))
+                if e.errno == 111:
+                    raise DataBaseConnectionException(exception=e)
+                raise DataBaseUnknownException(exception=e)
+            except Exception as e:
+                self.logger.error(str(e))
+                raise DataBaseUnknownException(exception=e)
+
+        return wrapper
+
+    return inner

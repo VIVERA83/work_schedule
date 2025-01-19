@@ -56,8 +56,8 @@ class BaseAccessor:
             else ForeignKeyException
         )
 
-    def __exception_handler(
-        self: Callable[_PWrapped, _RWrapped]
+    def _exception_handler(
+            self: Callable[_PWrapped, _RWrapped]
     ) -> Callable[_PWrapped, _RWrapped]:
 
         @wraps(self)
@@ -86,7 +86,7 @@ class BaseAccessor:
     def accessor(self) -> "PostgresAccessor":
         return self.__accessor
 
-    @__exception_handler  # noqa
+    @_exception_handler  # noqa
     async def create(self, **fields: dict) -> Model:
         model = self.Meta.model(**fields)
         async with self.accessor.session as session:
@@ -95,7 +95,7 @@ class BaseAccessor:
         self.logger.info(f"Создан {self.Meta.model.__name__} с полями {fields}")
         return model
 
-    @__exception_handler  # noqa
+    @_exception_handler  # noqa
     async def update(self, id_: int, **fields: dict) -> Model:
         smtp = (
             self.accessor.get_query_update(self.Meta.model)
@@ -107,7 +107,7 @@ class BaseAccessor:
         self.logger.info(f"Обновлен {self.Meta.model.__name__} с id {id_}")
         return result.scalars().one()
 
-    @__exception_handler  # noqa
+    @_exception_handler  # noqa
     async def delete_by_id(self, id_: int | str | UUID) -> Model:
         smtp = (
             self.accessor.get_query_delete(self.Meta.model)
@@ -118,7 +118,7 @@ class BaseAccessor:
         self.logger.info(f"Удален {self.Meta.model.__name__} с id {id_}")
         return result.scalars().one()
 
-    @__exception_handler  # noqa
+    @_exception_handler  # noqa
     async def get_by_id(self, id_: int | str | UUID) -> Model:
         smtp = self.accessor.get_query_select_by_fields("*").filter(
             self.model.id == id_  # noqa

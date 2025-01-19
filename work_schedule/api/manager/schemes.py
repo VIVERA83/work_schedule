@@ -40,3 +40,12 @@ class CreateSchema(BaseModel):
 class FullDataDriverSchema(BaseModel):
     driver: DriverSchema
     work_schedule_history: WorkScheduleHistorySchema
+
+
+class AssignCarDriverSchema(BaseModel):
+    driver_id: int
+    car_id: int
+
+
+class AssignCarDriverCreateSchema(AssignCarDriverSchema):
+    ...
