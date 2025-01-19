@@ -61,7 +61,7 @@ class WorkScheduleHistoryModel(Base, BaseModel):
         ForeignKey("schedule_types.id", ondelete="CASCADE"), nullable=True
     )
 
-    date: Mapped[DATETIME] = mapped_column(
+    date: Mapped[datetime] = mapped_column(
         TIMESTAMP, server_default=func.current_timestamp(), nullable=True
     )
     is_working: Mapped[bool] = mapped_column(default=True)

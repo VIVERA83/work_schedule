@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from icecream import ic
 from store.ws.base.accessor import BaseAccessor
 from store.ws.models import DriverModel, WorkScheduleHistoryModel
 

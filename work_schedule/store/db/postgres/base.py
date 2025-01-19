@@ -21,7 +21,7 @@ class Base(DeclarativeBase):
 
 @dataclass
 class BaseModel:
-    id: Mapped[INTEGER] = mapped_column(
+    id: Mapped[int] = mapped_column(
         INTEGER,
         primary_key=True,
         autoincrement=True,
