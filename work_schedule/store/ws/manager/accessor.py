@@ -1,12 +1,14 @@
 from datetime import datetime
 
+from sqlalchemy import RowMapping
 from store.ws.base.accessor import BaseAccessor
 from store.ws.base.exceptions import exception_handler
 from store.ws.manager.exceptions import ForeignKeyException
+from store.ws.manager.sql import sql_query_current_worker_schedule
 from store.ws.models import (
+    CarDriverAssociationModel,
     DriverModel,
     WorkScheduleHistoryModel,
-    CarDriverAssociationModel,
 )
 
 
@@ -61,3 +63,10 @@ class ManagerAccessor(BaseAccessor):
             session.add(assign_car)
             await session.commit()
         return assign_car
+
+    @exception_handler()
+    async def get_current_worker_schedule_by_id(self, driver_id: int) -> RowMapping:
+        smtp = self.accessor.get_query_from_text(sql_query_current_worker_schedule)
+        async with self.accessor.session as session:
+            result = await session.execute(smtp, {"driver_id": driver_id})
+        return result.mappings().one()

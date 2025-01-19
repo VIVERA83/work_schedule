@@ -1,12 +1,12 @@
 from api.base.route import BaseView
 from api.base.schemes import ID
 from api.car.schemes import CarCreateSchema, CarSchema, CarUpdateSchema
-from core.lifespan import db
+from core.lifespan import store
 
 
 class CarViews(BaseView):
     class Meta:
-        db = db.car
+        db = store.car
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],

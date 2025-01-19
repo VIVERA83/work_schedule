@@ -1,12 +1,12 @@
 from api.base.route import BaseView
 from api.base.schemes import ID
 from api.driver.schemes import DriverCreateSchema, DriverSchema, DriverUpdateSchema
-from core.lifespan import db
+from core.lifespan import store
 
 
 class DriverViews(BaseView):
     class Meta:
-        db = db.driver
+        db = store.driver
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],

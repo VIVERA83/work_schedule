@@ -5,12 +5,12 @@ from api.schedule_type.schemes import (
     ScheduleTypeSchema,
     ScheduleTypeUpdateSchema,
 )
-from core.lifespan import db
+from core.lifespan import store
 
 
 class ScheduleType(BaseView):
     class Meta:
-        db = db.schedule_type
+        db = store.schedule_type
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],

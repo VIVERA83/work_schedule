@@ -5,12 +5,12 @@ from api.work_schedule_history.schemes import (
     WorkScheduleHistorySchema,
     WorkScheduleHistoryUpdateSchema,
 )
-from core.lifespan import db
+from core.lifespan import store
 
 
 class WorkScheduleHistoryViews(BaseView):
     class Meta:
-        db = db.work_schedule_history
+        db = store.work_schedule_history
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],

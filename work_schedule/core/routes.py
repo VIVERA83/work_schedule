@@ -3,6 +3,7 @@ from api.driver.views import DriverViews
 from api.manager.views import ManagerViews
 from api.schedule_type.views import ScheduleType
 from api.work_schedule_history.views import WorkScheduleHistoryViews
+from api.worker_schedule.views import WorkerScheduleViews
 from fastapi import FastAPI
 
 
@@ -16,4 +17,7 @@ def setup_routes(app: FastAPI):
         WorkScheduleHistoryViews(
             prefix="/work_schedule", tags=["WORK SCHEDULE HISTORY"]
         )
+    )
+    app.include_router(
+        WorkerScheduleViews(prefix="/worker_schedule", tags=["WORKER SCHEDULE"])
     )

@@ -1,13 +1,12 @@
-from icecream import ic
-
 from api.base.route import BaseView
 from api.manager.schemes import (
+    AssignCarDriverCreateSchema,
+    AssignCarDriverSchema,
     CreateSchema,
     FullDataDriverSchema,
-    AssignCarDriverSchema,
-    AssignCarDriverCreateSchema,
 )
-from core.lifespan import db
+from core.lifespan import store
+from icecream import ic
 from store.ws.manager.accessor import ManagerAccessor
 
 
@@ -15,7 +14,7 @@ class ManagerViews(BaseView):
     db: ManagerAccessor
 
     class Meta:
-        db = db.manager
+        db = store.manager
         endpoints = {
             "create": {
                 "methods": ["POST"],
