@@ -38,7 +38,7 @@ class BaseAccessor:
             self.model = getattr(self.Meta, "model")
         except AttributeError:
             self.logger.error(f"Не указан класс модели {self.__class__.__name__}")
-            raise AttributeError(f"Не указан класс модели {self.__class__.__name__}")
+            # raise AttributeError(f"Не указан класс модели {self.__class__.__name__}")
 
         self.not_found = (
             self.Meta.not_found

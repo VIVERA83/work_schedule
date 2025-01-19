@@ -2,8 +2,8 @@ from collections import defaultdict
 from datetime import datetime
 
 from icecream import ic
-
 from tests.schedule_maker.data import date_17_01_2025, today_1
+
 from work_schedule.store.scheduler.employee_work_plan import EmployeeWorkPlan
 from work_schedule.store.scheduler.utils import SIGNAL_WEEKEND, SIGNAL_WORK
 from work_schedule.store.scheduler.worker_schedule import WorkerSchedule

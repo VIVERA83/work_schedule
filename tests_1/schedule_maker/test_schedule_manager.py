@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 from icecream import ic
-
 from tests.schedule_maker.data import (
     car_0_name,
     car_0_s,
@@ -16,6 +15,7 @@ from tests.schedule_maker.data import (
     merged_schedule,
     today_1,
 )
+
 from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 
 

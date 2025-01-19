@@ -1,21 +1,41 @@
 from typing import Any
 
-from api.base.types import EndpointType
+from api.base.types import EndpointType, ParamsType
 from fastapi import APIRouter
 from store.ws.base.accessor import BaseAccessor
 
 
-class BaseRoute(APIRouter):
+class BaseView(APIRouter):
+    class Meta:
+        db: BaseAccessor
+        endpoints: EndpointType | dict[str, ParamsType]
+
     def __init__(
-        self, prefix: str, tags: list[str], db: BaseAccessor, endpoints: EndpointType
+        self,
+        prefix: str,
+        tags: list[str],
     ):
         super().__init__(prefix=prefix, tags=tags)
-        self.db = db
-        self.__add_api_route(endpoints)
+        self.__init_meta_class()
+
+    def __init_meta_class(self):
+        try:
+            self.db = getattr(self.Meta, "db")
+        except AttributeError:
+            raise AttributeError(f"Не указан класс БД {self.__class__.__name__}")
+        try:
+            self.endpoints = getattr(self.Meta, "endpoints")
+        except AttributeError:
+            raise AttributeError(
+                f"Не указаны данные для построения API {self.__class__.__name__}"
+            )
+
+        self.__add_api_route(self.Meta.endpoints)
 
     def __add_api_route(self, endpoints: EndpointType):
-        for endpoint, values in endpoints.items():
-            if func := values.get(endpoint, getattr(self, endpoint, None)):
+
+        for func_name, values in endpoints.items():
+            if func := values.get(func_name, getattr(self, func_name, None)):
                 func.__annotations__.update(values.get("annotations", {}))
                 self.add_api_route(
                     methods=values.get("methods", []),

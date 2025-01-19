@@ -1,34 +1,33 @@
-from api.base.route import BaseRoute
+from api.base.route import BaseView
 from api.base.schemes import ID
 from api.car.schemes import CarCreateSchema, CarSchema, CarUpdateSchema
 from core.lifespan import db
 
-car_route = BaseRoute(
-    prefix="/car",
-    tags=["CAR"],
-    db=db.car,
-    endpoints={
-        "get_by_id": {
-            "methods": ["GET"],
-            "path": "/{id_}",
-            "annotations": {"id_": ID},
-            "response_model": CarSchema,
-        },
-        "create": {
-            "methods": ["POST"],
-            "annotations": {"data": CarCreateSchema},
-            "response_model": CarSchema,
-        },
-        "delete_by_id": {
-            "methods": ["DELETE"],
-            "path": "/{id_}",
-            "annotations": {"id_": ID},
-            "response_model": CarSchema,
-        },
-        "update": {
-            "methods": ["PUT"],
-            "annotations": {"data": CarUpdateSchema},
-            "response_model": CarSchema,
-        },
-    },
-)
+
+class CarViews(BaseView):
+    class Meta:
+        db = db.car
+        endpoints = {
+            "get_by_id": {
+                "methods": ["GET"],
+                "path": "/{id_}",
+                "annotations": {"id_": ID},
+                "response_model": CarSchema,
+            },
+            "create": {
+                "methods": ["POST"],
+                "annotations": {"data": CarCreateSchema},
+                "response_model": CarSchema,
+            },
+            "delete_by_id": {
+                "methods": ["DELETE"],
+                "path": "/{id_}",
+                "annotations": {"id_": ID},
+                "response_model": CarSchema,
+            },
+            "update": {
+                "methods": ["PUT"],
+                "annotations": {"data": CarUpdateSchema},
+                "response_model": CarSchema,
+            },
+        }

@@ -1,14 +1,19 @@
-from api.car.views import car_route
-from api.driver.views import driver_route
-from api.schedule_type.views import schedule_type_route
+from api.car.views import CarViews
+from api.driver.views import DriverViews
+from api.manager.views import ManagerViews
+from api.schedule_type.views import ScheduleType
+from api.work_schedule_history.views import WorkScheduleHistoryViews
 from fastapi import FastAPI
-
-from api.work_schedule_history.views import work_schedule_history_route
 
 
 def setup_routes(app: FastAPI):
     """Настройка Роутов приложения."""
-    app.include_router(driver_route)
-    app.include_router(car_route)
-    app.include_router(schedule_type_route)
-    app.include_router(work_schedule_history_route)
+    app.include_router(CarViews(prefix="/car", tags=["CAR"]))
+    app.include_router(DriverViews(prefix="/driver", tags=["DRIVER"]))
+    app.include_router(ManagerViews(prefix="/manager", tags=["MANAGER"]))
+    app.include_router(ScheduleType(prefix="/schedule_type", tags=["SCHEDULE TYPE"]))
+    app.include_router(
+        WorkScheduleHistoryViews(
+            prefix="/work_schedule", tags=["WORK SCHEDULE HISTORY"]
+        )
+    )
