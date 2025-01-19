@@ -45,6 +45,8 @@ class BaseView(APIRouter):
                     description=values.get("description", ""),
                     response_model=values.get("response_model", None),
                 )
+            else:
+                raise AttributeError(f"Не указан метод {func_name}")
 
     async def get_by_id(self, id_: Any):
         return await self.db.get_by_id(id_)

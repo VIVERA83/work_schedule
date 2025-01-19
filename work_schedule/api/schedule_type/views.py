@@ -9,8 +9,6 @@ from core.lifespan import db
 
 
 class ScheduleType(BaseView):
-    # prefix="/schedule_type",
-    # tags=["SCHEDULE TYPE"],
     class Meta:
         db = db.schedule_type
         endpoints = {

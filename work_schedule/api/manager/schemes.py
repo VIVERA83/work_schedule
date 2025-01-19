@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
-
 from api.driver.schemes import DriverSchema
 from api.work_schedule_history.schemes import WorkScheduleHistorySchema
+from pydantic import BaseModel, Field
 
 
 class CreateSchema(BaseModel):
@@ -14,13 +13,17 @@ class CreateSchema(BaseModel):
         max_length=70,
     )
     id_schedule_type: int = Field(
-        description="идентификатор типа расписания:",
-        examples=["1"],
-        gt=0
+        description="идентификатор типа расписания:", examples=["1"], gt=0
     )
     date: datetime = Field(
         description="дата начала графика, по умолчанию текущая дата",
-        examples=[datetime(year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)],
+        examples=[
+            datetime(
+                year=datetime.now().year,
+                month=datetime.now().month,
+                day=datetime.now().day,
+            )
+        ],
         default=None,
     )
     is_working: bool = Field(

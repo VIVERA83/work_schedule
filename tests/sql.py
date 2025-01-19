@@ -1,4 +1,3 @@
-
 smtp = """WITH par_key AS
           (INSERT INTO work_schedule.driver (name)
           VALUES (:name) RETURNING id)

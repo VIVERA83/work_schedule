@@ -7,12 +7,12 @@ from store.ws.models import DriverModel, WorkScheduleHistoryModel
 class ManagerAccessor(BaseAccessor):
 
     async def create(
-            self,
-            name: str,
-            id_schedule_type: int,
-            is_working: bool,
-            what_day: int,
-            date: datetime,
+        self,
+        name: str,
+        id_schedule_type: int,
+        is_working: bool,
+        what_day: int,
+        date: datetime,
     ):
         async with self.accessor.session as session:
             driver = DriverModel(name=name)
@@ -28,4 +28,3 @@ class ManagerAccessor(BaseAccessor):
             session.add(work_schedule_history)
             await session.commit()
         return driver, work_schedule_history
-

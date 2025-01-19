@@ -1,6 +1,5 @@
 from typing import Any, Callable, Literal, NotRequired, Type, TypedDict
 
-from openpyxl.styles.builtins import total
 from pydantic import BaseModel
 
 
