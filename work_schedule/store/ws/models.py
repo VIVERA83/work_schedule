@@ -62,7 +62,7 @@ class WorkScheduleHistoryModel(Base, BaseModel):
     )
 
     date: Mapped[DATETIME] = mapped_column(
-        TIMESTAMP, default=datetime.now(), server_default=func.current_timestamp()
+        TIMESTAMP, server_default=func.current_timestamp(), nullable=True
     )
     is_working: Mapped[bool] = mapped_column(default=True)
     what_day: Mapped[int] = mapped_column(default=1)
