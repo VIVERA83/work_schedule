@@ -4,7 +4,7 @@ from typing import Type
 
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
-pattern = r'\((.*?)\)'
+pattern = r"\((.*?)\)"
 
 
 class ExceptionBase(Exception):
@@ -42,9 +42,11 @@ class DuplicateException(ExceptionBase):
     def __init__(self, *args, code: int = None, exception: Exception = None):
         super().__init__(*args, code=code, exception=exception)
         matches = re.findall(pattern, self.exception.args[0])
-        self.args = (f"Вы пытаетесь вставить значение в базу данных,"
-                     f" которое уже существует и нарушает ограничение уникальности."
-                     f" Введите другое значение: {matches[1]}.",)
+        self.args = (
+            f"Вы пытаетесь вставить значение в базу данных,"
+            f" которое уже существует и нарушает ограничение уникальности."
+            f" Введите другое значение: {matches[1]}.",
+        )
 
 
 class NotFoundException(ExceptionBase):
@@ -63,9 +65,9 @@ class ForeignKeyException(ExceptionBase):
 
 
 def exception_handler(
-        not_found: Type[ExceptionBase] = NotFoundException,
-        duplicate: Type[ExceptionBase] = DuplicateException,
-        foreign_key: Type[ExceptionBase] = ForeignKeyException,
+    not_found: Type[ExceptionBase] = NotFoundException,
+    duplicate: Type[ExceptionBase] = DuplicateException,
+    foreign_key: Type[ExceptionBase] = ForeignKeyException,
 ):
     def inner(func):
         @wraps(func)

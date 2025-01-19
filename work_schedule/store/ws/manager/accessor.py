@@ -2,21 +2,25 @@ from datetime import datetime
 
 from store.ws.base.accessor import BaseAccessor
 from store.ws.base.exceptions import exception_handler
-from store.ws.manager.exceptions import ForeignKeyException, CarDriverAssociationDuplicateException
-from store.ws.models import DriverModel, WorkScheduleHistoryModel, \
-    CarDriverAssociationModel
+from store.ws.manager.exceptions import ForeignKeyException
+from store.ws.models import (
+    DriverModel,
+    WorkScheduleHistoryModel,
+    CarDriverAssociationModel,
+)
 
 
 class ManagerAccessor(BaseAccessor):
+    """Класс для работы с базой данных."""
 
     @exception_handler(foreign_key=ForeignKeyException)
     async def create(
-            self,
-            name: str,
-            id_schedule_type: int,
-            is_working: bool,
-            what_day: int,
-            date: datetime,
+        self,
+        name: str,
+        id_schedule_type: int,
+        is_working: bool,
+        what_day: int,
+        date: datetime,
     ):
         """Добавление нового водителя в базу данных и создание новой записи в таблице work_schedule_history.
 
@@ -46,7 +50,12 @@ class ManagerAccessor(BaseAccessor):
 
     @exception_handler()
     async def assign_car_driver(self, driver_id: int, car_id: int):
-        """Назначение водителя на автомобиль."""
+        """Назначение водителя на автомобиль.
+
+        :param driver_id: Идентификатор водителя
+        :param car_id: Идентификатор автомобиля
+        :return: CarDriverAssociationModel
+        """
         async with self.accessor.session as session:
             assign_car = CarDriverAssociationModel(driver_id=driver_id, car_id=car_id)
             session.add(assign_car)

@@ -57,7 +57,7 @@ class BaseAccessor:
         )
 
     def _exception_handler(
-            self: Callable[_PWrapped, _RWrapped]
+        self: Callable[_PWrapped, _RWrapped]
     ) -> Callable[_PWrapped, _RWrapped]:
 
         @wraps(self)

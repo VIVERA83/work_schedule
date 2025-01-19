@@ -1,6 +1,6 @@
 import re
 
-pattern = r'\((.*?)\)'
+pattern = r"\((.*?)\)"
 
 string = ':  Key (driver_id)=(0) is not present in table "driver".'
 matches = re.findall(pattern, string)

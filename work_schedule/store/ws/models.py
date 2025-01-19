@@ -16,7 +16,9 @@ from store.db.postgres.base import Base, BaseModel
 class CarDriverAssociationModel(Base, BaseModel):
     __tablename__ = "car_driver_association"
 
-    __table_args__ = (Index("car_driver_association_index", "car_id", "driver_id", unique=True),)
+    __table_args__ = (
+        Index("car_driver_association_index", "car_id", "driver_id", unique=True),
+    )
 
     car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"))
     driver_id: Mapped[int] = mapped_column(ForeignKey("driver.id", ondelete="CASCADE"))
@@ -42,7 +44,9 @@ class DriverModel(Base, BaseModel):
 class ScheduleTypeModel(Base, BaseModel):
     __tablename__ = "schedule_types"
 
-    __table_args__ = (Index("type_index", "name", "work_days", "weekend_days", unique=True),)
+    __table_args__ = (
+        Index("type_index", "name", "work_days", "weekend_days", unique=True),
+    )
 
     name: Mapped[str] = mapped_column()
     work_days: Mapped[int] = mapped_column(CheckConstraint("work_days >= 1"))

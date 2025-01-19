@@ -47,5 +47,4 @@ class AssignCarDriverSchema(BaseModel):
     car_id: int
 
 
-class AssignCarDriverCreateSchema(AssignCarDriverSchema):
-    ...
+class AssignCarDriverCreateSchema(AssignCarDriverSchema): ...
