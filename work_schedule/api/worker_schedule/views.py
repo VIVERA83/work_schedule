@@ -1,7 +1,6 @@
 from api.base.route import BaseView
 from api.worker_schedule.schemes import WorkerScheduleCreateSchema, WorkerScheduleSchema
 from core.lifespan import store
-from icecream import ic
 from store.store import Store
 
 
