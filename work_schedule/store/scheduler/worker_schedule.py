@@ -60,7 +60,7 @@ class WorkerSchedule:
         return wrapper
 
     @__check_make_data  # noqa
-    def make_schedule(
+    def get_schedule(
         self, start_date: datetime, end_date: datetime
     ) -> dict[DATE, SIGN]:
         """Создание расписания по датам.
@@ -82,7 +82,7 @@ class WorkerSchedule:
         )
 
     @__check_make_data  # noqa
-    def make_schedule_generator(
+    def get_schedule_generator(
         self, start_date: datetime, end_date: datetime
     ) -> Generator[tuple[DATE, SIGN], DATE, None]:
         """Генератор расписания по датам.
@@ -118,3 +118,126 @@ class WorkerSchedule:
 
     def __repr__(self) -> str:
         return f"WorkerSchedule(name={self.name}, schedule_start_date={self.schedule_start_date}, work_days={self.work_days}, weekend_days={self.weekend_days}, is_working={self.is_working}, what_day={self.what_day}, date_format={self.date_format})"
+
+
+class Worker:
+    """Работник.
+
+    Работник имеет имя, дату начала расписания, график работы.
+    """
+
+    __worker_schedules: dict[datetime, WorkerSchedule]
+
+    def __init__(
+        self,
+        name: str,
+        schedule_start_date: datetime,
+        work_days: int,
+        weekend_days: int,
+        is_working: bool,
+        what_day: int,
+        date_format: str = DATE_FORMAT,
+    ):
+        self.name = name
+        self.date_format = date_format
+        self.__worker_schedules = {
+            schedule_start_date: WorkerSchedule(
+                name=name,
+                schedule_start_date=schedule_start_date,
+                work_days=work_days,
+                weekend_days=weekend_days,
+                is_working=is_working,
+                what_day=what_day,
+                date_format=date_format,
+            )
+        }
+
+    def add_worker_schedule(
+        self,
+        schedule_start_date: datetime,
+        work_days: int,
+        weekend_days: int,
+        is_working: bool,
+        what_day: int,
+    ):
+        """Добавить рабочее расписание.
+
+        Требуется для корректного построения итогового расписания если
+        в запрашиваемый период происходит смена графика работы.
+        """
+        self.__worker_schedules[schedule_start_date] = WorkerSchedule(
+            name=self.name,
+            schedule_start_date=schedule_start_date,
+            work_days=work_days,
+            weekend_days=weekend_days,
+            is_working=is_working,
+            what_day=what_day,
+            date_format=self.date_format,
+        )
+        self.__worker_schedules = {
+            date: self.__worker_schedules[date]
+            for date in sorted(list(self.__worker_schedules.keys()))
+        }
+
+    def get_schedule(
+        self, start_date: datetime, end_date: datetime
+    ) -> dict[DATE, SIGN]:
+        """Получить расписание.
+
+        Выдается расписание с учетом изменений в графике работы.
+
+        :param start_date: Дата начала период.
+        :param end_date: Дата окончания период.
+        :return: Словарь с расписанием, где ключ - дата (строковое представление даты),
+         значение - одно из сигналов (строковое представление сигнала).
+        """
+        schedule = {}
+        schedule_dates = self.get_closest_dates(start_date, end_date)
+        while schedule_dates:
+            date = schedule_dates.pop(0)
+            if schedule_dates:
+                next_date = schedule_dates[0]
+            else:
+                next_date = end_date
+            schedule.update(
+                self.__worker_schedules[date].get_schedule(start_date, next_date)
+            )
+            start_date = next_date
+        return schedule
+
+    def get_schedule_generator(
+        self, start_date: datetime, end_date: datetime
+    ) -> Generator[tuple[DATE, SIGN], DATE, None]:
+        """Генератор расписания по датам."""
+        schedule_dates = self.get_closest_dates(start_date, end_date)
+        while schedule_dates:
+            date = schedule_dates.pop(0)
+            if schedule_dates:
+                next_date = schedule_dates[0]
+            else:
+                next_date = end_date
+            for data in self.__worker_schedules[date].get_schedule_generator(
+                start_date, next_date
+            ):
+                yield data
+            start_date = next_date
+
+    def get_closest_dates(
+        self, start_date: datetime, end_date: datetime
+    ) -> list[datetime]:
+        """Получить список дат, изменений в расписании.
+
+        :param start_date: Дата начала период.
+        :param end_date: Дата окончания период.
+        :return: Список дат, изменений в расписании.
+        """
+
+        min_date = [list(self.__worker_schedules.keys())[0]]
+        for date in self.__worker_schedules.keys():
+            if start_date >= date:
+                min_date = [date]
+
+        for date in self.__worker_schedules.keys():
+            if min_date[-1] != date and min_date[-1] <= date <= end_date:
+                min_date.append(date)
+        return min_date

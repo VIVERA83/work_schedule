@@ -19,4 +19,4 @@ class ManagerWorkerSchedule:
         """Получение расписания водителя."""
         result = await self.store.manager.get_current_worker_schedule_by_id(id_)
         ic(result)
-        return WorkerSchedule(**result).make_schedule(start_date, end_date)
+        return WorkerSchedule(**result).get_schedule(start_date, end_date)

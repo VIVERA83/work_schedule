@@ -166,23 +166,23 @@ if __name__ == "__main__":
     ic(result.add_combined_employees_work_plan())
 
     iters = zip(
-        work_schedule_driver_1.make_schedule(
+        work_schedule_driver_1.get_schedule(
             today_1,
             date_17_01_2025,
         ).values(),
-        work_schedule_driver_2.make_schedule(
+        work_schedule_driver_2.get_schedule(
             today_1,
             date_17_01_2025,
         ).values(),
-        work_schedule_driver_3.make_schedule(
+        work_schedule_driver_3.get_schedule(
             today_1,
             date_17_01_2025,
         ).values(),
-        work_schedule_car_1.make_schedule(
+        work_schedule_car_1.get_schedule(
             today_1,
             date_17_01_2025,
         ).values(),
-        work_schedule_car_2.make_schedule(
+        work_schedule_car_2.get_schedule(
             today_1,
             date_17_01_2025,
         ).values(),

@@ -96,9 +96,9 @@ if __name__ == "__main__":
     end = datetime(2025, 1, 31)
     for a in zip(
         employee_1.get_schedule(start, end).items(),
-        new_1["Филатов Александр Алексеевич"][0].make_schedule(start, end).items(),
-        new_1["Миронов Михаил Викторович"][0].make_schedule(start, end).items(),
-        new_1["Яшин Александр Кириллович"][0].make_schedule(start, end).items(),
+        new_1["Филатов Александр Алексеевич"][0].get_schedule(start, end).items(),
+        new_1["Миронов Михаил Викторович"][0].get_schedule(start, end).items(),
+        new_1["Яшин Александр Кириллович"][0].get_schedule(start, end).items(),
         # employee_1.get_unused_employees(start, end).items(),
     ):
         print(

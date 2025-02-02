@@ -1,9 +1,9 @@
 from collections import defaultdict
 from datetime import datetime
-from typing import Generator
+from typing import Generator, Union
 
+from store.scheduler.worker_schedule import Worker, WorkerSchedule
 from work_schedule.store.scheduler.utils import DATE, SIGN, SIGNAL_WORK
-from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 
 
 class EmployeeWorkPlan:
@@ -13,17 +13,19 @@ class EmployeeWorkPlan:
     __unused_employees: dict[DATE, dict[str, SIGNAL_WORK]]
 
     def __init__(
-        self, main_worker_schedule: "WorkerSchedule", *worker_schedule: "WorkerSchedule"
+        self,
+        main_worker: Union["Worker", "WorkerSchedule"],
+        *workers: Union["Worker", "WorkerSchedule"],
     ):
         """
-        :param main_worker_schedule: Рабочее расписание некого оборудования или основного сотрудника,
+        :param main_worker: Рабочее расписание некого оборудования или основного сотрудника,
         на цикле работы которого формируется план. Как пример использования можно посмотреть
         вариант построения работы экипажа машины. В main_worker_schedule можно указать
         дни в которые оборудование, будет находиться на техническом обслуживании.
-        :param worker_schedule: Рабочее расписание сотрудников.
+        :param workers: Рабочее расписание сотрудников.
         """
-        self.__main_worker_schedule = main_worker_schedule
-        self.__workers_schedules = worker_schedule
+        self.__main_worker_schedule = main_worker
+        self.__workers_schedules = workers
 
     @property
     def name(self) -> str:
@@ -49,13 +51,13 @@ class EmployeeWorkPlan:
         self.__unused_employees = defaultdict(dict)
         # Если нет циклов работы сотрудников, то формируется план работы оборудования
         if not self.__workers_schedules:
-            self.__employee_work_plan = self.__main_worker_schedule.make_schedule(
+            self.__employee_work_plan = self.__main_worker_schedule.get_schedule(
                 start, end
             )
             return
 
         works_schedules_gens = self._make_schedule_generators(start, end)
-        main_worker_schedule_gen = self.__main_worker_schedule.make_schedule_generator(
+        main_worker_schedule_gen = self.__main_worker_schedule.get_schedule_generator(
             start, end
         )
         current_worker_id = self.__workers_schedules[0].name
@@ -114,6 +116,6 @@ class EmployeeWorkPlan:
     ) -> dict[str, Generator[tuple[DATE, SIGN], DATE, None]]:
         """Генератор расписания работы сотрудников."""
         return {
-            schedule.name: schedule.make_schedule_generator(start, end)
+            schedule.name: schedule.get_schedule_generator(start, end)
             for schedule in self.__workers_schedules
         }

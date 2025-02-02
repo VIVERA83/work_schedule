@@ -62,8 +62,8 @@ class ScheduleManager:
         driver_schedule = self.get_driver_schedule(driver_id)
         timetable = []
         for car, driver in zip(
-            car_schedule.make_schedule(start_date, end_date).items(),
-            driver_schedule.make_schedule(start_date, end_date).items(),
+            car_schedule.get_schedule(start_date, end_date).items(),
+            driver_schedule.get_schedule(start_date, end_date).items(),
         ):
             if car == driver:
                 timetable.append(driver_schedule.name)
@@ -82,8 +82,8 @@ class ScheduleManager:
         car_schedule = self.get_car_schedule(car_id)
         driver_schedule = self.get_driver_schedule(driver_id)
         for car, driver, day in zip(
-            car_schedule.make_schedule(start_date, end_date).items(),
-            driver_schedule.make_schedule(start_date, end_date).items(),
+            car_schedule.get_schedule(start_date, end_date).items(),
+            driver_schedule.get_schedule(start_date, end_date).items(),
             timetable.copy().items(),
         ):
             if car == driver == day:
@@ -104,10 +104,10 @@ def test_schedule_manager():
         # car_id_0: [driver_0_id, driver_1_id]
         car_id_0: [driver_0_s, driver_1_s]
     }
-    schedule = car_schedule.make_schedule(today_1, today_1 + timedelta(days=10))
+    schedule = car_schedule.get_schedule(today_1, today_1 + timedelta(days=10))
 
     for driver_s in relationship[car_id_0]:
-        schedule = driver_s.make_schedule(date_10_01_2025, date_17_01_2025)
+        schedule = driver_s.get_schedule(date_10_01_2025, date_17_01_2025)
 
         ic(schedule)
 

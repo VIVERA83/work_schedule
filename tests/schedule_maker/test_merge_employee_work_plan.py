@@ -204,15 +204,15 @@ if __name__ == "__main__":
     result = merge_employee_work_plan(employee_1, employee_2)
     ic(result)
     iters = zip(
-        work_schedule_driver_1.make_schedule(
+        work_schedule_driver_1.get_schedule(
             today_1,
             date_17_01_2025,
         ).values(),
-        work_schedule_driver_2.make_schedule(
+        work_schedule_driver_2.get_schedule(
             today_1,
             date_17_01_2025,
         ).values(),
-        work_schedule_driver_3.make_schedule(
+        work_schedule_driver_3.get_schedule(
             today_1,
             date_17_01_2025,
         ).values(),
