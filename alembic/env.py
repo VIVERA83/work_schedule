@@ -9,12 +9,14 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
+from alembic_utils.replaceable_entity import register_entities
 
 sys.path.insert(1, os.path.join(os.getcwd(), "work_schedule"))
 dotenv.load_dotenv()
 
 from work_schedule.core.settings import PostgresSettings
 from work_schedule.store.ws.models import Base
+from store.functions import all_ok
 
 config = context.config
 
@@ -25,6 +27,7 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 config.set_main_option("sqlalchemy.url", settings.dsn(True))
+register_entities([all_ok])
 
 
 def run_migrations_offline() -> None:

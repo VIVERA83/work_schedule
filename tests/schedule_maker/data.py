@@ -11,6 +11,7 @@ date_17_01_2021 = datetime(2021, 1, 17)
 date_06_01_2025 = datetime(2025, 1, 6)
 date_10_01_2025 = datetime(2025, 1, 10)
 date_17_01_2025 = datetime(2025, 1, 17)
+
 today_2 = datetime.now()
 
 weekend_days_2 = 2

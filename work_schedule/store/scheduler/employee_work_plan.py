@@ -47,6 +47,7 @@ class EmployeeWorkPlan:
         """Формирует план работы сотрудников."""
         self.__employee_work_plan = {}
         self.__unused_employees = defaultdict(dict)
+        # Если нет циклов работы сотрудников, то формируется план работы оборудования
         if not self.__workers_schedules:
             self.__employee_work_plan = self.__main_worker_schedule.make_schedule(
                 start, end

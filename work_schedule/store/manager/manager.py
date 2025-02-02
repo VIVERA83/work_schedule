@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from icecream import ic
+
 from store.scheduler.worker_schedule import WorkerSchedule
 
 if TYPE_CHECKING:
@@ -16,4 +18,5 @@ class ManagerWorkerSchedule:
     ):
         """Получение расписания водителя."""
         result = await self.store.manager.get_current_worker_schedule_by_id(id_)
+        ic(result)
         return WorkerSchedule(**result).make_schedule(start_date, end_date)

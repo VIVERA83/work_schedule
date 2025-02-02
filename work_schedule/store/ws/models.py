@@ -64,3 +64,21 @@ class WorkScheduleHistoryModel(Base, BaseModel):
     )
     is_working: Mapped[bool] = mapped_column(default=True)
     what_day: Mapped[int] = mapped_column(default=1)
+
+
+@dataclass
+class CarScheduleHistoryModel(Base, BaseModel):
+    __tablename__ = "car_schedule_history"
+
+    id_car: Mapped[int] = mapped_column(
+        ForeignKey("car.id", ondelete="CASCADE"), nullable=True
+    )
+    id_schedule_type: Mapped[int] = mapped_column(
+        ForeignKey("schedule_types.id", ondelete="CASCADE"), nullable=True
+    )
+
+    date: Mapped[datetime] = mapped_column(
+        TIMESTAMP, server_default=func.current_timestamp(), nullable=True
+    )
+    is_working: Mapped[bool] = mapped_column(default=True)
+    what_day: Mapped[int] = mapped_column(default=1)
