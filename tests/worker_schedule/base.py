@@ -3,8 +3,7 @@ from datetime import datetime
 from icecream import ic
 
 from store.scheduler.employee_work_plan import EmployeeWorkPlan
-from store.scheduler.worker_schedule import Worker
-
+from store.scheduler.worker_schedule import Worker, WorkerSchedule
 
 # class Worker:
 #     """Работник."""
@@ -117,10 +116,14 @@ if __name__ == "__main__":
     date_2025_01_20 = datetime(2025, 1, 20)
     date_2025_01_21 = datetime(2025, 1, 21)
 
-    worker = Worker("Яшин Александр Кириллович", date_2025_01_10, 4, 4, True, 3)
-    worker.add_worker_schedule(date_2025_01_17, 4, 2, False, 1)
-    worker.add_worker_schedule(date_2025_01_20, 4, 2, False, 1)
-    worker.get_schedule(date_2025_01_10, date_2025_01_21)
-    for data in worker.get_schedule_generator(date_2025_01_10, date_2025_01_21):
+    worker_1 = Worker("Яшин Александр Кириллович", date_2025_01_10, 4, 4, True, 3)
+    worker_2 = Worker('Миронов Михаил Викторович', date_2025_01_10, 2,  2,  True, 2,)
+
+    worker_1.add_worker_schedule(date_2025_01_17, 4, 2, False, 1)
+    worker_1.add_worker_schedule(date_2025_01_20, 4, 2, False, 1)
+    ic(worker_1.get_schedule(date_2025_01_10, date_2025_01_21))
+
+    for data in worker_1.get_schedule_generator(date_2025_01_10, date_2025_01_21):
         print(data)
-    ic(EmployeeWorkPlan(worker).get_schedule(date_2025_01_10, date_2025_01_21))
+    car = WorkerSchedule("CAR_1", date_2025_01_01, work_days=-1, weekend_days=-1, is_working=True, what_day=1)
+    ic(EmployeeWorkPlan(car, worker_1, worker_2).get_schedule(date_2025_01_10, date_2025_01_21))
