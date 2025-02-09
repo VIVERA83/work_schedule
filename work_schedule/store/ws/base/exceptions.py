@@ -2,7 +2,7 @@ import re
 from functools import wraps
 from typing import Type
 
-from sqlalchemy.exc import IntegrityError, NoResultFound
+from sqlalchemy.exc import IntegrityError, NoResultFound, DBAPIError
 
 pattern = r"\((.*?)\)"
 
@@ -64,10 +64,16 @@ class ForeignKeyException(ExceptionBase):
         self.args = (f"Нет записи с указанным {matches[1]}: {matches[2]}",)
 
 
+class InternalDatabaseException(ExceptionBase):
+    args = ("Действия нарушают ограничения базы данных.",)
+    code = 400
+
+
 def exception_handler(
-    not_found: Type[ExceptionBase] = NotFoundException,
-    duplicate: Type[ExceptionBase] = DuplicateException,
-    foreign_key: Type[ExceptionBase] = ForeignKeyException,
+        not_found: Type[ExceptionBase] = NotFoundException,
+        duplicate: Type[ExceptionBase] = DuplicateException,
+        foreign_key: Type[ExceptionBase] = ForeignKeyException,
+        internal: Type[ExceptionBase] = InternalDatabaseException,
 ):
     def inner(func):
         @wraps(func)
@@ -86,8 +92,12 @@ def exception_handler(
                 if e.errno == 111:
                     raise DataBaseConnectionException(exception=e)
                 raise DataBaseUnknownException(exception=e)
+            except DBAPIError as e:
+                self.logger.error(str(e))
+                raise internal(exception=e)
             except Exception as e:
                 self.logger.error(str(e))
+                self.logger.error(str(type(e)))
                 raise DataBaseUnknownException(exception=e)
 
         return wrapper

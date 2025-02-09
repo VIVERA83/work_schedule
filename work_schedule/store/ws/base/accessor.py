@@ -4,7 +4,7 @@ from typing import Callable, ParamSpec, Type, TypeVar
 from uuid import UUID
 
 from asyncpg import UniqueViolationError
-from sqlalchemy.exc import IntegrityError, NoResultFound
+from sqlalchemy.exc import IntegrityError, NoResultFound, DBAPIError
 from store.db.postgres.accessor import PostgresAccessor
 from store.db.postgres.types import Model
 from store.ws.base.exceptions import (
@@ -13,7 +13,7 @@ from store.ws.base.exceptions import (
     DuplicateException,
     ExceptionBase,
     ForeignKeyException,
-    NotFoundException,
+    NotFoundException, InternalDatabaseException,
 )
 
 _PWrapped = ParamSpec("_PWrapped")
@@ -26,6 +26,7 @@ class BaseAccessor:
         not_found: Type[ExceptionBase]
         duplicate: Type[ExceptionBase]
         foreign_key: Type[ExceptionBase]
+        inner: Type[ExceptionBase]
 
     def __init__(self, accessor: PostgresAccessor, loger: Logger):
         self.__accessor = accessor
@@ -55,6 +56,12 @@ class BaseAccessor:
             if getattr(self.Meta, "foreign_key", None)
             else ForeignKeyException
         )
+        self.inner = (
+            self.Meta.inner
+            if getattr(self.Meta, "inner", None)
+            else InternalDatabaseException
+        )
+
 
     def _exception_handler(
         self: Callable[_PWrapped, _RWrapped]
@@ -76,6 +83,9 @@ class BaseAccessor:
                 if e.errno == 111:
                     raise DataBaseConnectionException(exception=e)
                 raise DataBaseUnknownException(exception=e)
+            except DBAPIError as e:
+                cls.logger.error(str(e))
+                raise InternalDatabaseException(exception=e)
             except Exception as e:
                 cls.logger.error(str(e))
                 raise DataBaseUnknownException(exception=e)

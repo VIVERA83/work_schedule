@@ -7,7 +7,7 @@ from work_schedule.store.scheduler.utils import DATE, SIGN, SIGNAL_WEEKEND, SIGN
 
 class CombinedEmployeesWorkPlan:
     """Объединенный график работы сотрудников на оборудовании."""
-
+    # то есть есть закрепленные экипажи которые работают на указанных машинах
     __employee_work_plan: dict[DATE, SIGN]
     __unused_employees: dict[DATE, dict[str, SIGNAL_WORK]]
 

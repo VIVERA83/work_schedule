@@ -9,14 +9,14 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from alembic_utils.replaceable_entity import register_entities
+# from alembic_utils.replaceable_entity import register_entities
 
 sys.path.insert(1, os.path.join(os.getcwd(), "work_schedule"))
 dotenv.load_dotenv()
 
 from work_schedule.core.settings import PostgresSettings
 from work_schedule.store.ws.models import Base
-from store.functions import all_ok
+from store.functions import f1, f2, f3, f4
 
 config = context.config
 
@@ -27,7 +27,7 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 config.set_main_option("sqlalchemy.url", settings.dsn(True))
-register_entities([all_ok])
+# register_entities([f1, f2])
 
 
 def run_migrations_offline() -> None:
@@ -76,6 +76,10 @@ async def run_async_migrations() -> None:
         await connection.execute(
             text("CREATE SCHEMA IF NOT EXISTS %s" % current_tenant)
         )
+        await connection.execute(text(f1))
+        await connection.execute(text(f2))
+        await connection.execute(text(f3))
+        await connection.execute(text(f4))
         await connection.execute(text('set search_path to "%s"' % current_tenant))
         await connection.commit()
         await connection.run_sync(do_run_migrations)

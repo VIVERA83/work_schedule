@@ -29,3 +29,10 @@ class ForeignKeyException(ExceptionBase):
         super().__init__(*args, code=code, exception=exception)
         matches = re.findall(pattern, self.exception.args[0])
         self.args = (f"Нет записи с указанным {matches[1]}: {matches[2]}",)
+
+
+class InternalDatabaseException(ExceptionBase):
+    args = ("За машиной может быть закреплено не более 3 водителей. "
+            "Превышено максимальное количество водителей, закрепленных за машиной."
+            "Необходимо открепить водителя от машины.",)
+    code = 400

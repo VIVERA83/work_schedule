@@ -4,7 +4,7 @@ from icecream import ic
 from sqlalchemy import RowMapping, text
 from store.ws.base.accessor import BaseAccessor
 from store.ws.base.exceptions import exception_handler
-from store.ws.manager.exceptions import ForeignKeyException
+from store.ws.manager.exceptions import ForeignKeyException, InternalDatabaseException
 from store.ws.manager.sql import sql_query_current_worker_schedule
 from store.ws.models import (
     CarDriverAssociationModel,
@@ -53,7 +53,7 @@ class ManagerAccessor(BaseAccessor):
             await session.commit()
         return driver, work_schedule_history
 
-    @exception_handler()
+    @exception_handler(internal=InternalDatabaseException)
     async def assign_car_driver(self, driver_id: int, car_id: int):
         """Назначение водителя на автомобиль.
 

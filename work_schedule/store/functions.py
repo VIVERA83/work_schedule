@@ -67,3 +67,21 @@ END;
 $function$
 ;
 """
+f3 = """
+CREATE OR REPLACE FUNCTION work_schedule.my_trigger_function()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT COUNT(*) FROM work_schedule.car_driver_association WHERE car_id = NEW.car_id) >= 3 THEN
+        RAISE EXCEPTION 'Maximum number of links exceeded';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+"""
+# закрепляем триггер за таблицей car_driver_association
+f4 = """
+CREATE OR REPLACE TRIGGER my_trigger
+BEFORE INSERT OR UPDATE ON work_schedule.car_driver_association
+FOR EACH ROW
+EXECUTE FUNCTION work_schedule.my_trigger_function()
+"""
