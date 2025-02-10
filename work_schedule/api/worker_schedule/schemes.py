@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
@@ -15,7 +15,7 @@ class WorkerScheduleCreateSchema(BaseModel):
     end_date: datetime = Field(
         description="дата окончания построения графика",
         default=datetime(
-            year=datetime.now().year, month=datetime.now().month, day=datetime.now().day
+            year=datetime.now().year, month=datetime.now().month, day=datetime.now().day + 10
         ),
     )
 

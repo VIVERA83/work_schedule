@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, ForeignKey, Index, func, text
+from sqlalchemy import CheckConstraint, ForeignKey, Index, func, text, ARRAY, Integer
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import Mapped, mapped_column
 from store.db.postgres.base import Base, BaseModel
@@ -82,3 +82,11 @@ class CarScheduleHistoryModel(Base, BaseModel):
     )
     is_working: Mapped[bool] = mapped_column(default=True)
     what_day: Mapped[int] = mapped_column(default=1)
+
+
+@dataclass
+class CrewModel(Base, BaseModel):
+    __tablename__ = "crew"
+
+    cars: Mapped[list[int]] = mapped_column(ARRAY(Integer))
+    drivers: Mapped[list[int]] = mapped_column(ARRAY(Integer))

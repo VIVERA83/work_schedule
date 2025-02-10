@@ -1,3 +1,6 @@
+from alembic_utils.pg_function import PGFunction
+from alembic_utils.pg_trigger import PGTrigger
+
 f1 = """
 CREATE OR REPLACE FUNCTION work_schedule.find_nearest_smaller_date(passed_ts timestamp without time zone, driver_id integer)
  RETURNS jsonb
@@ -67,21 +70,66 @@ END;
 $function$
 ;
 """
-f3 = """
-CREATE OR REPLACE FUNCTION work_schedule.my_trigger_function()
-RETURNS TRIGGER AS $$
-BEGIN
+# f3 = """
+# CREATE OR REPLACE FUNCTION work_schedule.my_trigger_function()
+# RETURNS TRIGGER AS $$
+# BEGIN
+#     IF (SELECT COUNT(*) FROM work_schedule.car_driver_association WHERE car_id = NEW.car_id) >= 3 THEN
+#         RAISE EXCEPTION 'Maximum number of links exceeded';
+#     END IF;
+#     RETURN NEW;
+# END;
+# $$ LANGUAGE plpgsql;
+# """
+
+my_trigger_function = PGFunction(
+    schema="work_schedule",
+    signature="my_trigger_function()",
+    definition="""
+    RETURNS TRIGGER AS $$
+    BEGIN
     IF (SELECT COUNT(*) FROM work_schedule.car_driver_association WHERE car_id = NEW.car_id) >= 3 THEN
         RAISE EXCEPTION 'Maximum number of links exceeded';
+    END IF;
+    RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+    """
+)
+
+my_trigger = PGTrigger(
+    schema="work_schedule",
+    signature="work_schedule.my_trigger_function",
+    on_entity="work_schedule.car_driver_association",
+    definition="""
+    BEFORE INSERT OR UPDATE ON work_schedule.car_driver_association
+    FOR EACH ROW EXECUTE FUNCTION work_schedule.my_trigger_function()
+    """
+)
+# закрепляем триггер за таблицей car_driver_association
+f4 = """
+CREATE OR REPLACE TRIGGER my_trigger
+BEFORE INSERT OR UPDATE ON work_schedule.car_driver_association
+FOR EACH ROW EXECUTE FUNCTION work_schedule.my_trigger_function()
+"""
+
+f5 = """
+CREATE OR REPLACE FUNCTION work_schedule.check_duplicate()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM work_schedule.crew WHERE array_to_string(array_agg(DISTINCT cars), ',') = array_to_string(array_agg(DISTINCT NEW.cars), ',')) THEN
+        RAISE EXCEPTION 'Duplicate entry';
     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 """
-# закрепляем триггер за таблицей car_driver_association
-f4 = """
-CREATE OR REPLACE TRIGGER my_trigger
-BEFORE INSERT OR UPDATE ON work_schedule.car_driver_association
-FOR EACH ROW
-EXECUTE FUNCTION work_schedule.my_trigger_function()
+
+f6="""
+CREATE OR REPLACE TRIGGER check_duplicate_trigger
+BEFORE INSERT OR UPDATE ON work_schedule.crew
+FOR EACH ROW EXECUTE PROCEDURE work_schedule.check_duplicate();
+
 """
+
+
