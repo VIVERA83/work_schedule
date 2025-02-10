@@ -1,5 +1,11 @@
-f1 = """
-CREATE OR REPLACE FUNCTION work_schedule.find_nearest_smaller_date(passed_ts timestamp without time zone, driver_id integer)
+from alembic.operations import Operations
+
+from core.settings import PostgresSettings
+
+pg_schema = PostgresSettings().postgres_schema  # noqa
+
+pg_func_find_nearest_smaller_date = f"""
+CREATE OR REPLACE FUNCTION {pg_schema}.find_nearest_smaller_date(passed_ts timestamp without time zone, driver_id integer)
  RETURNS jsonb
  LANGUAGE plpgsql
 AS $function$
@@ -31,8 +37,8 @@ END;
 $function$;
 """
 
-f2 = """
-CREATE OR REPLACE FUNCTION work_schedule.all_ok(start_ts timestamp without time zone, stop_ts timestamp without time zone, driver_id integer)
+pg_func_all_ok = f"""
+CREATE OR REPLACE FUNCTION {pg_schema}.all_ok(start_ts timestamp without time zone, stop_ts timestamp without time zone, driver_id integer)
  RETURNS jsonb[]
  LANGUAGE plpgsql
 AS $function$
@@ -56,7 +62,6 @@ BEGIN
 		and 
 		wsh."date" BETWEEN start_ts AND stop_ts
 group by wsh.date, st.work_days, st.weekend_days, wsh.is_working, wsh.what_day
---order by abs(extract(epoch from start_ts - wsh."date"))
 ));
 IF smaller_date IS NOT NULL THEN
         res:= res || smaller_date;
@@ -66,18 +71,38 @@ END;
 $function$;
 """
 
-pg_function_lower_column = """
-CREATE OR REPLACE FUNCTION lower_column()
+pg_func_upper_column = f"""
+CREATE OR REPLACE FUNCTION {pg_schema}.upper_column()
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.column = LOWER(NEW.column);
+    NEW.name := UPPER(NEW.name);
+    NEW.car_model := UPPER(NEW.car_model);
+    NEW.car_number := UPPER(NEW.car_number);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 """
 
-pg_function_lower_column_trigger = """
+pg_func_upper_column_trigger = f"""
 CREATE TRIGGER lower_column_trigger
 BEFORE INSERT OR UPDATE ON work_schedule.car
-FOR EACH ROW EXECUTE PROCEDURE lower_column();
+FOR EACH ROW EXECUTE PROCEDURE {pg_schema}.lower_column();
 """
+
+
+def create_pg_functions(op: Operations):
+    """Создание функций для PostgresSQL"""
+
+    op.execute(pg_func_find_nearest_smaller_date)
+    op.execute(pg_func_all_ok)
+    op.execute(pg_func_upper_column)
+    op.execute(pg_func_upper_column_trigger)
+
+
+def drop_pg_functions(op: Operations):
+    """Удаление функций для PostgresSQL"""
+
+    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.find_nearest_smaller_date;")
+    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.all_ok;")
+    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.upper_column;")
+    op.execute(f"DROP TRIGGER IF EXISTS {pg_schema}.upper_column_trigger ON {pg_schema}.car;")
