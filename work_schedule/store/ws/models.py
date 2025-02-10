@@ -8,18 +8,6 @@ from store.db.postgres.base import Base, BaseModel
 
 
 @dataclass
-class CarDriverAssociationModel(Base, BaseModel):
-    __tablename__ = "car_driver_association"
-
-    __table_args__ = (
-        Index("car_driver_association_index", "car_id", "driver_id", unique=True),
-    )
-
-    car_id: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"))
-    driver_id: Mapped[int] = mapped_column(ForeignKey("driver.id", ondelete="CASCADE"))
-
-
-@dataclass
 class CarModel(Base, BaseModel):
     __tablename__ = "car"
 
@@ -88,5 +76,17 @@ class CarScheduleHistoryModel(Base, BaseModel):
 class CrewModel(Base, BaseModel):
     __tablename__ = "crew"
 
-    cars: Mapped[list[int]] = mapped_column(ARRAY(Integer))
-    drivers: Mapped[list[int]] = mapped_column(ARRAY(Integer))
+
+@dataclass
+class CrewDriverModel(Base, BaseModel):
+    __tablename__ = "crew_drivers"
+    id_crew: Mapped[int] = mapped_column(ForeignKey("crew.id", ondelete="CASCADE"))
+    id_driver: Mapped[int] = mapped_column(ForeignKey("driver.id", ondelete="CASCADE"), unique=True)
+
+
+@dataclass
+class CrewCarsModel(Base, BaseModel):
+    __tablename__ = "crew_cars"
+
+    id_crew: Mapped[int] = mapped_column(ForeignKey("crew.id", ondelete="CASCADE"))
+    id_car: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), unique=True)

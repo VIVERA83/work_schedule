@@ -1,8 +1,8 @@
 """Initial tables
 
-Revision ID: 37a3d061ce3c
+Revision ID: 7ac955790962
 Revises: 
-Create Date: 2025-02-10 20:06:06.948976
+Create Date: 2025-02-10 22:20:23.269844
 
 """
 from typing import Sequence, Union
@@ -14,7 +14,7 @@ from sqlalchemy import text as sql_text
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '37a3d061ce3c'
+revision: str = '7ac955790962'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,8 +32,6 @@ def upgrade() -> None:
     schema='work_schedule'
     )
     op.create_table('crew',
-    sa.Column('cars', sa.ARRAY(sa.Integer()), nullable=False),
-    sa.Column('drivers', sa.ARRAY(sa.Integer()), nullable=False),
     sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
     sa.PrimaryKeyConstraint('id'),
     schema='work_schedule'
@@ -53,16 +51,6 @@ def upgrade() -> None:
     schema='work_schedule'
     )
     op.create_index('type_index', 'schedule_types', ['name', 'work_days', 'weekend_days'], unique=True, schema='work_schedule')
-    op.create_table('car_driver_association',
-    sa.Column('car_id', sa.INTEGER(), nullable=False),
-    sa.Column('driver_id', sa.INTEGER(), nullable=False),
-    sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
-    sa.ForeignKeyConstraint(['car_id'], ['work_schedule.car.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['driver_id'], ['work_schedule.driver.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id'),
-    schema='work_schedule'
-    )
-    op.create_index('car_driver_association_index', 'car_driver_association', ['car_id', 'driver_id'], unique=True, schema='work_schedule')
     op.create_table('car_schedule_history',
     sa.Column('id_car', sa.INTEGER(), nullable=True),
     sa.Column('id_schedule_type', sa.INTEGER(), nullable=True),
@@ -73,6 +61,26 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['id_car'], ['work_schedule.car.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['id_schedule_type'], ['work_schedule.schedule_types.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
+    schema='work_schedule'
+    )
+    op.create_table('crew_cars',
+    sa.Column('id_crew', sa.INTEGER(), nullable=False),
+    sa.Column('id_car', sa.INTEGER(), nullable=False),
+    sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
+    sa.ForeignKeyConstraint(['id_car'], ['work_schedule.car.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['id_crew'], ['work_schedule.crew.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id_car'),
+    schema='work_schedule'
+    )
+    op.create_table('crew_drivers',
+    sa.Column('id_crew', sa.INTEGER(), nullable=False),
+    sa.Column('id_driver', sa.INTEGER(), nullable=False),
+    sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
+    sa.ForeignKeyConstraint(['id_crew'], ['work_schedule.crew.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['id_driver'], ['work_schedule.driver.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id_driver'),
     schema='work_schedule'
     )
     op.create_table('work_schedule_history',
@@ -107,13 +115,7 @@ def upgrade() -> None:
         definition='returns jsonb[]\n LANGUAGE plpgsql\nAS $function$\nDECLARE \n\tres jsonb[];\n\tsmaller_date jsonb := work_schedule.find_nearest_smaller_date(start_ts, driver_id);\nBEGIN\n\tres:= array((\n\tselect \n    \t    jsonb_build_object(\n\t\t\t\'schedule_start_date\', wsh."date",\n\t\t\t\'work_days\', st.work_days,\n\t\t\t\'weekend_days\', st.weekend_days,\n\t\t\t\'is_working\', wsh.is_working, \t\n\t\t\t\'what_day\', wsh.what_day\t\t\n\t\t)\n\tfrom work_schedule.work_schedule_history wsh \n\tjoin work_schedule.schedule_types st on st.id = wsh.id_schedule_type \n\twhere\n\t\twsh.id_driver = driver_id    \t\n\t\tand \n\t\twsh."date" BETWEEN start_ts AND stop_ts\ngroup by wsh.date, st.work_days, st.weekend_days, wsh.is_working, wsh.what_day\n--order by abs(extract(epoch from start_ts - wsh."date"))\n));\nIF smaller_date IS NOT NULL THEN\n        res:= res || smaller_date;\n    END IF;\nRETURN res;\nEND;\n$function$'
     )
     op.drop_entity(work_schedule_all_ok)
-    op.execute(
-        """CREATE OR REPLACE TRIGGER my_trigger
-           BEFORE INSERT OR UPDATE ON work_schedule.car_driver_association
-           FOR EACH ROW
-           EXECUTE FUNCTION work_schedule.my_trigger_function()
-        """
-    )
+
     # ### end Alembic commands ###
 
 
@@ -141,9 +143,9 @@ def downgrade() -> None:
     op.drop_entity(work_schedule_my_trigger_function)
 
     op.drop_table('work_schedule_history', schema='work_schedule')
+    op.drop_table('crew_drivers', schema='work_schedule')
+    op.drop_table('crew_cars', schema='work_schedule')
     op.drop_table('car_schedule_history', schema='work_schedule')
-    op.drop_index('car_driver_association_index', table_name='car_driver_association', schema='work_schedule')
-    op.drop_table('car_driver_association', schema='work_schedule')
     op.drop_index('type_index', table_name='schedule_types', schema='work_schedule')
     op.drop_table('schedule_types', schema='work_schedule')
     op.drop_table('driver', schema='work_schedule')
