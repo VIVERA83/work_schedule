@@ -16,7 +16,7 @@ class ExportData:
         db_password: str,
         db_host: str,
         db_port: int,
-        db_schema: str,
+        db_schema: str = "public",
         logger: Logger = Logger,
     ):
         """Конструктор класса.
