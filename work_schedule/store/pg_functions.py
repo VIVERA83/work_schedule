@@ -85,8 +85,44 @@ $$ LANGUAGE plpgsql;
 
 pg_func_upper_column_trigger = f"""
 CREATE TRIGGER lower_column_trigger
-BEFORE INSERT OR UPDATE ON work_schedule.car
-FOR EACH ROW EXECUTE PROCEDURE {pg_schema}.lower_column();
+BEFORE INSERT OR UPDATE ON {pg_schema}.car
+FOR EACH ROW EXECUTE PROCEDURE {pg_schema}.upper_column();
+"""
+
+pg_func_check_crew_cars = f"""
+CREATE OR REPLACE FUNCTION {pg_schema}.check_crew_cars()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT COUNT(*) FROM {pg_schema}.crew_cars WHERE id_crew = NEW.id_crew) >= 2 THEN
+        RAISE EXCEPTION 'Too many cars in crew';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+"""
+
+pg_func_check_crew_cars_trigger = f"""
+CREATE TRIGGER check_crew_cars_trigger
+BEFORE INSERT OR UPDATE ON {pg_schema}.crew_cars
+FOR EACH ROW EXECUTE PROCEDURE {pg_schema}.check_crew_cars();
+"""
+
+pg_func_check_crew_drivers = f"""
+CREATE OR REPLACE FUNCTION {pg_schema}.check_crew_drivers()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT COUNT(*) FROM {pg_schema}.crew_drivers WHERE id_crew = NEW.id_crew) >= 3 THEN
+        RAISE EXCEPTION 'Too many drivers in crew';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+"""
+
+pg_func_check_crew_drivers_trigger = f"""
+CREATE TRIGGER check_crew_drivers_trigger
+BEFORE INSERT OR UPDATE ON {pg_schema}.crew_drivers
+FOR EACH ROW EXECUTE PROCEDURE {pg_schema}.check_crew_drivers();
 """
 
 
@@ -97,6 +133,10 @@ def create_pg_functions(op: Operations):
     op.execute(pg_func_all_ok)
     op.execute(pg_func_upper_column)
     op.execute(pg_func_upper_column_trigger)
+    op.execute(pg_func_check_crew_cars)
+    op.execute(pg_func_check_crew_cars_trigger)
+    op.execute(pg_func_check_crew_drivers)
+    op.execute(pg_func_check_crew_drivers_trigger)
 
 
 def drop_pg_functions(op: Operations):
@@ -105,4 +145,14 @@ def drop_pg_functions(op: Operations):
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.find_nearest_smaller_date;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.all_ok;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.upper_column;")
-    op.execute(f"DROP TRIGGER IF EXISTS {pg_schema}.upper_column_trigger ON {pg_schema}.car;")
+    op.execute(
+        f"DROP TRIGGER IF EXISTS {pg_schema}.upper_column_trigger ON {pg_schema}.car;"
+    )
+    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.check_crew_cars;")
+    op.execute(
+        f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_cars_trigger ON {pg_schema}.crew_cars;"
+    )
+    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.check_crew_drivers;")
+    op.execute(
+        f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_drivers_trigger ON {pg_schema}.crew_drivers;"
+    )

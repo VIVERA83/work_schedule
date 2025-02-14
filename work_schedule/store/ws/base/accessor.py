@@ -13,7 +13,8 @@ from store.ws.base.exceptions import (
     DuplicateException,
     ExceptionBase,
     ForeignKeyException,
-    NotFoundException, InternalDatabaseException,
+    NotFoundException,
+    InternalDatabaseException,
 )
 
 _PWrapped = ParamSpec("_PWrapped")
@@ -62,11 +63,9 @@ class BaseAccessor:
             else InternalDatabaseException
         )
 
-
     def _exception_handler(
-        self: Callable[_PWrapped, _RWrapped]
+        self: Callable[_PWrapped, _RWrapped],
     ) -> Callable[_PWrapped, _RWrapped]:
-
         @wraps(self)
         async def wrapper(cls, *args, **kwargs):
             try:

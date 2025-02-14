@@ -16,7 +16,6 @@ HTTP_EXCEPTIONS = {
 
 
 class ErrorHandlingMiddleware(BaseHTTPMiddleware):
-
     async def dispatch(
         self, request: FastApiRequest, call_next: RequestResponseEndpoint
     ) -> Response:

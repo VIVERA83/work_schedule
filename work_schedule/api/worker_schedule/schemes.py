@@ -15,7 +15,9 @@ class WorkerScheduleCreateSchema(BaseModel):
     end_date: datetime = Field(
         description="дата окончания построения графика",
         default=datetime(
-            year=datetime.now().year, month=datetime.now().month, day=datetime.now().day + 10
+            year=datetime.now().year,
+            month=datetime.now().month,
+            day=datetime.now().day + 10,
         ),
     )
 

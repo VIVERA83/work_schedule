@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, ForeignKey, Index, func, text, ARRAY, Integer
+from sqlalchemy import CheckConstraint, ForeignKey, Index, func
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import Mapped, mapped_column
 from store.db.postgres.base import Base, BaseModel
@@ -81,7 +81,9 @@ class CrewModel(Base, BaseModel):
 class CrewDriverModel(Base, BaseModel):
     __tablename__ = "crew_drivers"
     id_crew: Mapped[int] = mapped_column(ForeignKey("crew.id", ondelete="CASCADE"))
-    id_driver: Mapped[int] = mapped_column(ForeignKey("driver.id", ondelete="CASCADE"), unique=True)
+    id_driver: Mapped[int] = mapped_column(
+        ForeignKey("driver.id", ondelete="CASCADE"), unique=True
+    )
 
 
 @dataclass
@@ -89,4 +91,6 @@ class CrewCarsModel(Base, BaseModel):
     __tablename__ = "crew_cars"
 
     id_crew: Mapped[int] = mapped_column(ForeignKey("crew.id", ondelete="CASCADE"))
-    id_car: Mapped[int] = mapped_column(ForeignKey("car.id", ondelete="CASCADE"), unique=True)
+    id_car: Mapped[int] = mapped_column(
+        ForeignKey("car.id", ondelete="CASCADE"), unique=True
+    )

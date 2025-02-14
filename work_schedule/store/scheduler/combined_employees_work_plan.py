@@ -7,7 +7,8 @@ from work_schedule.store.scheduler.utils import DATE, SIGN, SIGNAL_WEEKEND, SIGN
 
 class CombinedEmployeesWorkPlan:
     """Объединенный график работы сотрудников на оборудовании."""
-    # то есть есть закрепленные экипажи которые работают на указанных машинах
+
+    # то есть закрепленные экипажи, которые работают на указанных машинах
     __employee_work_plan: dict[DATE, SIGN]
     __unused_employees: dict[DATE, dict[str, SIGNAL_WORK]]
 
@@ -61,7 +62,7 @@ class CombinedEmployeesWorkPlan:
     def __merge_unused_employees(self, start: datetime, end: datetime):
         self.__unused_employees = {
             date_1: {**values_1, **values_2}
-            for (date_1, values_1), (date_2, values_2), in zip(
+            for (date_1, values_1), (date_2, values_2) in zip(
                 self.employee_1.get_unused_employees(start, end).items(),
                 self.employee_2.get_unused_employees(start, end).items(),
             )

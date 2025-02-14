@@ -15,7 +15,6 @@ class ExceptionBase(Exception):
     code = 500
 
     def __init__(self, *args, code: int = None, exception: Exception = None):
-
         if args:
             self.args = args
         if exception:
@@ -70,10 +69,10 @@ class InternalDatabaseException(ExceptionBase):
 
 
 def exception_handler(
-        not_found: Type[ExceptionBase] = NotFoundException,
-        duplicate: Type[ExceptionBase] = DuplicateException,
-        foreign_key: Type[ExceptionBase] = ForeignKeyException,
-        internal: Type[ExceptionBase] = InternalDatabaseException,
+    not_found: Type[ExceptionBase] = NotFoundException,
+    duplicate: Type[ExceptionBase] = DuplicateException,
+    foreign_key: Type[ExceptionBase] = ForeignKeyException,
+    internal: Type[ExceptionBase] = InternalDatabaseException,
 ):
     def inner(func):
         @wraps(func)

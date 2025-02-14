@@ -7,7 +7,7 @@ from store.ws.base.exceptions import exception_handler
 from store.ws.manager.exceptions import ForeignKeyException, InternalDatabaseException
 from store.ws.manager.sql import sql_query_current_worker_schedule
 from store.ws.models import (
-    CarDriverAssociationModel,
+    # CarDriverAssociationModel,
     DriverModel,
     WorkScheduleHistoryModel,
     CarModel,
@@ -53,19 +53,19 @@ class ManagerAccessor(BaseAccessor):
             await session.commit()
         return driver, work_schedule_history
 
-    @exception_handler(internal=InternalDatabaseException)
-    async def assign_car_driver(self, driver_id: int, car_id: int):
-        """Назначение водителя на автомобиль.
-
-        :param driver_id: Идентификатор водителя
-        :param car_id: Идентификатор автомобиля
-        :return: CarDriverAssociationModel
-        """
-        async with self.accessor.session as session:
-            assign_car = CarDriverAssociationModel(driver_id=driver_id, car_id=car_id)
-            session.add(assign_car)
-            await session.commit()
-        return assign_car
+    # @exception_handler(internal=InternalDatabaseException)
+    # async def assign_car_driver(self, driver_id: int, car_id: int):
+    #     """Назначение водителя на автомобиль.
+    #
+    #     :param driver_id: Идентификатор водителя
+    #     :param car_id: Идентификатор автомобиля
+    #     :return: CarDriverAssociationModel
+    #     """
+    #     async with self.accessor.session as session:
+    #         assign_car = CarDriverAssociationModel(driver_id=driver_id, car_id=car_id)
+    #         session.add(assign_car)
+    #         await session.commit()
+    #     return assign_car
 
     @exception_handler()
     async def get_current_worker_schedule_by_id(self, driver_id: int) -> RowMapping:

@@ -33,7 +33,6 @@ class BaseView(APIRouter):
         self.__add_api_route(self.Meta.endpoints)
 
     def __add_api_route(self, endpoints: EndpointType):
-
         for func_name, values in endpoints.items():
             if func := values.get(func_name, getattr(self, func_name, None)):
                 func.__annotations__.update(values.get("annotations", {}))

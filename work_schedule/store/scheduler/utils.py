@@ -193,8 +193,9 @@ def generator_timetable_work(
             is_working = not is_working
         work_day_number = work_day_number + 1 if is_working else 0
         weekend_day_number = weekend_day_number + 1 if not is_working else 0
-        yield start.date().strftime(date_format), (
-            SIGNAL_WORK if is_working else SIGNAL_WEEKEND
+        yield (
+            start.date().strftime(date_format),
+            (SIGNAL_WORK if is_working else SIGNAL_WEEKEND),
         )
         start += timedelta(days=1)
 

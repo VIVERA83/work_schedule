@@ -68,7 +68,6 @@ class EmployeeWorkPlan:
             try:
                 car_date, main_signal = next(main_worker_schedule_gen)
                 if main_signal == SIGNAL_WORK:
-
                     for index, (id_, gen) in enumerate(works_schedules_gens.items()):
                         date, signal = next(gen)
 
@@ -80,14 +79,12 @@ class EmployeeWorkPlan:
 
                     if self.__employee_work_plan.get(date, None) is None:
                         if buffer_data := self.__unused_employees.get(date, None):
-
                             ins = {
                                 list(works_schedules_gens.keys()).index(id_): [id_, s]
                                 for id_, s in buffer_data.items()
                             }
 
                             for ind, (id_, s) in ins.items():
-
                                 if ind > current_worker_index:
                                     current_worker_id = id_
                                     break
