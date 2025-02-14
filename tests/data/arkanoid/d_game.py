@@ -19,13 +19,20 @@ GREEN = (0, 255, 0)
 platform_width = 100
 platform_height = 20
 platform_speed = 10
-platform = pygame.Rect(WIDTH // 2 - platform_width // 2, HEIGHT - 50, platform_width, platform_height)
+platform = pygame.Rect(
+    WIDTH // 2 - platform_width // 2, HEIGHT - 50, platform_width, platform_height
+)
 
 # Настройки мяча
 ball_radius = 10
 ball_speed_x = 5
 ball_speed_y = -5
-ball = pygame.Rect(WIDTH // 2 - ball_radius, HEIGHT // 2 - ball_radius, ball_radius * 2, ball_radius * 2)
+ball = pygame.Rect(
+    WIDTH // 2 - ball_radius,
+    HEIGHT // 2 - ball_radius,
+    ball_radius * 2,
+    ball_radius * 2,
+)
 
 # Настройки блоков
 block_width = 75
@@ -33,7 +40,12 @@ block_height = 30
 blocks = []
 for i in range(10):
     for j in range(5):
-        block = pygame.Rect(10 + i * (block_width + 10), 50 + j * (block_height + 10), block_width, block_height)
+        block = pygame.Rect(
+            10 + i * (block_width + 10),
+            50 + j * (block_height + 10),
+            block_width,
+            block_height,
+        )
         blocks.append(block)
 
 # Основной цикл игры

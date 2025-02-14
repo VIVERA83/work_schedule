@@ -1,10 +1,6 @@
 from logging import Logger
 import psycopg2
 import csv
-from dotenv import load_dotenv
-
-from core.logger import setup_logging
-from core.settings import PostgresSettings
 
 PATH_TO_CSV = str
 TABLE_NAME = str
@@ -13,20 +9,34 @@ TABLE_NAME = str
 class ExportData:
     """Класс для добавления данных в БД."""
 
-    def __init__(self, pg_settings: PostgresSettings, logger: Logger = Logger):
+    def __init__(
+        self,
+        db_name: str,
+        db_user: str,
+        db_password: str,
+        db_host: str,
+        db_port: int,
+        db_schema: str,
+        logger: Logger = Logger,
+    ):
         """Конструктор класса.
 
-        :param pg_settings: Настройки подключения к БД
+        :param db_name: Имя БД
+        :param db_user: Имя пользователя БД
+        :param db_password: Пароль пользователя БД
+        :param db_host: Хост БД
+        :param db_port: Порт БД
+        :param db_schema: Схема БД
         :param logger: Логгер
         """
         self.logger = logger
-        self.pg_settings = pg_settings
+        self.db_schema = db_schema
         self.conn = psycopg2.connect(
-            f"dbname={pg_settings.postgres_db} "
-            f"user={pg_settings.postgres_user} "
-            f"password={pg_settings.postgres_password.get_secret_value()} "
-            f"host={pg_settings.postgres_host} "
-            f"port={pg_settings.postgres_port}"
+            f"dbname={db_name} "
+            f"user={db_user} "
+            f"password={db_password} "
+            f"host={db_host} "
+            f"port={db_port}"
         )
 
     def add_data_to_db_table(self, path_to_csv: str, table_name: str):
@@ -44,7 +54,7 @@ class ExportData:
             columns = ",".join(columns)
             for row in reader:
                 cur.execute(
-                    f"INSERT INTO {self.pg_settings.postgres_schema}.{table_name} ({columns}) VALUES ({count_columns})",
+                    f"INSERT INTO {self.db_schema}.{table_name} ({columns}) VALUES ({count_columns})",
                     row,
                 )
 
@@ -73,19 +83,3 @@ class ExportData:
 
         self.logger.info("Закрытие подключения к БД")
         self.conn.close()
-
-
-if __name__ == "__main__":
-    load_dotenv()
-    data = [
-        ("data/schedule_types.csv", "schedule_types"),
-        ("data/car.csv", "car"),
-        ("data/driver.csv", "driver"),
-        ("data/crew.csv", "crew"),
-        ("data/crew_cars.csv", "crew_cars"),
-        ("data/crew_drivers.csv", "crew_drivers"),
-        ("data/work_schedule_history.csv", "work_schedule_history"),
-        ("data/car_schedule_history.csv", "car_schedule_history"),
-    ]
-    export_data = ExportData(PostgresSettings(), setup_logging())  # noqa
-    export_data.add_data_to_db(data)
