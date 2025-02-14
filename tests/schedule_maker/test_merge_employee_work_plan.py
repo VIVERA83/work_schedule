@@ -30,7 +30,7 @@ def merge_dict_1(d1: dict, d2: dict):
 def merge_dict(d1: dict, d2: dict):
     unused = {
         date_1: {**values_1, **values_2}
-        for (date_1, values_1), (date_2, values_2), in zip(d1.items(), d2.items())
+        for (date_1, values_1), (date_2, values_2) in zip(d1.items(), d2.items())
     }
     return unused
 

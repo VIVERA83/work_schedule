@@ -12,7 +12,10 @@ snake_pos = [100, 50]
 snake_body = [[100, 50], [90, 50], [80, 50]]
 snake_speed = [10, 0]
 
-food_pos = [random.randrange(1, (screen_width//10)) * 10, random.randrange(1, (screen_height//10)) * 10]
+food_pos = [
+    random.randrange(1, (screen_width // 10)) * 10,
+    random.randrange(1, (screen_height // 10)) * 10,
+]
 food_spawn = True
 
 while True:
@@ -40,7 +43,10 @@ while True:
         snake_body.pop()
 
     if not food_spawn:
-        food_pos = [random.randrange(1, (screen_width//10)) * 10, random.randrange(1, (screen_height//10)) * 10]
+        food_pos = [
+            random.randrange(1, (screen_width // 10)) * 10,
+            random.randrange(1, (screen_height // 10)) * 10,
+        ]
     food_spawn = True
 
     screen.fill((0, 0, 0))

@@ -21,7 +21,13 @@ for x in range(10):
         if minefield[x][y] == 0:
             for i in range(-1, 2):
                 for j in range(-1, 2):
-                    if x + i >= 0 and x + i < 10 and y + j >= 0 and y + j < 10 and minefield[x + i][y + j] == -1:
+                    if (
+                        x + i >= 0
+                        and x + i < 10
+                        and y + j >= 0
+                        and y + j < 10
+                        and minefield[x + i][y + j] == -1
+                    ):
                         minefield[x][y] += 1
 
 while True:
@@ -33,10 +39,16 @@ while True:
     screen.fill((0, 0, 0))
     for x in range(10):
         for y in range(10):
-            pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(x * 64, y * 48, 64, 48), 1)
+            pygame.draw.rect(
+                screen, (255, 255, 255), pygame.Rect(x * 64, y * 48, 64, 48), 1
+            )
             if minefield[x][y] == -1:
-                pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(x * 64, y * 48, 64, 48))
+                pygame.draw.rect(
+                    screen, (255, 0, 0), pygame.Rect(x * 64, y * 48, 64, 48)
+                )
             else:
-                pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(x * 64, y * 48, 64, 48))
+                pygame.draw.rect(
+                    screen, (0, 255, 0), pygame.Rect(x * 64, y * 48, 64, 48)
+                )
 
     pygame.display.flip()

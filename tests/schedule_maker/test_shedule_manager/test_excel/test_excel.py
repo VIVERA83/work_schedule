@@ -43,7 +43,6 @@ if __name__ == "__main__":
     statistic["Машина в ремонте"] = defaultdict(int)
     statistic["Общий наряд"] = defaultdict(int)
     for date, car in data.items():
-
         for name, data in statistic.items():
             data[date] = 0
 

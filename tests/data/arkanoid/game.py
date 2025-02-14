@@ -18,7 +18,11 @@ paddle_speed = 0
 
 block_width = 60
 block_height = 20
-blocks = [pygame.Rect(x * block_width, y * block_height, block_width, block_height) for x in range(10) for y in range(6)]
+blocks = [
+    pygame.Rect(x * block_width, y * block_height, block_width, block_height)
+    for x in range(10)
+    for y in range(6)
+]
 
 while True:
     for event in pygame.event.get():

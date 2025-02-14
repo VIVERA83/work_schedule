@@ -20,7 +20,6 @@ from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 
 
 class ScheduleManager:
-
     def __init__(
         self,
         driver_schedules: dict[int, WorkerSchedule],

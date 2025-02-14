@@ -15,7 +15,7 @@ from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
 def merge_dict(d1: dict, d2: dict):
     unused = {
         date_1: {**values_1, **values_2}
-        for (date_1, values_1), (date_2, values_2), in zip(d1.items(), d2.items())
+        for (date_1, values_1), (date_2, values_2) in zip(d1.items(), d2.items())
     }
     return unused
 
@@ -31,7 +31,6 @@ def merge_employee_work_plan(
     for (date_1, name_1), (date_2, name_2) in zip(
         employee_1.get_schedule().items(), employee_2.get_schedule().items()
     ):
-
         if name_1 != name_2:
             temp = {}
             # 1
