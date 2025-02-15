@@ -3,13 +3,28 @@ from datetime import datetime
 
 from icecream import ic
 
-from tests.schedule_maker.data import date_17_01_2025, today_1
-from work_schedule.store.scheduler.combined_employees_work_plan import (
-    CombinedEmployeesWorkPlan,
-)
+from test_area.schedule_maker.data import date_17_01_2025, today_1
 from work_schedule.store.scheduler.employee_work_plan import EmployeeWorkPlan
 from work_schedule.store.scheduler.utils import SIGNAL_WEEKEND, SIGNAL_WORK
 from work_schedule.store.scheduler.worker_schedule import WorkerSchedule
+
+ic.includeContext = True
+
+
+def merge_dict_1(d1: dict, d2: dict):
+    r = defaultdict(dict)
+    # u = defaultdict(dict)
+    for (
+        (date_1, values_1),
+        (date_2, values_2),
+    ) in zip(d1.items(), d2.items()):
+        if values_1 == values_2:
+            r[date_1] = {"Car_1": values_1}
+        else:
+            if values_1 == SIGNAL_WEEKEND:
+                r[date_1] = {"Car_2": values_2}
+
+    return r
 
 
 def merge_dict(d1: dict, d2: dict):
@@ -63,39 +78,70 @@ def merge_employee_work_plan(
                 else:
                     total[date_1] = {
                         employee_1.name: name_1,
-                        employee_2.name: SIGNAL_WORK,
                     }
 
         # удаление повторов
-        removing_duplicates_from_unused(unused, total, date_1)
-        # if data := unused.get(date_1):
-        #     a = set(total[date_1].values())
-        #     b = set(data.keys())
-        #     if c := b - a:
-        #         unused[date_1] = {
-        #             element: unused[date_1][element]
-        #             for element in c
-        #         }
-        #     elif a == b:
-        #         unused[date_1] = {
-        #             element: unused[date_1][element]
-        #             for element in c
-        #         }
-        #     if not unused[date_1]:
-        #         del unused[date_1]
+        if data := unused.get(date_1):
+            a = set(total[date_1].values())
+            b = set(data.keys())
+            # b = set(unused.get(date_1, {}).keys())
+            if c := b - a:
+                unused[date_1] = {element: unused[date_1][element] for element in c}
+                # temp = {}
+                # for element in c:
+                #     temp.update({element: unused[date_1][element]})
+                # unused[date_1] = temp
+            elif a == b:
+                unused[date_1] = {element: unused[date_1][element] for element in c}
+                # temp = {}
+                # for element in c:
+                #     temp.update({element: unused[date_1][element]})
+                # unused[date_1] = temp
+            if not unused[date_1]:
+                del unused[date_1]
     return total, unused
 
 
-def removing_duplicates_from_unused(unused, total, date):
-    if data := unused.get(date):
-        a = set(total[date].values())
-        b = set(data.keys())
-        if c := b - a:
-            unused[date] = {element: unused[date][element] for element in c}
-        elif a == b:
-            unused[date] = {element: unused[date][element] for element in c}
-        if not unused[date]:
-            del unused[date]
+# def merge_employee_work_plan(employee_1: EmployeeWorkPlan, employee_2: EmployeeWorkPlan):
+#     total = defaultdict(dict)
+#     unused = merge_dict(employee_1.get_unused_employees(),employee_2.get_unused_employees())
+#
+#     # yesterday = list(employee_1.get_employee_work_plan().keys())[0]
+#     for (date_1, name_1), (date_2, name_2) in zip(employee_1.get_employee_work_plan().items(),
+#                                                   employee_2.get_employee_work_plan().items()):
+#
+#         if name_1 != name_2:
+#             # if name_1 in [SIGNAL_WEEKEND] :
+#
+#             print(date_1, "else", name_1, unused.get(date_1))
+#             total[date_1] = {
+#                 employee_1.name: name_1,
+#                 employee_2.name: name_2,
+#             }
+#         else:
+#
+#             if data := list(unused.pop(date_1, {}).keys()):
+#                 total[date_1] = {
+#                     employee_1.name: name_1,
+#                     employee_2.name: data[-1],
+#                 }
+#             else:
+#
+#                 total[date_1] = {
+#                     employee_1.name: name_1,
+#
+#                 }
+#         # date_yesterday = total.get(yesterday)
+#         # date_today = total.get(date_1)
+#         # for name_yesterday, value_yesterday in date_yesterday.items():
+#         #     for name_today, value_today in date_today.items():
+#         #         if (name_yesterday == name_today):
+#         #             date_yesterday[name_yesterday] = value_today
+#         #             date_today[name_today] = value_yesterday
+#         #             break
+#
+#         # yesterday = date_1
+#     return total, unused
 
 
 if __name__ == "__main__":
@@ -103,7 +149,7 @@ if __name__ == "__main__":
         "driver_1",
         datetime(year=2025, month=1, day=1),
         work_days=4,
-        weekend_days=4,
+        weekend_days=2,
         is_working=True,
         what_day=1,
     )
@@ -119,7 +165,7 @@ if __name__ == "__main__":
         "driver_3",
         datetime(year=2025, month=1, day=1),
         work_days=4,
-        weekend_days=4,
+        weekend_days=2,
         is_working=False,
         what_day=1,
     )
@@ -129,14 +175,14 @@ if __name__ == "__main__":
         work_days=5,
         weekend_days=2,
         is_working=True,
-        what_day=2,
+        what_day=1,
     )
     work_schedule_car_2 = WorkerSchedule(
         "Car_2",
         datetime(year=2025, month=1, day=1),
         work_days=5,
         weekend_days=2,
-        is_working=True,
+        is_working=False,
         what_day=2,
     )
     employee_1 = EmployeeWorkPlan(
@@ -155,15 +201,8 @@ if __name__ == "__main__":
         work_schedule_driver_2,
         work_schedule_driver_3,
     )
-
-    result = CombinedEmployeesWorkPlan(employee_1, employee_2)
-
-    # result = merge_employee_work_plan(employee_1, employee_2)
-    # result.set_date(datetime(year=2025, month=1, day=1), datetime(year=2025, month=1, day=10))
-    ic(result.get_schedule())
-    # ic(result.get_unused_employees())
-    ic(result.add_combined_employees_work_plan())
-
+    result = merge_employee_work_plan(employee_1, employee_2)
+    ic(result)
     iters = zip(
         work_schedule_driver_1.get_schedule(
             today_1,
@@ -177,52 +216,19 @@ if __name__ == "__main__":
             today_1,
             date_17_01_2025,
         ).values(),
-        work_schedule_car_1.get_schedule(
-            today_1,
-            date_17_01_2025,
-        ).values(),
-        work_schedule_car_2.get_schedule(
-            today_1,
-            date_17_01_2025,
-        ).values(),
     )
     [print(i) for i in iters]
+    # [print(a[0], a[1], b[1]) for a, b in zip(
+    #     employee_1.get_unused_employees().items(),
+    #     employee_2.get_unused_employees().items())
+    #  ]
+    print()
 
-    #  car_2 what_day=2 is_working=False
-    a = {
-        "11-01-2025": {"Car_1": "driver_2", "Car_2": "driver_3"},
-        "12-01-2025": {"Car_1": "driver_2", "Car_2": "driver_3"},
-        "13-01-2025": {"Car_1": "B", "Car_2": "driver_1"},
-        "14-01-2025": {"Car_1": "B", "Car_2": "B"},
-        "15-01-2025": {"Car_1": "driver_3", "Car_2": "B"},
-        "16-01-2025": {"Car_1": "driver_3", "Car_2": "driver_1"},
-        "17-01-2025": {"Car_1": "driver_3", "Car_2": "driver_2"},
-    }
+    # unused = {date_1: {**values_1, **values_2}
+    # for (date_1, values_1), (date_2, values_2), in zip(employee_1.get_unused_employees().items(),
+    #                                                    employee_2.get_unused_employees().items())
+    # }
+    # unused = merge_dict_1(employee_1.get_employee_work_plan(),
+    #                       employee_2.get_employee_work_plan())
 
-    b = {
-        "13-01-2025": {"driver_2": "P"},
-        "14-01-2025": {"driver_1": "P", "driver_2": "P"},
-        "15-01-2025": {"driver_1": "P"},
-    }
-
-    # assert a == result.get_employee_work_plan()
-    # assert b == result.get_unused_employees()
-
-    a = {
-        "11-01-2025": {"Car_1": "driver_2", "Car_2": "driver_3"},
-        "12-01-2025": {"Car_1": "driver_2", "Car_2": "driver_3"},
-        "13-01-2025": {"Car_1": "B", "Car_2": "driver_1"},
-        "14-01-2025": {"Car_1": "B", "Car_2": "driver_1"},
-        "15-01-2025": {"Car_1": "driver_3", "Car_2": "B"},
-        "16-01-2025": {"Car_1": "driver_3", "Car_2": "B"},
-        "17-01-2025": {"Car_1": "driver_3", "Car_2": "driver_2"},
-    }
-
-    b = {
-        "13-01-2025": {"driver_2": "P"},
-        "14-01-2025": {"driver_2": "P"},
-        "15-01-2025": {"driver_1": "P"},
-        "16-01-2025": {"driver_1": "P"},
-    }
-    # assert a == result[0]
-    # assert b == result[1]
+    # [print(i[0], i[1]) for i in unused.items()]

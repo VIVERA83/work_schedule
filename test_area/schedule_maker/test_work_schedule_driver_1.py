@@ -76,7 +76,7 @@ from datetime import datetime
 
 from icecream import ic
 
-from tests.schedule_maker.data import (
+from test_area.schedule_maker.data import (
     date_17_01_2025,
     driver_0_s,
     driver_1_s,

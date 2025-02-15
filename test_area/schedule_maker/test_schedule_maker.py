@@ -1,4 +1,4 @@
-from tests.schedule_maker.data import (
+from test_area.schedule_maker.data import (
     car_0_s,
     car_0_schedule_make_result,
     date_01_01_2020,

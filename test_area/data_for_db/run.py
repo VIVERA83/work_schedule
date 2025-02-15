@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 from core.logger import setup_logging
 from core.settings import PostgresSettings
 
-from tests.data_for_db.export_data import ExportData
+from test_area.data_for_db.export_data import ExportData
 
 if __name__ == "__main__":
     load_dotenv()

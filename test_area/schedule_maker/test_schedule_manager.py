@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from icecream import ic
 
-from tests.schedule_maker.data import (
+from test_area.schedule_maker.data import (
     car_0_name,
     car_0_s,
     car_id_0,

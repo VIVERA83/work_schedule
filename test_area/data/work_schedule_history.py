@@ -1,4 +1,4 @@
-from tests.schedule_maker.data import date_06_01_2025
+from test_area.schedule_maker.data import date_06_01_2025
 from work_schedule.store.db.data.base import BaseDB
 from work_schedule.store.db.data.dc import WorkScheduleHistory
 
