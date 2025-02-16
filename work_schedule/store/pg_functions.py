@@ -4,6 +4,7 @@ from core.settings import PostgresSettings
 
 pg_schema = PostgresSettings().postgres_schema  # noqa
 
+# функция ищет минимальный день в диапазоне, в котором работает машина (водитель)
 pg_func_find_nearest_smaller_date = f"""
 CREATE OR REPLACE FUNCTION {pg_schema}.find_nearest_smaller_date(passed_ts timestamp without time zone, driver_id integer)
  RETURNS jsonb
@@ -37,8 +38,8 @@ END;
 $function$;
 """
 
-pg_func_all_ok = f"""
-CREATE OR REPLACE FUNCTION {pg_schema}.all_ok(start_ts timestamp without time zone, stop_ts timestamp without time zone, driver_id integer)
+pg_func_get_employee_shifts_in_period = f"""
+CREATE OR REPLACE FUNCTION {pg_schema}.get_employee_shifts_in_period(start_ts timestamp without time zone, stop_ts timestamp without time zone, driver_id integer)
  RETURNS jsonb[]
  LANGUAGE plpgsql
 AS $function$
@@ -130,7 +131,7 @@ def create_pg_functions(op: Operations):
     """Создание функций для PostgresSQL"""
 
     op.execute(pg_func_find_nearest_smaller_date)
-    op.execute(pg_func_all_ok)
+    op.execute(pg_func_get_employee_shifts_in_period)
     op.execute(pg_func_upper_column)
     op.execute(pg_func_upper_column_trigger)
     op.execute(pg_func_check_crew_cars)
@@ -143,7 +144,7 @@ def drop_pg_functions(op: Operations):
     """Удаление функций для PostgresSQL"""
 
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.find_nearest_smaller_date;")
-    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.all_ok;")
+    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.get_employee_shifts_in_period;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.upper_column;")
     op.execute(
         f"DROP TRIGGER IF EXISTS {pg_schema}.upper_column_trigger ON {pg_schema}.car;"
