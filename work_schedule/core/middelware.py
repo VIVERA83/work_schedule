@@ -1,9 +1,13 @@
+import traceback
+
 from fastapi import FastAPI
 from fastapi import Request as FastApiRequest
 from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+
+from core.utils import save_log_file
 
 HTTP_EXCEPTIONS = {
     status.HTTP_404_NOT_FOUND: "Not Found",
@@ -17,13 +21,14 @@ HTTP_EXCEPTIONS = {
 
 class ErrorHandlingMiddleware(BaseHTTPMiddleware):
     async def dispatch(
-        self, request: FastApiRequest, call_next: RequestResponseEndpoint
+            self, request: FastApiRequest, call_next: RequestResponseEndpoint
     ) -> Response:
         try:
             response = await call_next(request)
             return response
         except Exception as error:
-            request.app.logger.error(str(error))
+            # traceback.print_exc()
+            await save_log_file("log.txt", traceback.format_exc(), f"{request.client.host} {request.method} {request.url}")
             code = getattr(error, "code", status.HTTP_500_INTERNAL_SERVER_ERROR)
             return JSONResponse(
                 status_code=code,

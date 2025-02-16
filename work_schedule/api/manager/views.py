@@ -51,6 +51,7 @@ class ManagerViews(BaseView):
         )
 
     async def add_car(self, data: AddCarSchema) -> FullDataCarSchema:
+        self.db.logger.debug(f"{self.__class__.__name__}.add_car: входящие параметры {data}")
         car, work_schedule_history = await self.db.add_car_set_schedule(
             **data.model_dump()
         )

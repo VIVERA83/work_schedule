@@ -38,10 +38,13 @@ class ManagerAccessor(BaseAccessor):
         :param date: Дата начала графика
         :return: tuple[DriverModel, WorkScheduleHistoryModel]
         """
+        self.accessor.logger.debug(f"{self.__class__.__name__}.create : "
+                                   f"{name=}, {id_schedule_type=}, {is_working=}, {what_day=}, {date=}")
         async with self.accessor.session as session:
             driver = DriverModel(name=name)
             session.add(driver)
             await session.flush()
+            self.accessor.logger.debug(f"{self.__class__.__name__}.create : {driver} успешно создан")
             work_schedule_history = WorkScheduleHistoryModel(
                 id_driver=driver.id,
                 is_working=is_working,
@@ -49,23 +52,12 @@ class ManagerAccessor(BaseAccessor):
                 what_day=what_day,
                 date=date,
             )
+            self.accessor.logger.debug(f"{self.__class__.__name__}.create : {work_schedule_history} успешно создан")
+            self.accessor.logger.debug(f"{self.__class__.__name__}.create : {work_schedule_history.as_dict}")
             session.add(work_schedule_history)
             await session.commit()
+            self.accessor.logger.debug(f"{self.__class__.__name__}.create : {driver} {work_schedule_history} успешно")
         return driver, work_schedule_history
-
-    # @exception_handler(internal=InternalDatabaseException)
-    # async def assign_car_driver(self, driver_id: int, car_id: int):
-    #     """Назначение водителя на автомобиль.
-    #
-    #     :param driver_id: Идентификатор водителя
-    #     :param car_id: Идентификатор автомобиля
-    #     :return: CarDriverAssociationModel
-    #     """
-    #     async with self.accessor.session as session:
-    #         assign_car = CarDriverAssociationModel(driver_id=driver_id, car_id=car_id)
-    #         session.add(assign_car)
-    #         await session.commit()
-    #     return assign_car
 
     @exception_handler()
     async def get_current_worker_schedule_by_id(self, driver_id: int) -> RowMapping:
@@ -92,11 +84,22 @@ class ManagerAccessor(BaseAccessor):
         what_day: int,
         date: datetime,
     ):
-        """Добавить новую машину в базу данных и назначить график работы(ППО) для машины."""
+        """Добавить новую машину в базу данных и назначить график работы(ППО) для машины.
+
+        :param name: Производитель, завод изготовитель
+        :param car_model: Модель машины
+        :param car_number: Номер машины
+        :param id_schedule_type: Идентификатор типа расписания
+        :param is_working: Флаг работы машины (то есть рабочий = True, не рабочий = False)
+        :param what_day: Какой день, машина работает(отдыхает)
+        :param date: Дата начала графика
+        :return: tuple[CarModel, CarScheduleHistoryModel]
+        """
         async with self.accessor.session as session:
             car = CarModel(name=name, car_model=car_model, car_number=car_number)
             session.add(car)
             await session.flush()
+            self.logger.debug(f"{self.__class__.__name__}.add_car_set_schedule : {car} успешно создан")
             car_schedule_history = CarScheduleHistoryModel(
                 id_car=car.id,
                 is_working=is_working,
@@ -106,6 +109,7 @@ class ManagerAccessor(BaseAccessor):
             )
             session.add(car_schedule_history)
             await session.commit()
+            self.logger.debug(f"{self.__class__.__name__}.add_car_set_schedule : {car} {car_schedule_history} успешно")
         return car, car_schedule_history
 
     async def all(self, start_date: datetime, end_date: datetime):
