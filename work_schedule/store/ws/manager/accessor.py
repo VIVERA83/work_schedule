@@ -4,7 +4,7 @@ from icecream import ic
 from sqlalchemy import RowMapping, text
 from store.ws.base.accessor import BaseAccessor
 from store.ws.base.exceptions import exception_handler
-from store.ws.manager.exceptions import ForeignKeyException, InternalDatabaseException
+from store.ws.manager.exceptions import ForeignKeyException #, InternalDatabaseException
 from store.ws.manager.sql import sql_query_current_worker_schedule
 from store.ws.models import (
     # CarDriverAssociationModel,
@@ -128,14 +128,16 @@ class ManagerAccessor(BaseAccessor):
             f"""
         select
             d."name",
-            work_schedule.all_ok('{start_date}', '{end_date}', cda.driver_id)
-            from work_schedule.car_driver_association cda
+            work_schedule.get_employee_shifts_in_period('{start_date}', '{end_date}', cda.driver_id)
+--             from work_schedule.car_driver_association cda
+            from work_schedule.car c
             join work_schedule.driver d on d.id = cda.driver_id
             join work_schedule.car c on c.id  = cda.car_id 
             join work_schedule.work_schedule_history wsh on wsh.id_driver = cda.driver_id  
-        where cda.car_id = '{car_id}'::integer
+--          where cda.car_id = '{car_id}'::integer
+            where c.id = '{car_id}'::integer
         group by 
-            cda.driver_id,
+            c.driver_id,
             d.name
         order by 
             cda.driver_id
