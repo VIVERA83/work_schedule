@@ -48,5 +48,7 @@ class WorkerScheduleViews(BaseView):
 
         date_object = datetime.strptime(date_string, date_format)
 
-        ic(result)
+        for data in result:
+            for d in data:
+                ic(d)
         return "ok"

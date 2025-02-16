@@ -4,8 +4,8 @@ from icecream import ic
 from sqlalchemy import RowMapping, text
 from store.ws.base.accessor import BaseAccessor
 from store.ws.base.exceptions import exception_handler
-from store.ws.manager.exceptions import ForeignKeyException #, InternalDatabaseException
-from store.ws.manager.sql import sql_query_current_worker_schedule
+from store.ws.manager.exceptions import ForeignKeyException  # , InternalDatabaseException
+from store.ws.manager.sql import sql_query_current_worker_schedule, get_sql_query_crews
 from store.ws.models import (
     # CarDriverAssociationModel,
     DriverModel,
@@ -20,12 +20,12 @@ class ManagerAccessor(BaseAccessor):
 
     @exception_handler(foreign_key=ForeignKeyException)
     async def create(
-        self,
-        name: str,
-        id_schedule_type: int,
-        is_working: bool,
-        what_day: int,
-        date: datetime,
+            self,
+            name: str,
+            id_schedule_type: int,
+            is_working: bool,
+            what_day: int,
+            date: datetime,
     ):
         """Добавление нового водителя в базу данных и создание новой записи в таблице work_schedule_history.
 
@@ -75,14 +75,14 @@ class ManagerAccessor(BaseAccessor):
 
     @exception_handler()
     async def add_car_set_schedule(
-        self,
-        name: str,
-        car_model: str,
-        car_number: str,
-        id_schedule_type: int,
-        is_working: bool,
-        what_day: int,
-        date: datetime,
+            self,
+            name: str,
+            car_model: str,
+            car_number: str,
+            id_schedule_type: int,
+            is_working: bool,
+            what_day: int,
+            date: datetime,
     ):
         """Добавить новую машину в базу данных и назначить график работы(ППО) для машины.
 
@@ -124,26 +124,26 @@ class ManagerAccessor(BaseAccessor):
 
         Запрос возвращает водителей с данными для построения графика работы на машине.
         """
-        sql = text(
-            f"""
-        select
-            d."name",
-            work_schedule.get_employee_shifts_in_period('{start_date}', '{end_date}', cda.driver_id)
---             from work_schedule.car_driver_association cda
-            from work_schedule.car c
-            join work_schedule.driver d on d.id = cda.driver_id
-            join work_schedule.car c on c.id  = cda.car_id 
-            join work_schedule.work_schedule_history wsh on wsh.id_driver = cda.driver_id  
---          where cda.car_id = '{car_id}'::integer
-            where c.id = '{car_id}'::integer
-        group by 
-            c.driver_id,
-            d.name
-        order by 
-            cda.driver_id
-        ;
-        """
-        )
+        sql = text(get_sql_query_crews(self.accessor.settings.postgres_schema, start_date, end_date))
+        #             f"""
+        #         select
+        #             d."name",
+        #             work_schedule.get_employee_shifts_in_period('{start_date}', '{end_date}', cda.driver_id)
+        # --             from work_schedule.car_driver_association cda
+        #             from work_schedule.car c
+        #             join work_schedule.driver d on d.id = cda.driver_id
+        #             join work_schedule.car c on c.id  = cda.car_id
+        #             join work_schedule.work_schedule_history wsh on wsh.id_driver = cda.driver_id
+        # --          where cda.car_id = '{car_id}'::integer
+        #             where c.id = '{car_id}'::integer
+        #         group by
+        #             c.driver_id,
+        #             d.name
+        #         order by
+        #             cda.driver_id
+        #         ;
+        #         """
+        #         )
         async with self.accessor.session as session:
             result = await session.execute(sql)
             return result.all()

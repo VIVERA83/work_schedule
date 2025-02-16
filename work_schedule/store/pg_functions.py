@@ -126,6 +126,77 @@ BEFORE INSERT OR UPDATE ON {pg_schema}.crew_drivers
 FOR EACH ROW EXECUTE PROCEDURE {pg_schema}.check_crew_drivers();
 """
 
+pg_func_get_car_shifts_in_period = f"""
+-- суть функция выдает список смен типов графиков за указанный период по указанному машине
+CREATE OR REPLACE FUNCTION {pg_schema}.get_car_shifts_in_period(start_ts timestamp without time zone, stop_ts timestamp without time zone, car_id integer)
+ RETURNS jsonb[]
+ LANGUAGE plpgsql
+AS $function$
+DECLARE 
+	res jsonb[];
+	smaller_date jsonb := {pg_schema}.find_nearest_smaller_date(start_ts, car_id);
+BEGIN
+	res:= array((
+	select 
+    	    jsonb_build_object(
+			'schedule_start_date', csh."date",
+			'work_days', st.work_days,
+			'weekend_days', st.weekend_days,
+			'is_working', csh.is_working, 	
+			'what_day', csh.what_day		
+		)
+	from {pg_schema}.car_schedule_history csh 
+	join {pg_schema}.schedule_types st on st.id = csh.id_schedule_type 
+	where
+		csh.id_car = car_id    	
+		and 
+		csh."date" BETWEEN start_ts AND stop_ts
+group by csh.date, st.work_days, st.weekend_days, csh.is_working, csh.what_day
+));
+IF smaller_date IS NOT NULL THEN
+        res:= res || smaller_date;
+    END IF;
+RETURN res;
+END;
+$function$
+;
+"""
+
+pg_func_car_find_nearest_smaller_date = f"""
+--функция возвращает минимальную дату начала графика работы машины, 
+CREATE OR REPLACE FUNCTION {pg_schema}.car_find_nearest_smaller_date(passed_ts timestamp without time zone, car_id integer)
+ RETURNS jsonb
+ LANGUAGE plpgsql
+AS $function$
+DECLARE 
+	res jsonb;
+BEGIN
+	res:=(
+	select 
+		jsonb_build_object(
+			'schedule_start_date', csh."date",
+			'work_days', st.work_days,
+			'weekend_days', st.weekend_days,
+			'is_working', csh.is_working, 	
+			'what_day', csh.what_day
+		)
+	from {pg_schema}.car_schedule_history csh
+	join {pg_schema}.schedule_types st on st.id = csh.id_schedule_type  
+	where
+		csh.id_car = car_id    	
+		and
+    	passed_ts > csh."date" and true 
+	    or
+    	passed_ts < csh."date" and not true
+order by abs(extract(epoch from passed_ts - csh."date"))
+limit 1
+);
+RETURN res;
+END;
+$function$
+;
+"""
+
 
 def create_pg_functions(op: Operations):
     """Создание функций для PostgresSQL"""
@@ -138,6 +209,8 @@ def create_pg_functions(op: Operations):
     op.execute(pg_func_check_crew_cars_trigger)
     op.execute(pg_func_check_crew_drivers)
     op.execute(pg_func_check_crew_drivers_trigger)
+    op.execute(pg_func_get_car_shifts_in_period)
+    op.execute(pg_func_car_find_nearest_smaller_date)
 
 
 def drop_pg_functions(op: Operations):
@@ -146,14 +219,10 @@ def drop_pg_functions(op: Operations):
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.find_nearest_smaller_date;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.get_employee_shifts_in_period;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.upper_column;")
-    op.execute(
-        f"DROP TRIGGER IF EXISTS {pg_schema}.upper_column_trigger ON {pg_schema}.car;"
-    )
+    op.execute(f"DROP TRIGGER IF EXISTS {pg_schema}.upper_column_trigger ON {pg_schema}.car;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.check_crew_cars;")
-    op.execute(
-        f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_cars_trigger ON {pg_schema}.crew_cars;"
-    )
+    op.execute(f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_cars_trigger ON {pg_schema}.crew_cars;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.check_crew_drivers;")
-    op.execute(
-        f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_drivers_trigger ON {pg_schema}.crew_drivers;"
-    )
+    op.execute(f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_drivers_trigger ON {pg_schema}.crew_drivers;")
+    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.get_car_shifts_in_period;")
+    op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.car_find_nearest_smaller_date;")
