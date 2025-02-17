@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import text, TextClause
+
 SQL_QUERY_STRING = str
 sql_query_current_worker_schedule = """
 select
@@ -18,7 +20,7 @@ order by wsh.date desc
 """
 
 
-def get_sql_query_crews(pg_schema: str, start_date: datetime, end_date: datetime) -> SQL_QUERY_STRING:
+def get_sql_query_crews(pg_schema: str, start_date: datetime, end_date: datetime) -> TextClause:
     """Получить SQL запрос, который возвращает экипаж из машин и водителей.
 
     :param pg_schema: Postgres схема
@@ -26,8 +28,9 @@ def get_sql_query_crews(pg_schema: str, start_date: datetime, end_date: datetime
     :param end_date: Последняя дата для сбора смен
     :return: SQL_QUERY_STRING
     """
-    return f"""
+    return text(f"""
 select 
+c.id,
 array_agg( 
 	DISTINCT
 	jsonb_build_object(
@@ -54,4 +57,4 @@ join {pg_schema}.crew_drivers cd on cd.id_crew  = c.id
 join {pg_schema}.driver d on d.id = cd.id_driver 
 group by c.id
 ;
-"""
+""")
