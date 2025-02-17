@@ -1,12 +1,8 @@
 from datetime import datetime
 
-from icecream import ic
-
 from api.base.route import BaseView
-from api.worker_schedule.schemes import WorkerScheduleCreateSchema, WorkerScheduleSchema
+from api.worker_schedule.schemes import WorkerScheduleCreateSchema, WorkerScheduleSchema, CrewSchema
 from core.lifespan import store
-from store.scheduler.employee_work_plan import EmployeeWorkPlan
-from store.scheduler.worker_schedule import WorkerSchedule
 from store.store import Store
 
 
@@ -24,9 +20,12 @@ class WorkerScheduleViews(BaseView):
                 "summary": "Получить график водителя",
                 "description": "получение данных для построения графика графика работы водителя.",
             },
-            "get_schedule": {
+            "get_all_crews": {
                 "methods": ["GET"],
-                "path": "/get_schedule",
+                "path": "/get_all_crews",
+                "response_model": list[CrewSchema],
+                "summary": "Получить список экипажей",
+                "description": "Получить список экипажей с графиками работы в указанный диапазон времени",
             },
         }
 
@@ -35,20 +34,10 @@ class WorkerScheduleViews(BaseView):
             **data.model_dump()
         )
 
-    async def get_schedule(
-        self,
-        car_id: int,
-        start_date: datetime = datetime.now(),
-        end_date: datetime = datetime.now(),
+    async def get_all_crews(
+            self,
+            start_date: datetime = datetime.now(),
+            end_date: datetime = datetime.now(),
     ):
-        result = await self.db.manager.get_all_bak(car_id, start_date, end_date)
-
-        date_string = "2025-01-21T00:00:00"
-        date_format = "%Y-%m-%dT%H:%M:%S"
-
-        date_object = datetime.strptime(date_string, date_format)
-
-        for data in result:
-            for d in data:
-                ic(d)
-        return "ok"
+        row_crews = await self.db.manager.get_all_crews(start_date, end_date)
+        return [CrewSchema(id=item[0], cars=item[1], drivers=item[2]) for item in row_crews]
