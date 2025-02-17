@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
@@ -22,10 +22,13 @@ class WorkerScheduleCreateSchema(BaseModel):
     )
 
 
-WorkerScheduleSchema = Annotated[dict[str, Literal["P", "B"]], Field(description="данные для построения графика",
-                                                                     examples=[
-                                                                         {"20-01-2025": "P", "21-01-2025": "B"}], ),]
-
+WorkerScheduleSchema = Annotated[
+    dict[str, Literal["P", "B"]],
+    Field(
+        description="данные для построения графика",
+        examples=[{"20-01-2025": "P", "21-01-2025": "B"}],
+    ),
+]
 
 
 class ScheduleHistorySchema(BaseModel):
@@ -41,6 +44,7 @@ class CarSchema(BaseModel):
     name: str = Field()
     model: str = Field()
     schedules: list[ScheduleHistorySchema] = Field()
+
 
 class DriverSchema(BaseModel):
     id: int = Field()

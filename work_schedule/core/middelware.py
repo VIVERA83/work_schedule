@@ -21,14 +21,18 @@ HTTP_EXCEPTIONS = {
 
 class ErrorHandlingMiddleware(BaseHTTPMiddleware):
     async def dispatch(
-            self, request: FastApiRequest, call_next: RequestResponseEndpoint
+        self, request: FastApiRequest, call_next: RequestResponseEndpoint
     ) -> Response:
         try:
             response = await call_next(request)
             return response
         except Exception as error:
             traceback.print_exc()
-            await save_log_file("log.txt", traceback.format_exc(), f"{request.client.host} {request.method} {request.url}")
+            await save_log_file(
+                "log.txt",
+                traceback.format_exc(),
+                f"{request.client.host} {request.method} {request.url}",
+            )
             code = getattr(error, "code", status.HTTP_500_INTERNAL_SERVER_ERROR)
             return JSONResponse(
                 status_code=code,

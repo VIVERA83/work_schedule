@@ -3,7 +3,10 @@ from datetime import datetime
 from icecream import ic
 
 from test_area.schedule_maker.data import date_17_01_2025, today_1, today_2
-from test_area.schedule_maker.test_combined_empoyees_work_plan import employee_3, employee_4
+from test_area.schedule_maker.test_combined_empoyees_work_plan import (
+    employee_3,
+    employee_4,
+)
 from work_schedule.store.scheduler.combined_employees_work_plan import (
     CombinedEmployeesWorkPlan,
 )

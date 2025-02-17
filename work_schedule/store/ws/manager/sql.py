@@ -20,7 +20,9 @@ order by wsh.date desc
 """
 
 
-def get_sql_query_crews(pg_schema: str, start_date: datetime, end_date: datetime) -> TextClause:
+def get_sql_query_crews(
+    pg_schema: str, start_date: datetime, end_date: datetime
+) -> TextClause:
     """Получить SQL запрос, который возвращает экипаж из машин и водителей.
 
     :param pg_schema: Postgres схема

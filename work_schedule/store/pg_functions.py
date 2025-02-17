@@ -219,10 +219,16 @@ def drop_pg_functions(op: Operations):
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.find_nearest_smaller_date;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.get_employee_shifts_in_period;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.upper_column;")
-    op.execute(f"DROP TRIGGER IF EXISTS {pg_schema}.upper_column_trigger ON {pg_schema}.car;")
+    op.execute(
+        f"DROP TRIGGER IF EXISTS {pg_schema}.upper_column_trigger ON {pg_schema}.car;"
+    )
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.check_crew_cars;")
-    op.execute(f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_cars_trigger ON {pg_schema}.crew_cars;")
+    op.execute(
+        f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_cars_trigger ON {pg_schema}.crew_cars;"
+    )
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.check_crew_drivers;")
-    op.execute(f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_drivers_trigger ON {pg_schema}.crew_drivers;")
+    op.execute(
+        f"DROP TRIGGER IF EXISTS {pg_schema}.check_crew_drivers_trigger ON {pg_schema}.crew_drivers;"
+    )
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.get_car_shifts_in_period;")
     op.execute(f"DROP FUNCTION IF EXISTS {pg_schema}.car_find_nearest_smaller_date;")

@@ -3,7 +3,10 @@ from collections import defaultdict
 from icecream import ic
 
 from test_area.schedule_maker.data import date_06_01_2025, date_17_01_2025
-from test_area.schedule_maker.test_combined_empoyees_work_plan import employee_3, employee_4
+from test_area.schedule_maker.test_combined_empoyees_work_plan import (
+    employee_3,
+    employee_4,
+)
 from test_area.schedule_maker.test_shedule_manager.test_shedule_manager import (
     employee_1,
     employee_2,

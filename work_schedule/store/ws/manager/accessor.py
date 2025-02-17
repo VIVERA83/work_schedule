@@ -6,7 +6,6 @@ from store.ws.base.exceptions import exception_handler
 from store.ws.manager.exceptions import ForeignKeyException
 from store.ws.manager.sql import sql_query_current_worker_schedule, get_sql_query_crews
 from store.ws.models import (
-
     DriverModel,
     WorkScheduleHistoryModel,
     CarModel,
@@ -19,12 +18,12 @@ class ManagerAccessor(BaseAccessor):
 
     @exception_handler(foreign_key=ForeignKeyException)
     async def create(
-            self,
-            name: str,
-            id_schedule_type: int,
-            is_working: bool,
-            what_day: int,
-            date: datetime,
+        self,
+        name: str,
+        id_schedule_type: int,
+        is_working: bool,
+        what_day: int,
+        date: datetime,
     ):
         """Добавление нового водителя в базу данных и создание новой записи в таблице work_schedule_history.
 
@@ -37,13 +36,17 @@ class ManagerAccessor(BaseAccessor):
         :param date: Дата начала графика
         :return: tuple[DriverModel, WorkScheduleHistoryModel]
         """
-        self.accessor.logger.debug(f"{self.__class__.__name__}.create : "
-                                   f"{name=}, {id_schedule_type=}, {is_working=}, {what_day=}, {date=}")
+        self.accessor.logger.debug(
+            f"{self.__class__.__name__}.create : "
+            f"{name=}, {id_schedule_type=}, {is_working=}, {what_day=}, {date=}"
+        )
         async with self.accessor.session as session:
             driver = DriverModel(name=name)
             session.add(driver)
             await session.flush()
-            self.accessor.logger.debug(f"{self.__class__.__name__}.create : {driver} успешно создан")
+            self.accessor.logger.debug(
+                f"{self.__class__.__name__}.create : {driver} успешно создан"
+            )
             work_schedule_history = WorkScheduleHistoryModel(
                 id_driver=driver.id,
                 is_working=is_working,
@@ -51,11 +54,17 @@ class ManagerAccessor(BaseAccessor):
                 what_day=what_day,
                 date=date,
             )
-            self.accessor.logger.debug(f"{self.__class__.__name__}.create : {work_schedule_history} успешно создан")
-            self.accessor.logger.debug(f"{self.__class__.__name__}.create : {work_schedule_history.as_dict}")
+            self.accessor.logger.debug(
+                f"{self.__class__.__name__}.create : {work_schedule_history} успешно создан"
+            )
+            self.accessor.logger.debug(
+                f"{self.__class__.__name__}.create : {work_schedule_history.as_dict}"
+            )
             session.add(work_schedule_history)
             await session.commit()
-            self.accessor.logger.debug(f"{self.__class__.__name__}.create : {driver} {work_schedule_history} успешно")
+            self.accessor.logger.debug(
+                f"{self.__class__.__name__}.create : {driver} {work_schedule_history} успешно"
+            )
         return driver, work_schedule_history
 
     @exception_handler()
@@ -74,14 +83,14 @@ class ManagerAccessor(BaseAccessor):
 
     @exception_handler()
     async def add_car_set_schedule(
-            self,
-            name: str,
-            car_model: str,
-            car_number: str,
-            id_schedule_type: int,
-            is_working: bool,
-            what_day: int,
-            date: datetime,
+        self,
+        name: str,
+        car_model: str,
+        car_number: str,
+        id_schedule_type: int,
+        is_working: bool,
+        what_day: int,
+        date: datetime,
     ):
         """Добавить новую машину в базу данных и назначить график работы(ППО) для машины.
 
@@ -98,7 +107,9 @@ class ManagerAccessor(BaseAccessor):
             car = CarModel(name=name, car_model=car_model, car_number=car_number)
             session.add(car)
             await session.flush()
-            self.logger.debug(f"{self.__class__.__name__}.add_car_set_schedule : {car} успешно создан")
+            self.logger.debug(
+                f"{self.__class__.__name__}.add_car_set_schedule : {car} успешно создан"
+            )
             car_schedule_history = CarScheduleHistoryModel(
                 id_car=car.id,
                 is_working=is_working,
@@ -108,7 +119,9 @@ class ManagerAccessor(BaseAccessor):
             )
             session.add(car_schedule_history)
             await session.commit()
-            self.logger.debug(f"{self.__class__.__name__}.add_car_set_schedule : {car} {car_schedule_history} успешно")
+            self.logger.debug(
+                f"{self.__class__.__name__}.add_car_set_schedule : {car} {car_schedule_history} успешно"
+            )
         return car, car_schedule_history
 
     async def get_all_crews(self, start_date: datetime, end_date: datetime) -> list:
@@ -118,7 +131,9 @@ class ManagerAccessor(BaseAccessor):
         :param end_date: Конец диапазона
         :return: list
         """
-        sql = get_sql_query_crews(self.accessor.settings.postgres_schema, start_date, end_date)
+        sql = get_sql_query_crews(
+            self.accessor.settings.postgres_schema, start_date, end_date
+        )
         async with self.accessor.session as session:
             result = await session.execute(sql)
             return list(result.all())

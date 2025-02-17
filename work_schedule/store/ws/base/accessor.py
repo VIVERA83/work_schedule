@@ -97,7 +97,9 @@ class BaseAccessor:
 
     @_exception_handler  # noqa
     async def create(self, **fields: dict) -> Model:
-        self.logger.debug(f"{self.Meta.model.__name__}.create входящие параметры: {fields}")
+        self.logger.debug(
+            f"{self.Meta.model.__name__}.create входящие параметры: {fields}"
+        )
         model = self.Meta.model(**fields)
         async with self.accessor.session as session:
             session.add(model)
