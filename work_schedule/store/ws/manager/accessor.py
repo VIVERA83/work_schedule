@@ -1,13 +1,12 @@
 from datetime import datetime
 
-from icecream import ic
-from sqlalchemy import RowMapping, text
+from sqlalchemy import RowMapping
 from store.ws.base.accessor import BaseAccessor
 from store.ws.base.exceptions import exception_handler
-from store.ws.manager.exceptions import ForeignKeyException  # , InternalDatabaseException
+from store.ws.manager.exceptions import ForeignKeyException
 from store.ws.manager.sql import sql_query_current_worker_schedule, get_sql_query_crews
 from store.ws.models import (
-    # CarDriverAssociationModel,
+
     DriverModel,
     WorkScheduleHistoryModel,
     CarModel,
@@ -112,38 +111,20 @@ class ManagerAccessor(BaseAccessor):
             self.logger.debug(f"{self.__class__.__name__}.add_car_set_schedule : {car} {car_schedule_history} успешно")
         return car, car_schedule_history
 
-    async def all(self, start_date: datetime, end_date: datetime):
-        async with self.accessor.session as session:
-            result = self.accessor.get_query_select_by_model(CarModel)
-            data = await session.execute(result)
-            ic(data.all())
-        ...
+    async def get_all_crews(self, start_date: datetime, end_date: datetime) -> list:
+        """Получить список экипажей с графиками работы в указанный диапазон времени.
 
-    async def get_all_bak(self, car_id: int, start_date: datetime, end_date: datetime):
-        """Получение всех данных для построения графика работы водителя.
-
-        Запрос возвращает водителей с данными для построения графика работы на машине.
+        :param start_date: Начало диапазона
+        :param end_date: Конец диапазона
+        :return: list
         """
-        sql = text(get_sql_query_crews(self.accessor.settings.postgres_schema, start_date, end_date))
-        #             f"""
-        #         select
-        #             d."name",
-        #             work_schedule.get_employee_shifts_in_period('{start_date}', '{end_date}', cda.driver_id)
-        # --             from work_schedule.car_driver_association cda
-        #             from work_schedule.car c
-        #             join work_schedule.driver d on d.id = cda.driver_id
-        #             join work_schedule.car c on c.id  = cda.car_id
-        #             join work_schedule.work_schedule_history wsh on wsh.id_driver = cda.driver_id
-        # --          where cda.car_id = '{car_id}'::integer
-        #             where c.id = '{car_id}'::integer
-        #         group by
-        #             c.driver_id,
-        #             d.name
-        #         order by
-        #             cda.driver_id
-        #         ;
-        #         """
-        #         )
+        sql = get_sql_query_crews(self.accessor.settings.postgres_schema, start_date, end_date)
         async with self.accessor.session as session:
             result = await session.execute(sql)
-            return result.all()
+            return list(result.all())
+
+    # async def all(self, start_date: datetime, end_date: datetime):
+    #     async with self.accessor.session as session:
+    #         result = self.accessor.get_query_select_by_model(CarModel)
+    #         data = await session.execute(result)
+    #
