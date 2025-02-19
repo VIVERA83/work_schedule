@@ -17,7 +17,8 @@ class WorkerScheduleCreateSchema(BaseModel):
         default=datetime(
             year=datetime.now().year,
             month=datetime.now().month,
-            day=datetime.now().day + 10,
+            # может выпадать ошибка, из-за того сложение дней которые выходят за рамки месяца
+            day=datetime.now().day + 9,
         ),
     )
 
@@ -43,6 +44,7 @@ class CarSchema(BaseModel):
     id: int = Field()
     name: str = Field()
     model: str = Field()
+    number: str = Field()
     schedules: list[ScheduleHistorySchema] = Field()
 
 

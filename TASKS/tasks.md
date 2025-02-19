@@ -34,7 +34,14 @@ __Выполнено, добавлено.__
 
         - Доработан запрос к БД, теперь дополнительно выводится id экипажа.
         - создан api метод get_all_crews - он возвращает list[CrewSchema]
+        
+        - начал делать [scheduler](../work_schedule/store/scheduler).
 
+18-02-2025
+
+    - нахожусь в [views.py](../work_schedule/api/worker_schedule/views.py)
+    - делается файил ескель
+    - нужно все облагородить
 
 2. Теперь нужно генерировать график с помощью [scheduler](../work_schedule/store/scheduler).
 3. Далее этот график записывать в excel 

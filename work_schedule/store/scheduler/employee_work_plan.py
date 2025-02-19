@@ -116,3 +116,8 @@ class EmployeeWorkPlan:
             schedule.name: schedule.get_schedule_generator(start, end)
             for schedule in self.__workers_schedules
         }
+
+    def __str__(self):
+        return f"EmployeeWorkPlan: {self.name} {[*self.__workers_schedules]}"
+
+    __repr__ = __str__

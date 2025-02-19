@@ -246,3 +246,8 @@ class Worker:
             if min_date[-1] != date and min_date[-1] <= date <= end_date:
                 min_date.append(date)
         return min_date
+
+    def __str__(self):
+        return f"Worker(name={self.name})"
+
+    __repr__ = __str__
