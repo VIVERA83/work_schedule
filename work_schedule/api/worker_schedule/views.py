@@ -1,28 +1,22 @@
-from collections import defaultdict
 from datetime import datetime
-
-from icecream import ic
 
 from api.base.route import BaseView
 from api.worker_schedule.schemes import (
     WorkerScheduleCreateSchema,
     WorkerScheduleSchema,
     CrewSchema,
-    ScheduleHistorySchema,
 )
-from api.worker_schedule.utils import create_worker
+
 from core.lifespan import store
-from store.excel.excel import Excel
-from store.excel.utils import black_fill, orange_fill, red_fill, green_fill
-from store.scheduler.combined_employees_work_plan import CombinedEmployeesWorkPlan
-from store.scheduler.employee_work_plan import EmployeeWorkPlan
+from store.excel.excel import Excel, CrewExel
+from store.excel.statistic import StatisticCalculator
+from store.manager.manager import CrewsManager
+
 from store.scheduler.schedule_manager import ScheduleManager
-from store.scheduler.utils import SIGNAL_WORK, SIGNAL_WEEKEND
+
 
 from store.store import Store
-from test_area.crew.temp import CrewsManager
-from test_area.exel_1.excel import CrewExel
-from test_area.exel_1.statistic import StatisticCalculator
+
 
 
 class WorkerScheduleViews(BaseView):
