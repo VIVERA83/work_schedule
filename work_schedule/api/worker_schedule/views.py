@@ -17,10 +17,8 @@ from store.scheduler.combined_employees_work_plan import CombinedEmployeesWorkPl
 from store.scheduler.employee_work_plan import EmployeeWorkPlan
 from store.scheduler.schedule_manager import ScheduleManager
 from store.scheduler.utils import SIGNAL_WORK, SIGNAL_WEEKEND
-from store.scheduler.worker_schedule import Worker
+
 from store.store import Store
-from test_area.schedule_maker.test_shedule_manager.test_excel.test_excel import combined_employees_work_plan_2
-from test_area.schedule_maker.test_shedule_manager.test_shedule_manager import employee_1
 
 
 class WorkerScheduleViews(BaseView):
@@ -56,8 +54,8 @@ class WorkerScheduleViews(BaseView):
             start_date: datetime = datetime.now(),
             end_date: datetime = datetime.now(),
     ):
-        date_2025_01_01 = datetime(2025, 1, 1)
-        date_2025_01_10 = datetime(2025, 1, 10)
+        date_2025_01_01 =  start_date #datetime(2025, 1, 1)
+        date_2025_01_10 = end_date # datetime(2025, 1, 10)
 
         # Получаем список экипажей с графиками работы в указанный диапазон времени
         row_crews = await self.db.manager.get_all_crews(start_date, end_date)
@@ -77,7 +75,7 @@ class WorkerScheduleViews(BaseView):
 
                 if car.schedules:
                     if car.schedules[0].schedule_start_date > date_2025_01_01:
-                        car.schedules.insert(0,ScheduleHistorySchema(
+                        car.schedules.insert(0, ScheduleHistorySchema(
                             schedule_start_date=date_2025_01_01,
                             work_days=-1,
                             weekend_days=-1,
@@ -90,24 +88,25 @@ class WorkerScheduleViews(BaseView):
             for driver in crew.drivers:
                 if driver.schedules:
                     if driver.schedules[0].schedule_start_date > date_2025_01_01:
-                        driver.schedules.insert(0,ScheduleHistorySchema(
+                        driver.schedules.insert(0, ScheduleHistorySchema(
                             schedule_start_date=date_2025_01_01,
                             work_days=-1,
                             weekend_days=-1,
                             is_working=True,
                             what_day=0,
                         )
-                               )
+                                                )
                 driver_workers.append(create_worker(driver.name, driver.schedules))
 
             employee_work_plans = []
             for car_worker in car_workers:
-                ic(car_worker.name, driver_workers)
-                employee_work_plans.append(EmployeeWorkPlan(car_worker, *driver_workers))
+                if car_worker is not None:
+                    ic(car_worker, driver_workers)
+                    employee_work_plans.append(EmployeeWorkPlan(car_worker, *driver_workers))
 
             # try:
-
-            combined_employees_work_plans[crew_id] = CombinedEmployeesWorkPlan(*employee_work_plans)
+            if employee_work_plans:
+                combined_employees_work_plans[crew_id] = CombinedEmployeesWorkPlan(*employee_work_plans)
             # except Exception as e:
             #     print(e)
             ic(car_workers)
@@ -117,56 +116,8 @@ class WorkerScheduleViews(BaseView):
 
         # # ===================
         crews = [CrewSchema(id=item[0], cars=item[1], drivers=item[2]) for item in row_crews]
-        # # ic(crews)
-        #
-        #
-        #
-        #
-        # car_workers = []
-        # driver_workers = []
-        # for crew in crews:
-        #     # ic(crew)
-        #     for car in crew.cars:
-        #         if car.schedules:
-        #             for index, schedule in enumerate(car.schedules):
-        #                 if not index:
-        #                     worker = Worker(name=car.number,
-        #                                     schedule_start_date=schedule.schedule_start_date,
-        #                                     work_days=schedule.work_days,
-        #                                     weekend_days=schedule.weekend_days,
-        #                                     is_working=schedule.is_working,
-        #                                     what_day=schedule.what_day,
-        #                                     )
-        #                 else:
-        #                     worker.add_worker_schedule(schedule.schedule_start_date, schedule.work_days,
-        #                                                schedule.weekend_days, schedule.is_working, schedule.what_day)
-        #             car_workers.append(worker)
-        #
-        #     for driver in crew.drivers:
-        #         if driver.schedules:
-        #             for index, schedule in enumerate(driver.schedules):
-        #                 if not index:
-        #                     worker = Worker(name=driver.name,
-        #                                     schedule_start_date=schedule.schedule_start_date,
-        #                                     work_days=schedule.work_days,
-        #                                     weekend_days=schedule.weekend_days,
-        #                                     is_working=schedule.is_working,
-        #                                     what_day=schedule.what_day,
-        #                                     )
-        #                 else:
-        #                     worker.add_worker_schedule(schedule.schedule_start_date, schedule.work_days,
-        #                                                schedule.weekend_days, schedule.is_working, schedule.what_day)
-        #             driver_workers.append(worker)
-        #
-        # employee_car_1 = EmployeeWorkPlan(car_workers[0], *driver_workers)
-        # employee_car_2 = EmployeeWorkPlan(car_workers[1], *driver_workers)
-        #
-        # # ic(employee_car_1, employee_car_2)
-        # # ic(car_workers)
-        # comb = CombinedEmployeesWorkPlan(employee_car_1, employee_car_2)
-        # comb_1 = CombinedEmployeesWorkPlan(employee_car_2, employee_car_1)
-        # # ic(comb.get_schedule(date_2025_01_01, date_2025_01_10))
-        # # ic()
+
+
         # теперь все засунуть в excel
         excel = Excel("test.xlsx")
         manager = ScheduleManager()
@@ -178,7 +129,7 @@ class WorkerScheduleViews(BaseView):
         # manager.add_combined_employees_work_plan(combined_employees_work_plan_2)
 
         data = manager.get_schedule(date_2025_01_01, date_2025_01_10)
-        # ic(data)
+        ic(data)
         # 1 строка
         title = ["    Машина    ", *[date for date in data.keys()]]
         excel.add_row(title)
@@ -215,6 +166,7 @@ class WorkerScheduleViews(BaseView):
                 excel.sheet.max_row,
                 [
                     orange_fill,
+
                     *[red_fill if value else green_fill for value in values.values()],
                 ],
             )
