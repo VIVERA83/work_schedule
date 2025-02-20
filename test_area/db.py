@@ -74,15 +74,19 @@ class DB:
             is_working, what_day, schedule_type.work_days, schedule_type.weekend_days
         )
 
-        driver: Driver = self.driver_db.get_combined_employees_work_plans({"name": name})
-        work_schedule_history = self.work_schedule_history_db.get_combined_employees_work_plans(
-            {
-                "id_driver": driver.id,
-                "id_schedule_type": schedule_type.id,
-                "date": datetime.now(),
-                "is_working": is_working,
-                "what_day": what_day,
-            }
+        driver: Driver = self.driver_db.get_combined_employees_work_plans(
+            {"name": name}
+        )
+        work_schedule_history = (
+            self.work_schedule_history_db.get_combined_employees_work_plans(
+                {
+                    "id_driver": driver.id,
+                    "id_schedule_type": schedule_type.id,
+                    "date": datetime.now(),
+                    "is_working": is_working,
+                    "what_day": what_day,
+                }
+            )
         )
         return DriverFullData(
             driver,

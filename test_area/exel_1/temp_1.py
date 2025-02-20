@@ -21,6 +21,7 @@ border = Border(
     bottom=Side(style="thin"),
 )
 
+
 class IExcelWriter(ABC):
     @abstractmethod
     def save(self):
@@ -33,6 +34,7 @@ class IExcelWriter(ABC):
     @abstractmethod
     def add_cell(self, row: int, column: int, value: str):
         pass
+
 
 class IExcelStyler(ABC):
     @abstractmethod
@@ -50,6 +52,7 @@ class IExcelStyler(ABC):
     @abstractmethod
     def auto_border(self):
         pass
+
 
 class Excel(IExcelWriter, IExcelStyler):
     def __init__(self, file):
@@ -91,6 +94,7 @@ class Excel(IExcelWriter, IExcelStyler):
             for cell in columns:
                 cell.border = border
 
+
 class IStatistic(ABC):
     @abstractmethod
     def init_date(self, date: str):
@@ -115,6 +119,7 @@ class IStatistic(ABC):
     @abstractmethod
     def table(self) -> dict[str, list]:
         pass
+
 
 class Statistic(IStatistic):
     def __init__(self):
@@ -144,8 +149,16 @@ class Statistic(IStatistic):
     def table(self) -> dict[str, list]:
         return self._table
 
+
 class CrewExel:
-    def __init__(self, file_name: str, work_plan: dict[str, dict[str, str]], excel_writer: IExcelWriter, excel_styler: IExcelStyler, statistic: IStatistic):
+    def __init__(
+        self,
+        file_name: str,
+        work_plan: dict[str, dict[str, str]],
+        excel_writer: IExcelWriter,
+        excel_styler: IExcelStyler,
+        statistic: IStatistic,
+    ):
         self.file_name = file_name
         self.work_plan = work_plan
         self.excel_writer = excel_writer
@@ -198,7 +211,8 @@ class CrewExel:
 
     def any(self):
         self.excel_styler.add_color_to_row_cells(
-            self.excel_writer.sheet.max_row + 1, [black_fill for _ in range(len(self.titles))]
+            self.excel_writer.sheet.max_row + 1,
+            [black_fill for _ in range(len(self.titles))],
         )
         self.excel_writer.add_row(["без водителя", *self.statistic.no_driver.values()])
         self.fill_color_to_row_cells(list(self.statistic.no_driver.values()))
@@ -216,8 +230,10 @@ class CrewExel:
             ],
         )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     from data import data
+
     excel_writer = Excel("test.xlsx")
     excel_styler = excel_writer
     statistic = Statistic()

@@ -13,7 +13,9 @@ class CombinedEmployeesWorkPlan:
     __employee_work_plan: dict[DATE, SIGN]
     __unused_employees: dict[DATE, dict[str, SIGNAL_WORK]]
 
-    def __init__(self, employee_1: EmployeeWorkPlan, employee_2: EmployeeWorkPlan = None):
+    def __init__(
+        self, employee_1: EmployeeWorkPlan, employee_2: EmployeeWorkPlan = None
+    ):
         self.name = f"{employee_1.name}"
         self.employee_1 = employee_1
         self.employee_2 = employee_2
@@ -28,7 +30,9 @@ class CombinedEmployeesWorkPlan:
             self.__create_employee_work_plan_2(start, end)
         return self.__employee_work_plan
 
-    def get_unused_employees(self, start: datetime, end: datetime) -> dict[DATE, dict[str, SIGNAL_WORK]]:
+    def get_unused_employees(
+        self, start: datetime, end: datetime
+    ) -> dict[DATE, dict[str, SIGNAL_WORK]]:
         """Возвращает сотрудников, которые не были задействованы в работе."""
         if self.employee_2:
             self.__create_employee_work_plan(start, end)
@@ -93,7 +97,9 @@ class CombinedEmployeesWorkPlan:
         self.__employee_work_plan = defaultdict(dict)
 
         self.__unused_employees = {}
-        for date_1, values_1 in self.employee_1.get_unused_employees(start, end).items():
+        for date_1, values_1 in self.employee_1.get_unused_employees(
+            start, end
+        ).items():
             self.__unused_employees[date_1] = {**values_1}
 
         for date_1, name_1 in self.employee_1.get_schedule(start, end).items():

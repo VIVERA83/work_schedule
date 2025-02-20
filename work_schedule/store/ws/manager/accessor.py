@@ -137,4 +137,3 @@ class ManagerAccessor(BaseAccessor):
         async with self.accessor.session as session:
             result = await session.execute(sql)
             return list(result.all())
-

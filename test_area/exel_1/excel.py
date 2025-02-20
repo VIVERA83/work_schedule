@@ -1,7 +1,14 @@
 import openpyxl
 from openpyxl.styles import PatternFill
 
-from store.excel.utils import center_alignment, border, black_fill, orange_fill, red_fill, green_fill
+from store.excel.utils import (
+    center_alignment,
+    border,
+    black_fill,
+    orange_fill,
+    red_fill,
+    green_fill,
+)
 from test_area.exel_1.statistic import Statistic
 
 
@@ -47,7 +54,6 @@ class Excel:
 
 
 class CrewExel:
-
     def __init__(self, excel: Excel, statistic: Statistic):
         self.excel = excel
         self.statistic = statistic
@@ -63,8 +69,10 @@ class CrewExel:
         self.excel.save()
 
     def make_sheet(self):
-        self.excel.add_color_to_row_cells(self.excel.sheet.max_row + 1,
-                                          [black_fill for _ in range(len(self.statistic.titles))])
+        self.excel.add_color_to_row_cells(
+            self.excel.sheet.max_row + 1,
+            [black_fill for _ in range(len(self.statistic.titles))],
+        )
         self._add_statistic_row("без водителя", list(self.statistic.no_driver.values()))
         self._add_statistic_row("в ремонте", list(self.statistic.repair.values()))
         self._add_statistic_row("наряд", list(self.statistic.total.values()))
@@ -76,7 +84,6 @@ class CrewExel:
                 orange_fill,
                 *[red_fill if value else green_fill for value in values],
             ],
-
         )
 
     def _add_statistic_row(self, label: str, values: list[int]):

@@ -17,7 +17,7 @@ class Store:
         self.schedule_type = ScheduleTypeAccessor(self.accessor, loger)
         self.work_schedule_history = WorkScheduleHistoryAccessor(self.accessor, loger)
         self.manager = ManagerAccessor(self.accessor, loger)
-        self.manage_worker_schedule =  ManagerWorkerSchedule(self)
+        self.manage_worker_schedule = ManagerWorkerSchedule(self)
 
     async def connect(self):
         await self.accessor.connect()

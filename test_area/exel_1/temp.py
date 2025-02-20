@@ -174,8 +174,9 @@ from test_area.exel_1.statistic import StatisticCalculator
 #         self._fill_color_to_row_cells(values)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from data import data
+
     excel_ = Excel("test_1.xlsx")
     static = StatisticCalculator(data)
     CrewExel(excel_, static).create()
