@@ -3,7 +3,7 @@
 /app/static
 /temp
 /work_schedule/log.txt
-/work_schedul.~lock.test.xlsx#
+/work_schedul/.~lock.test.xlsx#
 __pycache__/
 *.py[cod]
 *$py.class
