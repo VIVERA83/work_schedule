@@ -19,6 +19,7 @@ from store.scheduler.schedule_manager import ScheduleManager
 from store.scheduler.utils import SIGNAL_WORK, SIGNAL_WEEKEND
 
 from store.store import Store
+from test_area.crew.temp import CrewsManager
 
 
 class WorkerScheduleViews(BaseView):
@@ -59,55 +60,55 @@ class WorkerScheduleViews(BaseView):
         }
 
         # теперь экипажи преобразовать в CombinedEmployeesWorkPlan (Объединенный график работы сотрудников на оборудовании.)
-        combined_employees_work_plans = {}
+        combined_employees_work_plans = CrewsManager(dict_crews, start_date, end_date)()
 
-        for crew_id, crew in dict_crews.items():
-            ic(crew.model_dump())
-            car_workers = []
-            driver_workers = []
-            employee_work_plans = []
-
-            for car in crew.cars:
-
-                if car.schedules:
-                    if car.schedules[0].schedule_start_date > start_date:
-                        car.schedules.insert(0, ScheduleHistorySchema(
-                            schedule_start_date=start_date,
-                            work_days=-1,
-                            weekend_days=-1,
-                            is_working=True,
-                            what_day=0,
-                        )
-                                             )
-                car_workers.append(create_worker(car.number, car.schedules))
-
-            for driver in crew.drivers:
-                if driver.schedules:
-                    if driver.schedules[0].schedule_start_date > start_date:
-                        driver.schedules.insert(0, ScheduleHistorySchema(
-                            schedule_start_date=start_date,
-                            work_days=-1,
-                            weekend_days=-1,
-                            is_working=True,
-                            what_day=0,
-                        )
-                                                )
-                driver_workers.append(create_worker(driver.name, driver.schedules))
-
-            for car_worker in car_workers:
-                if car_worker is not None:
-                    ic(car_worker, driver_workers)
-                    employee_work_plans.append(EmployeeWorkPlan(car_worker, *driver_workers))
-
-            # try:
-            if employee_work_plans:
-                combined_employees_work_plans[crew_id] = CombinedEmployeesWorkPlan(*employee_work_plans)
-            # except Exception as e:
-            #     print(e)
-            ic(car_workers)
-            ic(driver_workers)
-            ic(employee_work_plans)
-            ic(combined_employees_work_plans)
+        # for crew_id, crew in dict_crews.items():
+        #     ic(crew.model_dump())
+        #     car_workers = []
+        #     driver_workers = []
+        #     employee_work_plans = []
+        #
+        #     for car in crew.cars:
+        #
+        #         if car.schedules:
+        #             if car.schedules[0].schedule_start_date > start_date:
+        #                 car.schedules.insert(0, ScheduleHistorySchema(
+        #                     schedule_start_date=start_date,
+        #                     work_days=-1,
+        #                     weekend_days=-1,
+        #                     is_working=True,
+        #                     what_day=0,
+        #                 )
+        #                                      )
+        #         car_workers.append(create_worker(car.number, car.schedules))
+        #
+        #     for driver in crew.drivers:
+        #         if driver.schedules:
+        #             if driver.schedules[0].schedule_start_date > start_date:
+        #                 driver.schedules.insert(0, ScheduleHistorySchema(
+        #                     schedule_start_date=start_date,
+        #                     work_days=-1,
+        #                     weekend_days=-1,
+        #                     is_working=True,
+        #                     what_day=0,
+        #                 )
+        #                                         )
+        #         driver_workers.append(create_worker(driver.name, driver.schedules))
+        #
+        #     for car_worker in car_workers:
+        #         if car_worker is not None:
+        #             ic(car_worker, driver_workers)
+        #             employee_work_plans.append(EmployeeWorkPlan(car_worker, *driver_workers))
+        #
+        #     # try:
+        #     if employee_work_plans:
+        #         combined_employees_work_plans[crew_id] = CombinedEmployeesWorkPlan(*employee_work_plans)
+        #     # except Exception as e:
+        #     #     print(e)
+        #     ic(car_workers)
+        #     ic(driver_workers)
+        #     ic(employee_work_plans)
+        #     ic(combined_employees_work_plans)
 
         # # ===================
         crews = [CrewSchema(id=item[0], cars=item[1], drivers=item[2]) for item in row_crews]
@@ -116,8 +117,9 @@ class WorkerScheduleViews(BaseView):
         excel = Excel("test.xlsx")
         manager = ScheduleManager()
 
+        ic(combined_employees_work_plans[2].get_schedule(start_date, end_date))
         for combined_employees_work_plan in combined_employees_work_plans.values():
-            ic(combined_employees_work_plan)
+            ic(combined_employees_work_plan.get_schedule(start_date, end_date))
             manager.add_combined_employees_work_plan(combined_employees_work_plan)
         # а если еще
         # manager.add_combined_employees_work_plan(combined_employees_work_plan_2)

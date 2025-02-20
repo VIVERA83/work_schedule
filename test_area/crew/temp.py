@@ -16,6 +16,9 @@ class CrewsManager:
         self.end_date = end_date
         self.combined_employees_work_plans = {}
 
+    def __call__(self, *args, **kwargs):
+        return self.get_combined_employees_work_plans()
+
     def get_combined_employees_work_plans(self):
         combined_employees_work_plans = {}
         for crew_id, crew in self.crews.items():
@@ -36,7 +39,7 @@ class CrewsManager:
             if worker.schedules:
                 if worker.schedules[0].schedule_start_date > self.start_date:
                     worker.schedules.insert(0, self.not_work_schedule_history_schema)
-            workers.append(self.create_worker(worker.name, worker.schedules))
+                workers.append(self.create_worker(worker.name, worker.schedules))
         return workers
 
     @staticmethod
