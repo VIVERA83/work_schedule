@@ -138,8 +138,3 @@ class ManagerAccessor(BaseAccessor):
             result = await session.execute(sql)
             return list(result.all())
 
-    # async def all(self, start_date: datetime, end_date: datetime):
-    #     async with self.accessor.session as session:
-    #         result = self.accessor.get_query_select_by_model(CarModel)
-    #         data = await session.execute(result)
-    #
