@@ -49,34 +49,30 @@ class WorkerScheduleViews(BaseView):
             **data.model_dump()
         )
 
-    async def get_all_crews(
-            self,
-            start_date: datetime = datetime.now(),
-            end_date: datetime = datetime.now(),
-    ):
-        date_2025_01_01 =  start_date #datetime(2025, 1, 1)
-        date_2025_01_10 = end_date # datetime(2025, 1, 10)
-
+    async def get_all_crews(self, start_date: datetime, end_date: datetime):
         # Получаем список экипажей с графиками работы в указанный диапазон времени
         row_crews = await self.db.manager.get_all_crews(start_date, end_date)
+
         # Преобразовали список в словарь экипажей, ключ = id экипажа, моделей Pydantic
         dict_crews = {
             item[0]: CrewSchema(id=item[0], cars=item[1], drivers=item[2]) for item in row_crews
         }
-        ic(dict_crews)
+
         # теперь экипажи преобразовать в CombinedEmployeesWorkPlan (Объединенный график работы сотрудников на оборудовании.)
         combined_employees_work_plans = {}
 
         for crew_id, crew in dict_crews.items():
+            ic(crew.model_dump())
             car_workers = []
             driver_workers = []
+            employee_work_plans = []
 
             for car in crew.cars:
 
                 if car.schedules:
-                    if car.schedules[0].schedule_start_date > date_2025_01_01:
+                    if car.schedules[0].schedule_start_date > start_date:
                         car.schedules.insert(0, ScheduleHistorySchema(
-                            schedule_start_date=date_2025_01_01,
+                            schedule_start_date=start_date,
                             work_days=-1,
                             weekend_days=-1,
                             is_working=True,
@@ -87,9 +83,9 @@ class WorkerScheduleViews(BaseView):
 
             for driver in crew.drivers:
                 if driver.schedules:
-                    if driver.schedules[0].schedule_start_date > date_2025_01_01:
+                    if driver.schedules[0].schedule_start_date > start_date:
                         driver.schedules.insert(0, ScheduleHistorySchema(
-                            schedule_start_date=date_2025_01_01,
+                            schedule_start_date=start_date,
                             work_days=-1,
                             weekend_days=-1,
                             is_working=True,
@@ -98,7 +94,6 @@ class WorkerScheduleViews(BaseView):
                                                 )
                 driver_workers.append(create_worker(driver.name, driver.schedules))
 
-            employee_work_plans = []
             for car_worker in car_workers:
                 if car_worker is not None:
                     ic(car_worker, driver_workers)
@@ -117,7 +112,6 @@ class WorkerScheduleViews(BaseView):
         # # ===================
         crews = [CrewSchema(id=item[0], cars=item[1], drivers=item[2]) for item in row_crews]
 
-
         # теперь все засунуть в excel
         excel = Excel("test.xlsx")
         manager = ScheduleManager()
@@ -128,7 +122,7 @@ class WorkerScheduleViews(BaseView):
         # а если еще
         # manager.add_combined_employees_work_plan(combined_employees_work_plan_2)
 
-        data = manager.get_schedule(date_2025_01_01, date_2025_01_10)
+        data = manager.get_schedule(start_date, end_date)
         ic(data)
         # 1 строка
         title = ["    Машина    ", *[date for date in data.keys()]]

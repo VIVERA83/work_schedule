@@ -51,10 +51,10 @@ class BaseView(APIRouter):
         return await self.db.get_by_id(id_)
 
     async def create(self, data: Any):
-        return await self.db.create(**data.model_dump())
+        return await self.db.get_combined_employees_work_plans(**data.model_dump())
 
     async def update(self, data: Any):
-        return await self.db.create(**data.model_dump())
+        return await self.db.get_combined_employees_work_plans(**data.model_dump())
 
     async def delete_by_id(self, id_: Any):
         return await self.db.delete_by_id(id_)

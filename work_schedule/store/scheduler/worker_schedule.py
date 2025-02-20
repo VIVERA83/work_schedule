@@ -140,6 +140,7 @@ class Worker:
         what_day: int,
         date_format: str = DATE_FORMAT,
     ):
+        self.schedule_start_date = schedule_start_date
         self.name = name
         self.date_format = date_format
         self.__worker_schedules = {
