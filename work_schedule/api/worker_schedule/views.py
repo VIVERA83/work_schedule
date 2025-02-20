@@ -7,8 +7,9 @@ from api.base.route import BaseView
 from api.worker_schedule.schemes import (
     WorkerScheduleCreateSchema,
     WorkerScheduleSchema,
-    CrewSchema,
+    CrewSchema, ScheduleHistorySchema,
 )
+from api.worker_schedule.utils import create_worker
 from core.lifespan import store
 from store.excel.excel import Excel
 from store.excel.utils import black_fill, orange_fill, red_fill, green_fill
@@ -18,6 +19,7 @@ from store.scheduler.schedule_manager import ScheduleManager
 from store.scheduler.utils import SIGNAL_WORK, SIGNAL_WEEKEND
 from store.scheduler.worker_schedule import Worker
 from store.store import Store
+from test_area.schedule_maker.test_shedule_manager.test_excel.test_excel import combined_employees_work_plan_2
 from test_area.schedule_maker.test_shedule_manager.test_shedule_manager import employee_1
 
 
@@ -54,64 +56,126 @@ class WorkerScheduleViews(BaseView):
             start_date: datetime = datetime.now(),
             end_date: datetime = datetime.now(),
     ):
-        row_crews = await self.db.manager.get_all_crews(start_date, end_date)
-        crews = [CrewSchema(id=item[0], cars=item[1], drivers=item[2]) for item in row_crews]
-        ic(crews)
-
         date_2025_01_01 = datetime(2025, 1, 1)
         date_2025_01_10 = datetime(2025, 1, 10)
 
-        car_workers = []
-        driver_workers = []
-        for crew in crews:
+        # Получаем список экипажей с графиками работы в указанный диапазон времени
+        row_crews = await self.db.manager.get_all_crews(start_date, end_date)
+        # Преобразовали список в словарь экипажей, ключ = id экипажа, моделей Pydantic
+        dict_crews = {
+            item[0]: CrewSchema(id=item[0], cars=item[1], drivers=item[2]) for item in row_crews
+        }
+        ic(dict_crews)
+        # теперь экипажи преобразовать в CombinedEmployeesWorkPlan (Объединенный график работы сотрудников на оборудовании.)
+        combined_employees_work_plans = {}
+
+        for crew_id, crew in dict_crews.items():
+            car_workers = []
+            driver_workers = []
 
             for car in crew.cars:
+
                 if car.schedules:
-                    for index, schedule in enumerate(car.schedules):
-                        if not index:
-                            worker = Worker(name=car.number,
-                                            schedule_start_date=schedule.schedule_start_date,
-                                            work_days=schedule.work_days,
-                                            weekend_days=schedule.weekend_days,
-                                            is_working=schedule.is_working,
-                                            what_day=schedule.what_day,
-                                            )
-                        else:
-                            worker.add_worker_schedule(schedule.schedule_start_date, schedule.work_days,
-                                                       schedule.weekend_days, schedule.is_working, schedule.what_day)
-                    car_workers.append(worker)
+                    if car.schedules[0].schedule_start_date > date_2025_01_01:
+                        car.schedules.insert(0,ScheduleHistorySchema(
+                            schedule_start_date=date_2025_01_01,
+                            work_days=-1,
+                            weekend_days=-1,
+                            is_working=True,
+                            what_day=0,
+                        )
+                                             )
+                car_workers.append(create_worker(car.number, car.schedules))
 
             for driver in crew.drivers:
                 if driver.schedules:
-                    for index, schedule in enumerate(driver.schedules):
-                        if not index:
-                            worker = Worker(name=driver.name,
-                                        schedule_start_date=schedule.schedule_start_date,
-                                        work_days=schedule.work_days,
-                                        weekend_days=schedule.weekend_days,
-                                        is_working=schedule.is_working,
-                                        what_day=schedule.what_day,
-                                        )
-                        else:
-                            worker.add_worker_schedule(schedule.schedule_start_date, schedule.work_days,
-                                                    schedule.weekend_days, schedule.is_working, schedule.what_day)
-                    driver_workers.append(worker)
+                    if driver.schedules[0].schedule_start_date > date_2025_01_01:
+                        driver.schedules.insert(0,ScheduleHistorySchema(
+                            schedule_start_date=date_2025_01_01,
+                            work_days=-1,
+                            weekend_days=-1,
+                            is_working=True,
+                            what_day=0,
+                        )
+                               )
+                driver_workers.append(create_worker(driver.name, driver.schedules))
 
+            employee_work_plans = []
+            for car_worker in car_workers:
+                ic(car_worker.name, driver_workers)
+                employee_work_plans.append(EmployeeWorkPlan(car_worker, *driver_workers))
 
-        employee_car_1 = EmployeeWorkPlan(car_workers[0], *driver_workers)
-        employee_car_2 = EmployeeWorkPlan(car_workers[1], *driver_workers)
+            # try:
 
-        ic(employee_car_1, employee_car_2)
-        comb = CombinedEmployeesWorkPlan(employee_car_1, employee_car_2)
-        comb_1 = CombinedEmployeesWorkPlan(employee_car_2, employee_car_1)
-        ic(comb.get_schedule(date_2025_01_01, date_2025_01_10))
-        ic()
+            combined_employees_work_plans[crew_id] = CombinedEmployeesWorkPlan(*employee_work_plans)
+            # except Exception as e:
+            #     print(e)
+            ic(car_workers)
+            ic(driver_workers)
+            ic(employee_work_plans)
+            ic(combined_employees_work_plans)
+
+        # # ===================
+        crews = [CrewSchema(id=item[0], cars=item[1], drivers=item[2]) for item in row_crews]
+        # # ic(crews)
+        #
+        #
+        #
+        #
+        # car_workers = []
+        # driver_workers = []
+        # for crew in crews:
+        #     # ic(crew)
+        #     for car in crew.cars:
+        #         if car.schedules:
+        #             for index, schedule in enumerate(car.schedules):
+        #                 if not index:
+        #                     worker = Worker(name=car.number,
+        #                                     schedule_start_date=schedule.schedule_start_date,
+        #                                     work_days=schedule.work_days,
+        #                                     weekend_days=schedule.weekend_days,
+        #                                     is_working=schedule.is_working,
+        #                                     what_day=schedule.what_day,
+        #                                     )
+        #                 else:
+        #                     worker.add_worker_schedule(schedule.schedule_start_date, schedule.work_days,
+        #                                                schedule.weekend_days, schedule.is_working, schedule.what_day)
+        #             car_workers.append(worker)
+        #
+        #     for driver in crew.drivers:
+        #         if driver.schedules:
+        #             for index, schedule in enumerate(driver.schedules):
+        #                 if not index:
+        #                     worker = Worker(name=driver.name,
+        #                                     schedule_start_date=schedule.schedule_start_date,
+        #                                     work_days=schedule.work_days,
+        #                                     weekend_days=schedule.weekend_days,
+        #                                     is_working=schedule.is_working,
+        #                                     what_day=schedule.what_day,
+        #                                     )
+        #                 else:
+        #                     worker.add_worker_schedule(schedule.schedule_start_date, schedule.work_days,
+        #                                                schedule.weekend_days, schedule.is_working, schedule.what_day)
+        #             driver_workers.append(worker)
+        #
+        # employee_car_1 = EmployeeWorkPlan(car_workers[0], *driver_workers)
+        # employee_car_2 = EmployeeWorkPlan(car_workers[1], *driver_workers)
+        #
+        # # ic(employee_car_1, employee_car_2)
+        # # ic(car_workers)
+        # comb = CombinedEmployeesWorkPlan(employee_car_1, employee_car_2)
+        # comb_1 = CombinedEmployeesWorkPlan(employee_car_2, employee_car_1)
+        # # ic(comb.get_schedule(date_2025_01_01, date_2025_01_10))
+        # # ic()
         # теперь все засунуть в excel
         excel = Excel("test.xlsx")
         manager = ScheduleManager()
 
-        manager.add_combined_employees_work_plan(comb)
-        # manager.add_employee_work_plan(comb_1)
+        for combined_employees_work_plan in combined_employees_work_plans.values():
+            ic(combined_employees_work_plan)
+            manager.add_combined_employees_work_plan(combined_employees_work_plan)
+        # а если еще
+        # manager.add_combined_employees_work_plan(combined_employees_work_plan_2)
 
         data = manager.get_schedule(date_2025_01_01, date_2025_01_10)
         # ic(data)
@@ -137,7 +201,7 @@ class WorkerScheduleViews(BaseView):
                 else:
                     statistic["Общий наряд"][date] += 1
 
-        ic(statistic)
+        # ic(statistic)
         for name, values in car_rows.items():
             excel.add_row([name, *values])
         # 3 служебная информация
