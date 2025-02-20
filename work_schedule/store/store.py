@@ -1,6 +1,7 @@
 from logging import Logger
 
 from store.db.postgres.accessor import PostgresAccessor
+from store.manager.manager import ManagerWorkerSchedule
 from store.ws.car.accessor import CarAccessor
 from store.ws.driver.accessor import DriverAccessor
 from store.ws.manager.accessor import ManagerAccessor
@@ -16,7 +17,7 @@ class Store:
         self.schedule_type = ScheduleTypeAccessor(self.accessor, loger)
         self.work_schedule_history = WorkScheduleHistoryAccessor(self.accessor, loger)
         self.manager = ManagerAccessor(self.accessor, loger)
-
+        self.manage_worker_schedule =  ManagerWorkerSchedule(self)
 
     async def connect(self):
         await self.accessor.connect()
