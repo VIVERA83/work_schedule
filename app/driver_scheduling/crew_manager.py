@@ -4,7 +4,12 @@ from typing import Union, Optional
 
 from driver_scheduling.combined_employees_work_plan import CombinedEmployeesWorkPlan
 from driver_scheduling.employee_work_plan import EmployeeWorkPlan
-from driver_scheduling.schemas import CrewSchema, CarSchema, DriverSchema, ScheduleHistorySchema
+from driver_scheduling.schemas import (
+    CrewSchema,
+    CarSchema,
+    DriverSchema,
+    ScheduleHistorySchema,
+)
 from driver_scheduling.worker_schedule import Worker
 
 

@@ -4,15 +4,14 @@ from typing import Any
 
 from api.worker_schedule.schemes import CrewSchema
 from driver_scheduling.crew_manager import CrewsManager
-
 from driver_scheduling.schedule_manager import ScheduleManager
 from driver_scheduling.worker_schedule import WorkerSchedule
 from excel.excel import Excel
 from manager.base.exceptions import exception_handler
 from manager.drivers_planner.utils import create_file_name
+from manager.base.manager import BaseManager
 from store.excel.crew_sheet import CrewSheet
 from store.excel.dispatchplan import StatisticCalculator, DispatchPlan
-from manager.base.manager import BaseManager
 
 
 class DriversPlannerManager(BaseManager):
