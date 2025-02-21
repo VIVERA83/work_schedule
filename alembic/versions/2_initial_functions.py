@@ -152,7 +152,7 @@ CREATE OR REPLACE FUNCTION {pg_schema}.get_car_shifts_in_period(start_ts timesta
 AS $function$
 DECLARE 
 	res jsonb[];
-	smaller_date jsonb := {pg_schema}.find_nearest_smaller_date(start_ts, car_id);
+	smaller_date jsonb := {pg_schema}.car_find_nearest_smaller_date(start_ts, car_id);
 BEGIN
 	res:= array((
 	select 
