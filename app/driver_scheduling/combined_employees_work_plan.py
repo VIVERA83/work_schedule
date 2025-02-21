@@ -50,7 +50,6 @@ class CombinedEmployeesWorkPlan:
             temp = {self.employee_1.name: name_1}
             if name_1 != name_2:
                 if name_1 in [SIGNAL_WEEKEND]:
-                    ic(self.__unused_employees, date_1, self.__unused_employees.get(date_1))
                     if today_unused := list(self.__unused_employees.get(date_1, {}).keys()):
                         temp[self.employee_2.name] = today_unused[0]
                     else:

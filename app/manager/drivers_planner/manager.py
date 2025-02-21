@@ -2,6 +2,8 @@ from datetime import datetime
 
 from typing import Any
 
+from icecream import ic
+
 from api.worker_schedule.schemes import CrewSchema
 from driver_scheduling.crew_manager import CrewsManager
 from driver_scheduling.schedule_manager import ScheduleManager
@@ -41,6 +43,7 @@ class DriversPlannerManager(BaseManager):
         row_crews = await self.store.drivers_planner.get_crew_schedule(
             start_date, end_date
         )
+
         self.logger.debug("Данные экипажей получены")
         data = self.__convert_data_to_schedule_drivers(row_crews)
         self.logger.debug("Данные экипажей преобразованы")

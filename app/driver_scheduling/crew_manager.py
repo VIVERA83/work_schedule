@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Union, Optional
 
+from icecream import ic
 
 from driver_scheduling.combined_employees_work_plan import CombinedEmployeesWorkPlan
 from driver_scheduling.employee_work_plan import EmployeeWorkPlan

@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+from pydantic_core.core_schema import ValidationInfo
 
 
 class WorkerScheduleCreateSchema(BaseModel):
@@ -42,10 +43,15 @@ class ScheduleHistorySchema(BaseModel):
 
 class CarSchema(BaseModel):
     id: int = Field()
-    name: str = Field()
     model: str = Field()
     number: str = Field()
     schedules: list[ScheduleHistorySchema] = Field()
+    name: str = Field()
+
+    @field_validator("name", mode="before")
+    def _(cls, value: str, values: ValidationInfo) -> str:
+        """Вычисляемое поле: объединяет name model и number."""
+        return f"{value} {values.data["model"]} {values.data['number']}"
 
 
 class DriverSchema(BaseModel):
