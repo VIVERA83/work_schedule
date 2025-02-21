@@ -18,7 +18,7 @@ class WorkerScheduleCreateSchema(BaseModel):
             year=datetime.now().year,
             month=datetime.now().month,
             # может выпадать ошибка, из-за того сложение дней которые выходят за рамки месяца
-            day=datetime.now().day + 8,
+            day=datetime.now().day,
         ),
     )
 
