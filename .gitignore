@@ -2,7 +2,7 @@
 # Byte-compiled / optimized / DLL files
 /app/static
 /temp
-/work_schedule/log.txt
+/app/log.txt
 /work_schedul/.~lock.test.xlsx#
 __pycache__/
 *.py[cod]

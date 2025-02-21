@@ -2,7 +2,7 @@ from typing import Any
 
 from api.base.types import EndpointType, ParamsType
 from fastapi import APIRouter
-from store.ws.base.accessor import BaseAccessor
+from store.work_schedule.base.accessor import BaseAccessor
 
 
 class BaseView(APIRouter):

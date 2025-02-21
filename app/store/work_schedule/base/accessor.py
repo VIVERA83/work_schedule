@@ -7,7 +7,7 @@ from asyncpg import UniqueViolationError
 from sqlalchemy.exc import IntegrityError, NoResultFound, DBAPIError
 from store.db.postgres.accessor import PostgresAccessor
 from store.db.postgres.types import Model
-from store.ws.base.exceptions import (
+from store.work_schedule.base.exceptions import (
     DataBaseConnectionException,
     DataBaseUnknownException,
     DuplicateException,

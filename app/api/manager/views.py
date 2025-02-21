@@ -6,7 +6,7 @@ from api.manager.schemes import (
     FullDataCarSchema,
 )
 from core.lifespan import store
-from store.ws.manager.accessor import ManagerAccessor
+from store.work_schedule.manager.accessor import ManagerAccessor
 
 
 class ManagerViews(BaseView):

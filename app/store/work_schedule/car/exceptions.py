@@ -1,4 +1,4 @@
-from store.ws.base.exceptions import ExceptionBase
+from store.work_schedule.base.exceptions import ExceptionBase
 
 
 class CarDuplicateException(ExceptionBase):

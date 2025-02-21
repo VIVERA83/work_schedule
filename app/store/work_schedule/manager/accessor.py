@@ -1,11 +1,11 @@
 from datetime import datetime
 
 from sqlalchemy import RowMapping
-from store.ws.base.accessor import BaseAccessor
-from store.ws.base.exceptions import exception_handler
-from store.ws.manager.exceptions import ForeignKeyException
-from store.ws.manager.sql import sql_query_current_worker_schedule, get_sql_query_crews
-from store.ws.models import (
+from store.work_schedule.base.accessor import BaseAccessor
+from store.work_schedule.base.exceptions import exception_handler
+from store.work_schedule.manager.exceptions import ForeignKeyException
+from store.work_schedule.manager.sql import sql_query_current_worker_schedule, get_sql_query_crews
+from store.work_schedule.models import (
     DriverModel,
     WorkScheduleHistoryModel,
     CarModel,

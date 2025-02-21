@@ -2,11 +2,11 @@ from logging import Logger
 
 from store.db.postgres.accessor import PostgresAccessor
 from store.manager.manager import ManagerWorkerSchedule
-from store.ws.car.accessor import CarAccessor
-from store.ws.driver.accessor import DriverAccessor
-from store.ws.manager.accessor import ManagerAccessor
-from store.ws.schedule_type.accessor import ScheduleTypeAccessor
-from store.ws.work_schedule_history.accessor import WorkScheduleHistoryAccessor
+from store.work_schedule.car.accessor import CarAccessor
+from store.work_schedule.driver.accessor import DriverAccessor
+from store.work_schedule.manager.accessor import ManagerAccessor
+from store.work_schedule.schedule_type.accessor import ScheduleTypeAccessor
+from store.work_schedule.work_schedule_history.accessor import WorkScheduleHistoryAccessor
 
 
 class Store:

@@ -1,6 +1,6 @@
 import re
 
-from store.ws.base.exceptions import ExceptionBase, pattern
+from store.work_schedule.base.exceptions import ExceptionBase, pattern
 
 
 class DataBaseConnectionException(ExceptionBase):

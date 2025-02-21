@@ -13,8 +13,8 @@ from alembic import context
 sys.path.insert(1, os.path.join(os.getcwd(), "work_schedule"))
 dotenv.load_dotenv()
 
-from work_schedule.core.settings import PostgresSettings
-from work_schedule.store.ws.models import Base
+from app.core.settings import PostgresSettings
+from app.store.work_schedule.models import Base
 
 config = context.config
 
