@@ -13,13 +13,3 @@ border = Border(
     top=Side(style="thin"),
     bottom=Side(style="thin"),
 )
-
-
-def status_to_color(data: list[str]) -> list[PatternFill]:
-    result = []
-    for value in data:
-        if value == "Р":
-            result.append(green_fill)
-        else:
-            result.append(red_fill)
-    return result

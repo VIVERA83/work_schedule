@@ -8,7 +8,8 @@ from api.worker_schedule.schemes import (
 )
 
 from core.lifespan import store
-from store.excel.excel import Excel, CrewExel
+from excel.excel import Excel
+from store.excel.crew_excel import CrewSheet
 from store.excel.statistic import StatisticCalculator
 from store.manager.manager import CrewsManager
 
@@ -70,8 +71,7 @@ class WorkerScheduleViews(BaseView):
             manager.add_combined_employees_work_plan(combined_employees_work_plan)
         data = manager.get_schedule(start_date, end_date)
         static = StatisticCalculator(data)
-        CrewExel(excel, static).create()
-        excel.auto_alignment_column_center()
-        excel.auto_alignment_column_width()
+        sheet = excel.create_sheet("График работы")
+        CrewSheet(static,sheet).create()
         excel.save()
         return crews
