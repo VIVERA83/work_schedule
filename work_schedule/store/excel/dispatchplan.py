@@ -3,7 +3,7 @@ from collections import defaultdict
 from driver_scheduling.utils import SIGNAL_WORK, SIGNAL_WEEKEND
 
 
-class Statistic:
+class DispatchPlan:
     """Класс для хранения статистических данных."""
 
     def __init__(self):
@@ -39,7 +39,7 @@ class Statistic:
         return self._titles
 
 
-class StatisticCalculator(Statistic):
+class StatisticCalculator(DispatchPlan):
     """Класс для расчета статистических данных."""
 
     def __init__(self, work_plan: dict[str, dict[str, str]]):

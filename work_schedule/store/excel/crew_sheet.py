@@ -2,12 +2,12 @@ from openpyxl.styles import PatternFill
 from openpyxl.worksheet.worksheet import Worksheet
 
 from excel.sheet import Sheet
-from store.excel.statistic import Statistic
+from store.excel.dispatchplan import DispatchPlan
 from excel.utils import black_fill, orange_fill, red_fill, green_fill
 
 
 class CrewSheet(Sheet):
-    def __init__(self, dispatch_plan: Statistic, sheet: Worksheet):
+    def __init__(self, dispatch_plan: DispatchPlan, sheet: Worksheet):
         super().__init__(sheet)
         self.dispatch_plan = dispatch_plan
 
