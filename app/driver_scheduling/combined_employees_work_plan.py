@@ -1,6 +1,8 @@
 from collections import defaultdict
 from datetime import datetime
 
+from icecream import ic
+
 from driver_scheduling.employee_work_plan import EmployeeWorkPlan
 from driver_scheduling.utils import DATE, SIGN, SIGNAL_WEEKEND, SIGNAL_WORK
 
@@ -48,7 +50,8 @@ class CombinedEmployeesWorkPlan:
             temp = {self.employee_1.name: name_1}
             if name_1 != name_2:
                 if name_1 in [SIGNAL_WEEKEND]:
-                    if today_unused := list(self.__unused_employees.get(date_1).keys()):
+                    ic(self.__unused_employees, date_1, self.__unused_employees.get(date_1))
+                    if today_unused := list(self.__unused_employees.get(date_1, {}).keys()):
                         temp[self.employee_2.name] = today_unused[0]
                     else:
                         temp = {self.employee_2.name: name_2}
