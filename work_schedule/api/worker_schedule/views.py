@@ -9,8 +9,8 @@ from api.worker_schedule.schemes import (
 
 from core.lifespan import store
 from excel.excel import Excel
-from store.excel.crew_excel import CrewSheet
-from store.excel.statistic import StatisticCalculator
+from store.excel.crew_sheet import CrewSheet
+from store.excel.dispatchplan import StatisticCalculator
 from store.manager.manager import CrewsManager
 
 from driver_scheduling.schedule_manager import ScheduleManager
