@@ -1,30 +1,11 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Union, Optional
+from typing import Union, Optional
 
-from store.manager.schemas import (
-    CrewSchema,
-    CarSchema,
-    DriverSchema,
-    ScheduleHistorySchema,
-)
+
 from driver_scheduling.combined_employees_work_plan import CombinedEmployeesWorkPlan
 from driver_scheduling.employee_work_plan import EmployeeWorkPlan
-from driver_scheduling.worker_schedule import WorkerSchedule, Worker
-
-# if TYPE_CHECKING:
-#     from store.store import Store
-
-
-# class ManagerWorkerSchedule:
-#     def __init__(self, store: "Store"):
-#         self.store = store
-#
-#     async def get_worker_schedule(
-#         self, id_: int, start_date: datetime, end_date: datetime
-#     ):
-#         """Получение расписания водителя."""
-#         result = await self.store.drivers_planner.get_current_worker_schedule_by_id(id_)
-#         return WorkerSchedule(**result).get_schedule(start_date, end_date)
+from driver_scheduling.schemas import CrewSchema, CarSchema, DriverSchema, ScheduleHistorySchema
+from driver_scheduling.worker_schedule import Worker
 
 
 class CrewsManager:

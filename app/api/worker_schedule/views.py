@@ -1,11 +1,15 @@
+import os
 from datetime import datetime
+
+from starlette.background import BackgroundTask
+from starlette.responses import FileResponse
 
 from api.base.route import BaseView
 from api.worker_schedule.schemes import (
     WorkerScheduleCreateSchema,
     WorkerScheduleSchema,
-    CrewSchema,
 )
+from api.worker_schedule.utils import delete_file
 
 from core.lifespan import manager
 
@@ -22,19 +26,27 @@ class WorkerScheduleViews(BaseView):
                 "summary": "Получить график водителя",
                 "description": "получение данных для построения графика графика работы водителя.",
             },
-            "get_all_crews": {
+            "download_excel_file_driver_schedule": {
                 "methods": ["GET"],
-                "path": "/get_all_crews",
-                "response_model": list[CrewSchema],
-                "summary": "Получить список экипажей",
-                "description": "Получить список экипажей с графиками работы в указанный диапазон времени",
+                "path": "/download_excel_file_driver_schedule",
+                "summary": "Скачать наряд в excel файле",
+                "description": "Скачать наряд в excel файле, за указанный период.",
             },
         }
 
     async def get_worker_schedule(self, data: WorkerScheduleCreateSchema):
-        return await self.manager.drivers_planner.get_worker_schedule(
-            **data.model_dump()
-        )
+        return await self.manager.drivers_planner.get_schedule(**data.model_dump())
 
-    async def get_all_crews(self, start_date: datetime, end_date: datetime):
-        return await self.manager.drivers_planner.get_all_crews(start_date, end_date)
+    async def download_excel_file_driver_schedule(
+        self, start_date: datetime, end_date: datetime
+    ):
+        path_to_file = (
+            await self.manager.drivers_planner.export_driver_schedule_to_excel(
+                start_date, end_date
+            )
+        )
+        return FileResponse(
+            path_to_file,
+            filename=os.path.basename(path_to_file),
+            background=BackgroundTask(delete_file, path_to_file, self.logger),
+        )

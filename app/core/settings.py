@@ -1,7 +1,7 @@
 import os
 from typing import Literal
 
-from pydantic import SecretStr
+from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
@@ -65,3 +65,16 @@ class AppSettings(Base):
     title: str = "График работы персонала"
     description: str = "API документация по работе с графиком персонала."
     version: str = "0.0.1"
+
+
+class TempFolderSettings(Base):
+    temp_dir: str = os.path.join(BASE_DIR, "app/temp")
+
+    @field_validator("temp_dir", mode="before")
+    def _(cls, v: str) -> str:  # noqa:
+        """Проверка наличия папки для временных файлов"""
+
+        temp_dir = os.path.join(BASE_DIR, "app/temp", v)
+        if not os.path.exists(temp_dir):
+            os.makedirs(temp_dir)
+        return os.path.join(BASE_DIR, "app/temp", v)
