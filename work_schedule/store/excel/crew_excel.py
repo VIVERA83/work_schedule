@@ -11,7 +11,7 @@ class CrewSheet(Sheet):
         super().__init__(sheet)
         self.dispatch_plan = dispatch_plan
 
-    def create(self):
+    def fill_in_data_sheet(self):
         # добавляем заголовки
         self.add_row(self.dispatch_plan.titles)
         # добавляем данные основные данные распределения наряда

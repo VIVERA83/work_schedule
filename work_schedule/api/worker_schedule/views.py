@@ -72,6 +72,6 @@ class WorkerScheduleViews(BaseView):
         data = manager.get_schedule(start_date, end_date)
         static = StatisticCalculator(data)
         sheet = excel.create_sheet("График работы")
-        CrewSheet(static,sheet).create()
+        CrewSheet(static,sheet).fill_in_data_sheet()
         excel.save()
         return crews
