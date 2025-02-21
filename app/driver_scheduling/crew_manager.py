@@ -34,16 +34,18 @@ class CrewsManager:
             employee_work_plans = self.create_employee_work_plans(
                 car_workers, driver_workers
             )
-            if employee_work_plans:
-                combined_employees_work_plans[crew_id] = (
+
+            # if employee_work_plans:
+            combined_employees_work_plans[crew_id] = (
                     self.create_combined_employees_work_plan(employee_work_plans)
                 )
         return combined_employees_work_plans
 
-    @classmethod
+    # @classmethod
     def create_combined_employees_work_plan(
         cls, employee_work_plans: list[EmployeeWorkPlan]
     ):
+        # ic(CombinedEmployeesWorkPlan(*employee_work_plans).get_schedule(cls.start_date,cls.end_date))
         return CombinedEmployeesWorkPlan(*employee_work_plans)
 
     def create_workers(self, workers_data: list[Union[CarSchema, DriverSchema]]):
@@ -53,6 +55,8 @@ class CrewsManager:
                 if worker.schedules[0].schedule_start_date > self.start_date:
                     worker.schedules.insert(0, self.not_work_schedule_history_schema)
                 workers.append(self.create_worker(worker.name, worker.schedules))
+            # else:
+            #     ic(worker.name)
         return workers
 
     @staticmethod

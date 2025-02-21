@@ -23,10 +23,11 @@ data = {1: CrewSchema(id=1,
 
 
 
-        2: CrewSchema(id=2, cars=[CarSchema(id=3, name='КАМАЗ', model='КОМПАС', number='О695РС198', schedules=[
-            ScheduleHistorySchema(what_day=25, work_days=4, is_working=True, weekend_days=4,
-                                  schedule_start_date=datetime.datetime(2025, 1, 1, 0, 0))])],
-                      drivers=[DriverSchema(id=4, name='Агеев Сергей федорович', schedules=[])])}
+        # 2: CrewSchema(id=2, cars=[CarSchema(id=3, name='КАМАЗ', model='КОМПАС', number='О695РС198', schedules=[
+        #     ScheduleHistorySchema(what_day=25, work_days=4, is_working=True, weekend_days=4,
+        #                           schedule_start_date=datetime.datetime(2025, 1, 1, 0, 0))])],
+        #               drivers=[DriverSchema(id=4, name='Агеев Сергей федорович', schedules=[])])
+                       }
 
 start_date = datetime.datetime(year=2025, month=1, day=10)
 end_date = datetime.datetime(year=2025, month=1, day=15)
@@ -34,8 +35,9 @@ combined_employees_work_plans = CrewsManager(data, start_date, end_date)()
 manager = ScheduleManager()
 for combined_employees_work_plan in combined_employees_work_plans.values():
     ic(combined_employees_work_plan.get_schedule(start_date, end_date))
+    ic(combined_employees_work_plan.employee_1.get_unused_employees(start_date, end_date))
     manager.add_combined_employees_work_plan(combined_employees_work_plan)
 
 data = manager.get_schedule(start_date, end_date)
-ic(data)
-ic(StatisticCalculator(data))
+# ic(data)
+# ic(StatisticCalculator(data))

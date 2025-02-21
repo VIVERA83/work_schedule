@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
-sys.path.insert(1, os.path.join(os.getcwd(), "work_schedule"))
+sys.path.insert(1, os.path.join(os.getcwd(), "app"))
 dotenv.load_dotenv()
 
 from app.core.settings import PostgresSettings

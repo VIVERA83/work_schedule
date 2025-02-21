@@ -43,7 +43,6 @@ class DriversPlannerManager(BaseManager):
         row_crews = await self.store.drivers_planner.get_crew_schedule(
             start_date, end_date
         )
-
         self.logger.debug("Данные экипажей получены")
         data = self.__convert_data_to_schedule_drivers(row_crews)
         self.logger.debug("Данные экипажей преобразованы")
@@ -77,8 +76,8 @@ class DriversPlannerManager(BaseManager):
         combined_employees_work_plans = CrewsManager(dict_crews, start_date, end_date)()
         manager = ScheduleManager()
         for combined_employees_work_plan in combined_employees_work_plans.values():
+            # ic(combined_employees_work_plan.get_schedule(start_date, end_date))
             manager.add_combined_employees_work_plan(combined_employees_work_plan)
-
         data = manager.get_schedule(start_date, end_date)
         return StatisticCalculator(data)
 
