@@ -2,8 +2,6 @@ from datetime import datetime, timedelta
 from functools import wraps
 from typing import Callable, Generator, ParamSpec, TypeVar
 
-from black.nodes import last_leaf
-
 from work_schedule.store.scheduler.utils import (
     DATE,
     DATE_FORMAT,
@@ -212,6 +210,7 @@ class Worker:
         self, start_date: datetime, end_date: datetime
     ) -> Generator[tuple[DATE, SIGN], DATE, None]:
         """Генератор расписания по датам."""
+
         schedule_dates = self.get_closest_dates(start_date, end_date)
         while schedule_dates:
             date = schedule_dates.pop(0)

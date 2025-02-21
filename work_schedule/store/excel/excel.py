@@ -2,7 +2,14 @@ import openpyxl
 from openpyxl.styles import PatternFill
 
 from .statistic import Statistic
-from .utils import border, center_alignment, black_fill, orange_fill, red_fill, green_fill
+from .utils import (
+    border,
+    center_alignment,
+    black_fill,
+    orange_fill,
+    red_fill,
+    green_fill,
+)
 
 
 class Excel:

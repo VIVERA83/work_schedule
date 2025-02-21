@@ -1,7 +1,12 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Union, Optional
 
-from store.manager.schemas import CrewSchema, CarSchema, DriverSchema, ScheduleHistorySchema
+from store.manager.schemas import (
+    CrewSchema,
+    CarSchema,
+    DriverSchema,
+    ScheduleHistorySchema,
+)
 from store.scheduler.combined_employees_work_plan import CombinedEmployeesWorkPlan
 from store.scheduler.employee_work_plan import EmployeeWorkPlan
 from store.scheduler.worker_schedule import WorkerSchedule, Worker
@@ -15,7 +20,7 @@ class ManagerWorkerSchedule:
         self.store = store
 
     async def get_worker_schedule(
-            self, id_: int, start_date: datetime, end_date: datetime
+        self, id_: int, start_date: datetime, end_date: datetime
     ):
         """Получение расписания водителя."""
         result = await self.store.manager.get_current_worker_schedule_by_id(id_)
@@ -24,7 +29,7 @@ class ManagerWorkerSchedule:
 
 class CrewsManager:
     def __init__(
-            self, crews: dict[int, CrewSchema], start_date: datetime, end_date: datetime
+        self, crews: dict[int, CrewSchema], start_date: datetime, end_date: datetime
     ):
         self.crews = crews
         self.start_date = start_date
@@ -50,7 +55,7 @@ class CrewsManager:
 
     @classmethod
     def create_combined_employees_work_plan(
-            cls, employee_work_plans: list[EmployeeWorkPlan]
+        cls, employee_work_plans: list[EmployeeWorkPlan]
     ):
         return CombinedEmployeesWorkPlan(*employee_work_plans)
 
@@ -65,7 +70,7 @@ class CrewsManager:
 
     @staticmethod
     def create_employee_work_plans(
-            car_workers: list[Worker], driver_workers: list[Worker]
+        car_workers: list[Worker], driver_workers: list[Worker]
     ):
         employee_work_plans = []
         for car_worker in car_workers:
@@ -77,7 +82,7 @@ class CrewsManager:
 
     @staticmethod
     def create_worker(
-            name: str, schedules: list[ScheduleHistorySchema]
+        name: str, schedules: list[ScheduleHistorySchema]
     ) -> Optional[Worker]:
         worker = None
         for schedule in schedules:

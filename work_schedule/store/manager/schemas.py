@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+
 class ScheduleHistorySchema(BaseModel):
     what_day: int = Field()
     work_days: int = Field()

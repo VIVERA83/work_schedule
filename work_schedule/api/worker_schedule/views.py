@@ -18,7 +18,6 @@ from store.scheduler.schedule_manager import ScheduleManager
 from store.store import Store
 
 
-
 class WorkerScheduleViews(BaseView):
     db: Store
 
