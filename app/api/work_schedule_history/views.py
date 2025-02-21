@@ -10,14 +10,13 @@ from core.lifespan import store
 
 class WorkScheduleHistoryViews(BaseView):
     class Meta:
-        db = store.work_schedule_history
+        store = store.work_schedule_history
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],
                 "path": "/{id_}",
                 "annotations": {"id_": ID},
                 "response_model": WorkScheduleHistorySchema,
-
             },
             "create": {
                 "methods": ["POST"],
@@ -25,12 +24,12 @@ class WorkScheduleHistoryViews(BaseView):
                 "response_model": WorkScheduleHistorySchema,
                 "summary": "Назначить график работы водителю",
                 "description": "Назначить график работы водителю.<br><br>"
-                               "`id_driver` - идентификатор водителя<br>"
-                               "`id_schedule_type` - идентификатор типа расписания<br>"
-                               "`date` - дата начала графика<br>"
-                               "`is_working` - флаг работы водителя(выходной или рабочий день)<br>"
-                               "`what_day` - Который день, водитель работает(отдыхает)<br><br>"
-                               "После назначения графика работы водитель становится доступным для включения в наряд."
+                "`id_driver` - идентификатор водителя<br>"
+                "`id_schedule_type` - идентификатор типа расписания<br>"
+                "`date` - дата начала графика<br>"
+                "`is_working` - флаг работы водителя(выходной или рабочий день)<br>"
+                "`what_day` - Который день, водитель работает(отдыхает)<br><br>"
+                "После назначения графика работы водитель становится доступным для включения в наряд.",
             },
             "delete_by_id": {
                 "methods": ["DELETE"],

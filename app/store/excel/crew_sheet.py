@@ -33,13 +33,21 @@ class CrewSheet(Sheet):
     def _fill_static_row_cells(self):
         # номер строка с которой начинается статистика
         start_number_row = len(self.dispatch_plan.table) + 2
-        for row, data in enumerate([
-            self.dispatch_plan.no_driver.values(),
-            self.dispatch_plan.repair.values(),
-        ], start_number_row + 1):
-            self.add_color_to_row_cells(row, [orange_fill, *self._get_row_colors(list(data))])
+        for row, data in enumerate(
+            [
+                self.dispatch_plan.no_driver.values(),
+                self.dispatch_plan.repair.values(),
+            ],
+            start_number_row + 1,
+        ):
+            self.add_color_to_row_cells(
+                row, [orange_fill, *self._get_row_colors(list(data))]
+            )
         # цветовая заливка разделяющая блок наряда и статистики
-        self.add_color_to_row_cells(start_number_row, [black_fill for _ in range(len(self.dispatch_plan.titles))])
+        self.add_color_to_row_cells(
+            start_number_row,
+            [black_fill for _ in range(len(self.dispatch_plan.titles))],
+        )
 
     @staticmethod
     def _get_cell_color(status: int) -> PatternFill:

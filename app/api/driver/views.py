@@ -6,7 +6,7 @@ from core.lifespan import store
 
 class DriverViews(BaseView):
     class Meta:
-        db = store.driver
+        store = store.driver
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],

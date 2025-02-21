@@ -10,7 +10,7 @@ from core.lifespan import store
 
 class ScheduleType(BaseView):
     class Meta:
-        db = store.schedule_type
+        store = store.schedule_type
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],

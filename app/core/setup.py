@@ -23,6 +23,6 @@ def setup_app() -> "FastAPI":
     )
     app.logger = setup_logging()
     setup_middleware(app)
-    setup_routes(app)
+    setup_routes(app, logger=app.logger)
     app.logger.info(f"http://0.0.0.0:8008/docs/")
     return app

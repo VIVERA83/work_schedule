@@ -1,3 +1,5 @@
+import logging
+
 from api.car.views import CarViews
 from api.driver.views import DriverViews
 from api.manager.views import ManagerViews
@@ -7,14 +9,26 @@ from api.worker_schedule.views import WorkerScheduleViews
 from fastapi import FastAPI
 
 
-def setup_routes(app: FastAPI):
+def setup_routes(app: FastAPI, logger: logging.Logger):
     """Настройка Роутов приложения."""
-    app.include_router(CarViews(prefix="/car", tags=["CAR"]))
-    app.include_router(DriverViews(prefix="/driver", tags=["DRIVER"]))
-    app.include_router(WorkScheduleHistoryViews(prefix="/work_schedule_history", tags=["WORK SCHEDULE HISTORY"]))
-    app.include_router(ScheduleType(prefix="/schedule_type", tags=["SCHEDULE TYPE"]))
+    app.include_router(CarViews(prefix="/car", tags=["CAR"], logger=logger))
+    app.include_router(DriverViews(prefix="/driver", tags=["DRIVER"], logger=logger))
+    app.include_router(
+        WorkScheduleHistoryViews(
+            prefix="/work_schedule_history",
+            tags=["WORK SCHEDULE HISTORY"],
+            logger=logger,
+        )
+    )
+    app.include_router(
+        ScheduleType(prefix="/schedule_type", tags=["SCHEDULE TYPE"], logger=logger)
+    )
 
     app.include_router(
-        WorkerScheduleViews(prefix="/worker_schedule", tags=["WORKER SCHEDULE"])
+        WorkerScheduleViews(
+            prefix="/worker_schedule", tags=["WORKER SCHEDULE"], logger=logger
+        )
     )
-    app.include_router(ManagerViews(prefix="/resources", tags=["АКТИВЫ"]))
+    app.include_router(
+        ManagerViews(prefix="/resources", tags=["АКТИВЫ"], logger=logger)
+    )

@@ -6,14 +6,14 @@ from api.manager.schemes import (
     FullDataCarSchema,
 )
 from core.lifespan import store
-from store.work_schedule.manager.accessor import ManagerAccessor
+from store.work_schedule.drivers_planner.accessor import DriversPlannerAccessor
 
 
 class ManagerViews(BaseView):
-    db: ManagerAccessor
+    store: DriversPlannerAccessor
 
     class Meta:
-        db = store.manager
+        store = store.drivers_planner
         endpoints = {
             "add_driver": {
                 "path": "/driver",

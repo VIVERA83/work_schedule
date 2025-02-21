@@ -1,28 +1,40 @@
+from logging import Logger
 from typing import Any
 
 from api.base.types import EndpointType, ParamsType
 from fastapi import APIRouter
+
+from manager.base.manager import BaseManager
 from store.work_schedule.base.accessor import BaseAccessor
 
 
 class BaseView(APIRouter):
     class Meta:
-        db: BaseAccessor
+        manager: BaseManager
+        store: BaseAccessor
         endpoints: EndpointType | dict[str, ParamsType]
 
     def __init__(
         self,
         prefix: str,
         tags: list[str],
+        logger: Logger,
     ):
         super().__init__(prefix=prefix, tags=tags)
+        self.logger = logger
         self.__init_meta_class()
 
     def __init_meta_class(self):
         try:
-            self.db = getattr(self.Meta, "db")
+            self.store = getattr(self.Meta, "store")
         except AttributeError:
-            raise AttributeError(f"Не указан класс БД {self.__class__.__name__}")
+            self.logger.debug(f"Не указан класс Store в {self.__class__.__name__}")
+            # raise AttributeError(f"Не указан класс Store в {self.__class__.__name__}")
+        try:
+            self.manager = getattr(self.Meta, "manager")
+        except AttributeError:
+            self.logger.debug(f"Не указан класс Manager в {self.__class__.__name__}")
+            # raise AttributeError(f"Не указан класс Manager в {self.__class__.__name__}")
         try:
             self.endpoints = getattr(self.Meta, "endpoints")
         except AttributeError:
@@ -48,13 +60,13 @@ class BaseView(APIRouter):
                 raise AttributeError(f"Не указан метод {func_name}")
 
     async def get_by_id(self, id_: Any):
-        return await self.db.get_by_id(id_)
+        return await self.store.get_by_id(id_)
 
     async def create(self, data: Any):
-        return await self.db.get_combined_employees_work_plans(**data.model_dump())
+        return await self.store.get_combined_employees_work_plans(**data.model_dump())
 
     async def update(self, data: Any):
-        return await self.db.get_combined_employees_work_plans(**data.model_dump())
+        return await self.store.get_combined_employees_work_plans(**data.model_dump())
 
     async def delete_by_id(self, id_: Any):
-        return await self.db.delete_by_id(id_)
+        return await self.store.delete_by_id(id_)

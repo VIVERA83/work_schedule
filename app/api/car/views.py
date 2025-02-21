@@ -6,7 +6,7 @@ from core.lifespan import store
 
 class CarViews(BaseView):
     class Meta:
-        db = store.car
+        store = store.car
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],

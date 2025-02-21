@@ -1,12 +1,13 @@
 from logging import Logger
 
 from store.db.postgres.accessor import PostgresAccessor
-from store.manager.manager import ManagerWorkerSchedule
 from store.work_schedule.car.accessor import CarAccessor
 from store.work_schedule.driver.accessor import DriverAccessor
-from store.work_schedule.manager.accessor import ManagerAccessor
+from store.work_schedule.drivers_planner.accessor import DriversPlannerAccessor
 from store.work_schedule.schedule_type.accessor import ScheduleTypeAccessor
-from store.work_schedule.work_schedule_history.accessor import WorkScheduleHistoryAccessor
+from store.work_schedule.work_schedule_history.accessor import (
+    WorkScheduleHistoryAccessor,
+)
 
 
 class Store:
@@ -16,8 +17,9 @@ class Store:
         self.car = CarAccessor(self.accessor, loger)
         self.schedule_type = ScheduleTypeAccessor(self.accessor, loger)
         self.work_schedule_history = WorkScheduleHistoryAccessor(self.accessor, loger)
-        self.manager = ManagerAccessor(self.accessor, loger)
-        self.manage_worker_schedule = ManagerWorkerSchedule(self)
+        self.drivers_planner = DriversPlannerAccessor(self.accessor, loger)
+        # зависимые от остальных
+        # self.drivers_planner_manager = DriversPlannerManager(self.accessor, loger)
 
     async def connect(self):
         await self.accessor.connect()

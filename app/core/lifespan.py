@@ -2,10 +2,13 @@ from contextlib import asynccontextmanager
 
 from core.logger import setup_logging
 from fastapi import FastAPI
+
+from manager.manager import Manager
 from store.db.postgres.accessor import PostgresAccessor
 from store.store import Store
 
 store = Store(PostgresAccessor(setup_logging()), setup_logging())
+manager = Manager(store)
 
 
 @asynccontextmanager
