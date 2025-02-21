@@ -12,7 +12,7 @@ from store.excel.excel import Excel, CrewExel
 from store.excel.statistic import StatisticCalculator
 from store.manager.manager import CrewsManager
 
-from store.scheduler.schedule_manager import ScheduleManager
+from driver_scheduling.schedule_manager import ScheduleManager
 
 
 from store.store import Store

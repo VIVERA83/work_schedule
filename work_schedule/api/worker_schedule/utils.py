@@ -1,7 +1,7 @@
 from typing import Optional
 
 from api.worker_schedule.schemes import ScheduleHistorySchema
-from store.scheduler.worker_schedule import Worker
+from driver_scheduling.worker_schedule import Worker
 
 
 def create_worker(

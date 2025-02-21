@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from store.scheduler.utils import SIGNAL_WORK, SIGNAL_WEEKEND
+from driver_scheduling.utils import SIGNAL_WORK, SIGNAL_WEEKEND
 
 
 class Statistic:

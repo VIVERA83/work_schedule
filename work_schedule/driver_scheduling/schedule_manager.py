@@ -1,10 +1,10 @@
 from collections import defaultdict
 from datetime import datetime
 
-from work_schedule.store.scheduler.combined_employees_work_plan import (
+from driver_scheduling.combined_employees_work_plan import (
     CombinedEmployeesWorkPlan,
 )
-from work_schedule.store.scheduler.utils import DATE, SIGN
+from driver_scheduling.utils import DATE, SIGN
 
 
 class ScheduleManager:

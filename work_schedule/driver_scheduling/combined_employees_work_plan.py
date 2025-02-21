@@ -1,8 +1,8 @@
 from collections import defaultdict
 from datetime import datetime
 
-from work_schedule.store.scheduler.employee_work_plan import EmployeeWorkPlan
-from work_schedule.store.scheduler.utils import DATE, SIGN, SIGNAL_WEEKEND, SIGNAL_WORK
+from driver_scheduling.employee_work_plan import EmployeeWorkPlan
+from driver_scheduling.utils import DATE, SIGN, SIGNAL_WEEKEND, SIGNAL_WORK
 
 
 # ver 2.0

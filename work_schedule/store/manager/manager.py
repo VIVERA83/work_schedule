@@ -7,9 +7,9 @@ from store.manager.schemas import (
     DriverSchema,
     ScheduleHistorySchema,
 )
-from store.scheduler.combined_employees_work_plan import CombinedEmployeesWorkPlan
-from store.scheduler.employee_work_plan import EmployeeWorkPlan
-from store.scheduler.worker_schedule import WorkerSchedule, Worker
+from driver_scheduling.combined_employees_work_plan import CombinedEmployeesWorkPlan
+from driver_scheduling.employee_work_plan import EmployeeWorkPlan
+from driver_scheduling.worker_schedule import WorkerSchedule, Worker
 
 if TYPE_CHECKING:
     from store.store import Store

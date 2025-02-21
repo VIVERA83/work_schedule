@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 from typing import Callable, Generator, ParamSpec, TypeVar
 
-from work_schedule.store.scheduler.utils import (
+from driver_scheduling.utils import (
     DATE,
     DATE_FORMAT,
     SIGN,
