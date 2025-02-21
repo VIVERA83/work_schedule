@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import Union, Optional
 
-from icecream import ic
-
 from driver_scheduling.combined_employees_work_plan import CombinedEmployeesWorkPlan
 from driver_scheduling.employee_work_plan import EmployeeWorkPlan
 from driver_scheduling.schemas import (
@@ -16,7 +14,7 @@ from driver_scheduling.worker_schedule import Worker
 
 class CrewsManager:
     def __init__(
-        self, crews: dict[int, CrewSchema], start_date: datetime, end_date: datetime
+            self, crews: dict[int, CrewSchema], start_date: datetime, end_date: datetime
     ):
         self.crews = crews
         self.start_date = start_date
@@ -35,17 +33,17 @@ class CrewsManager:
                 car_workers, driver_workers
             )
 
-            # if employee_work_plans:
-            combined_employees_work_plans[crew_id] = (
+            # Это проверка на то что машины и водителей в цикле не больше одного
+            if employee_work_plans:
+                combined_employees_work_plans[crew_id] = (
                     self.create_combined_employees_work_plan(employee_work_plans)
                 )
         return combined_employees_work_plans
 
-    # @classmethod
+    @classmethod
     def create_combined_employees_work_plan(
-        cls, employee_work_plans: list[EmployeeWorkPlan]
+            cls, employee_work_plans: list[EmployeeWorkPlan]
     ):
-        # ic(CombinedEmployeesWorkPlan(*employee_work_plans).get_schedule(cls.start_date,cls.end_date))
         return CombinedEmployeesWorkPlan(*employee_work_plans)
 
     def create_workers(self, workers_data: list[Union[CarSchema, DriverSchema]]):
@@ -55,13 +53,11 @@ class CrewsManager:
                 if worker.schedules[0].schedule_start_date > self.start_date:
                     worker.schedules.insert(0, self.not_work_schedule_history_schema)
                 workers.append(self.create_worker(worker.name, worker.schedules))
-            # else:
-            #     ic(worker.name)
         return workers
 
     @staticmethod
     def create_employee_work_plans(
-        car_workers: list[Worker], driver_workers: list[Worker]
+            car_workers: list[Worker], driver_workers: list[Worker]
     ):
         employee_work_plans = []
         for car_worker in car_workers:
@@ -73,7 +69,7 @@ class CrewsManager:
 
     @staticmethod
     def create_worker(
-        name: str, schedules: list[ScheduleHistorySchema]
+            name: str, schedules: list[ScheduleHistorySchema]
     ) -> Optional[Worker]:
         worker = None
         for schedule in schedules:

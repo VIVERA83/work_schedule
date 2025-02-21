@@ -263,18 +263,18 @@ def validate_make_date(
         year=start_date.year, month=start_date.month, day=start_date.day
     )
     end_date = datetime(year=end_date.year, month=end_date.month, day=end_date.day)
-    err_msg = "\n"
+    err_msg = ""
     index = 0
     if start_date < schedule_start_date:
         index += 1
-        err_msg += f"{index}. Значение start_date должно быть больше или равно schedule_start_date.\n"
+        err_msg += f"{index}. Значение start_date должно быть больше или равно schedule_start_date. "
     if end_date < schedule_start_date:
         index += 1
-        err_msg += f"{index}. Значение end_date должно быть больше или равно schedule_start_date\n"
+        err_msg += f"{index}. Значение end_date должно быть больше или равно schedule_start_date "
     if start_date > end_date:
         index += 1
         err_msg += (
-            f"{index}. Значение start_date должно быть меньше или равно end_date.\n"
+            f"{index}. Значение start_date должно быть меньше или равно end_date. "
         )
-    if err_msg != "\n":
+    if err_msg != "":
         raise ValueError(err_msg)

@@ -1,8 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
 
-from icecream import ic
-
 from driver_scheduling.employee_work_plan import EmployeeWorkPlan
 from driver_scheduling.utils import DATE, SIGN, SIGNAL_WEEKEND, SIGNAL_WORK
 
@@ -45,10 +43,8 @@ class CombinedEmployeesWorkPlan:
     def __create_employee_work_plan(self, start: datetime, end: datetime):
         self.__employee_work_plan = defaultdict(dict)
         self.__merge_unused_employees(start, end)
-        ic(self.name)
         for (date_1, name_1), (_, name_2) in self.__zip_employees_schedule(start, end):
             temp = {self.employee_1.name: name_1}
-            ic(temp)
             if name_1 != name_2:
 
                 if name_1 in [SIGNAL_WEEKEND]:
@@ -68,10 +64,8 @@ class CombinedEmployeesWorkPlan:
                     else:
                         temp.update({self.employee_2.name: SIGNAL_WORK})
             self.__employee_work_plan[date_1].update(temp)
-            ic(date_1, name_1, name_2, self.__employee_work_plan, temp)
             # удаление повторов
             self.__removing_duplicates_from_unused(date_1)
-        ic(self.name, self.__employee_work_plan)
 
     def __merge_unused_employees(self, start: datetime, end: datetime):
         self.__unused_employees = {
