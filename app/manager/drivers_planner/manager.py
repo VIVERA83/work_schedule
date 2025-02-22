@@ -16,7 +16,6 @@ from store.excel.dispatchplan import StatisticCalculator, DispatchPlan
 
 
 class DriversPlannerManager(BaseManager):
-
     async def get_schedule(
         self, id_: int, start_date: datetime, end_date: datetime
     ) -> dict[str, Any]:

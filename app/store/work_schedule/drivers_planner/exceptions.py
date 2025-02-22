@@ -16,9 +16,10 @@ class CarDriverAssociationDuplicateException(ExceptionBase):
     code = 400
 
 
-class  DriverScheduleNotFoundException(ExceptionBase):
+class DriverScheduleNotFoundException(ExceptionBase):
     args = ("График работы не найден. Возможно в указанный период водителя не было",)
     code = 404
+
 
 class ForeignKeyException(ExceptionBase):
     args = ("Не верная ссылка на таблицу типа расписания. id_schedule_type",)

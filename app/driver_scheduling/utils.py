@@ -247,7 +247,8 @@ def generator_timetable_period(
 
 def validate_make_date(
     # schedule_start_date: datetime,
-        start_date: datetime, end_date: datetime
+    start_date: datetime,
+    end_date: datetime,
 ):
     """Проверка корректности введенных дат.
 

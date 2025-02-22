@@ -108,15 +108,15 @@ class BaseAccessor:
         return model
 
     @_exception_handler  # noqa
-    async def update(self, id_: int, **fields: dict) -> Model:
+    async def update(self, id: int, **fields: dict) -> Model:
         smtp = (
             self.accessor.get_query_update(self.Meta.model)
-            .where(self.Meta.model.id == id_)  # noqa
+            .where(self.Meta.model.id == id)  # noqa
             .values(**fields)
             .returning(self.Meta.model)
         )
         result = await self.accessor.query_execute(smtp)
-        self.logger.info(f"Обновлен {self.Meta.model.__name__} с id {id_}")
+        self.logger.info(f"Обновлен {self.Meta.model.__name__} с id {id}")
         return result.scalars().one()
 
     @_exception_handler  # noqa

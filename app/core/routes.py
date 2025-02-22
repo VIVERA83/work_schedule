@@ -1,6 +1,7 @@
 import logging
 
 from api.car.views import CarViews
+from api.car_schedule_history.views import CarScheduleHistoryViews
 from api.driver.views import DriverViews
 from api.manager.views import ManagerViews
 from api.schedule_type.views import ScheduleType
@@ -27,6 +28,11 @@ def setup_routes(app: FastAPI, logger: logging.Logger):
     app.include_router(
         WorkerScheduleViews(
             prefix="/worker_schedule", tags=["WORKER SCHEDULE"], logger=logger
+        )
+    )
+    app.include_router(
+        CarScheduleHistoryViews(
+            prefix="/car_schedule_history", tags=["CAR SCHEDULE HISTORY"], logger=logger
         )
     )
     app.include_router(
