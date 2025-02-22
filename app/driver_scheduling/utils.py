@@ -246,7 +246,8 @@ def generator_timetable_period(
 
 
 def validate_make_date(
-    schedule_start_date: datetime, start_date: datetime, end_date: datetime
+    # schedule_start_date: datetime,
+        start_date: datetime, end_date: datetime
 ):
     """Проверка корректности введенных дат.
 
@@ -265,12 +266,12 @@ def validate_make_date(
     end_date = datetime(year=end_date.year, month=end_date.month, day=end_date.day)
     err_msg = ""
     index = 0
-    if start_date < schedule_start_date:
-        index += 1
-        err_msg += f"{index}. Значение start_date должно быть больше или равно schedule_start_date. "
-    if end_date < schedule_start_date:
-        index += 1
-        err_msg += f"{index}. Значение end_date должно быть больше или равно schedule_start_date "
+    # if start_date < schedule_start_date:
+    #     index += 1
+    #     err_msg += f"{index}. Значение start_date должно быть больше или равно schedule_start_date. "
+    # if end_date < schedule_start_date:
+    #     index += 1
+    #     err_msg += f"{index}. Значение end_date должно быть больше или равно schedule_start_date "
     if start_date > end_date:
         index += 1
         err_msg += (

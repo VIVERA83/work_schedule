@@ -16,7 +16,7 @@ from store.excel.dispatchplan import StatisticCalculator, DispatchPlan
 
 
 class DriversPlannerManager(BaseManager):
-    @exception_handler("get_schedule")
+
     async def get_schedule(
         self, id_: int, start_date: datetime, end_date: datetime
     ) -> dict[str, Any]:
@@ -38,7 +38,7 @@ class DriversPlannerManager(BaseManager):
         :param end_date: Конец диапазона
         :return: имя файла сохраненного в Excel
         """
-        validate_make_date(start_date, start_date, end_date)
+        validate_make_date(start_date, end_date)
         self.logger.info("Начало экспорта графика в Excel")
         row_crews = await self.store.drivers_planner.get_crew_schedule(
             start_date, end_date

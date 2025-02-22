@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import RowMapping
 from store.work_schedule.base.accessor import BaseAccessor
 from store.work_schedule.base.exceptions import exception_handler
+from store.work_schedule.drivers_planner.exceptions import DriverScheduleNotFoundException
 
 from store.work_schedule.drivers_planner.sql import (
     sql_query_current_worker_schedule,
@@ -11,7 +12,7 @@ from store.work_schedule.drivers_planner.sql import (
 
 
 class DriversPlannerAccessor(BaseAccessor):
-    @exception_handler()
+    @exception_handler(not_found=DriverScheduleNotFoundException)
     async def get_current_worker_schedule_by_id(self, driver_id: int) -> RowMapping:
         """Получение текущего графика работы водителя.
 

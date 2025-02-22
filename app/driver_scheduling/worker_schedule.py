@@ -54,7 +54,8 @@ class WorkerSchedule:
             :param end_date: Дата окончания период.
 
             """
-            validate_make_date(cls.schedule_start_date, start_date, end_date)
+            # validate_make_date(cls.schedule_start_date, start_date, end_date)
+            validate_make_date( start_date, end_date)
             return self(cls, start_date, end_date, *args, **kwargs)
 
         return wrapper
