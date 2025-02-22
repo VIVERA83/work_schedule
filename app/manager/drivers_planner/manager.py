@@ -2,8 +2,6 @@ from datetime import datetime
 
 from typing import Any
 
-from icecream import ic
-
 from api.worker_schedule.schemes import CrewSchema
 from driver_scheduling.crew_manager import CrewsManager
 from driver_scheduling.schedule_manager import ScheduleManager
@@ -18,9 +16,9 @@ from store.excel.dispatchplan import StatisticCalculator, DispatchPlan
 
 
 class DriversPlannerManager(BaseManager):
-    # @exception_handler("get_schedule")
+    @exception_handler("get_schedule")
     async def get_schedule(
-            self, id_: int, start_date: datetime, end_date: datetime
+        self, id_: int, start_date: datetime, end_date: datetime
     ) -> dict[str, Any]:
         """Возвращает график работы водителя по id.
         :param id_: Идентификатор водителя
@@ -33,7 +31,7 @@ class DriversPlannerManager(BaseManager):
 
     @exception_handler("export_driver_schedule_to_excel")
     async def export_driver_schedule_to_excel(
-            self, start_date: datetime, end_date: datetime
+        self, start_date: datetime, end_date: datetime
     ) -> str:
         """Экспорт графика работы водителя в Excel.
         :param start_date: Начало диапазона
@@ -66,7 +64,7 @@ class DriversPlannerManager(BaseManager):
 
     @staticmethod
     def get_statistic(
-            start_date: datetime, end_date: datetime, dict_crews
+        start_date: datetime, end_date: datetime, dict_crews
     ) -> StatisticCalculator:
         """Получение статистики по графику работы водителей.
 

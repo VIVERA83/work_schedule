@@ -1,7 +1,5 @@
 from collections import defaultdict
 
-from icecream import ic
-
 from driver_scheduling.utils import SIGNAL_WORK, SIGNAL_WEEKEND
 
 
@@ -61,7 +59,6 @@ class StatisticCalculator(DispatchPlan):
         for date, cars in self.work_plan.items():
             for name, value in cars.items():
                 self.table[name].append(value)
-
 
     def _fill_statistic(self):
         for date, car in self.work_plan.items():

@@ -18,11 +18,20 @@ def exception_handler(method_name: str = ""):
             try:
                 return await func(self, *args, **kwargs)
             except ValueError as e:
-                self.logger.error(f"{self.__class__.__name__}.{method_name}:\n{args=}\n{kwargs=}\nerror={e}")
-                raise IncorrectInputDataException(e.args, exception=e, code=400, )
+                self.logger.error(
+                    f"{self.__class__.__name__}.{method_name}:\n{args=}\n{kwargs=}\nerror={e}"
+                )
+                raise IncorrectInputDataException(
+                    e.args,
+                    exception=e,
+                    code=400,
+                )
             except Exception as e:
-                self.logger.error(f"{self.__class__.__name__}.{method_name}:\n{args=}\n{kwargs=}\nerror={e}")
+                self.logger.error(
+                    f"{self.__class__.__name__}.{method_name}:\n{args=}\n{kwargs=}\nerror={e}"
+                )
                 raise UnknownException(exception=e)
+
         return wrapper
 
     return inner

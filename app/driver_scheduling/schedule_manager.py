@@ -14,7 +14,7 @@ class ScheduleManager:
         self.__combined_employees_work_plans = {}
 
     def get_schedule(
-            self, start: datetime = datetime.now(), end: datetime = datetime.now()
+        self, start: datetime = datetime.now(), end: datetime = datetime.now()
     ) -> dict[DATE, SIGN]:
         """Возвращает расписание сотрудников."""
         total_plan = defaultdict(dict)
@@ -24,7 +24,7 @@ class ScheduleManager:
         return total_plan
 
     def add_combined_employees_work_plan(
-            self, employee: "CombinedEmployeesWorkPlan"
+        self, employee: "CombinedEmployeesWorkPlan"
     ) -> None:
         """Добавить объединенный график работы сотрудников."""
         self.__combined_employees_work_plans[employee.name] = employee

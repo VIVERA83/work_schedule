@@ -51,7 +51,7 @@ class CarSchema(BaseModel):
     @field_validator("name", mode="before")
     def _(cls, value: str, values: ValidationInfo) -> str:
         """Вычисляемое поле: объединяет name model и number."""
-        return f"{value} {values.data["model"]} {values.data['number']}"
+        return f"{value} {values.data['model']} {values.data['number']}"
 
 
 class DriverSchema(BaseModel):

@@ -14,7 +14,7 @@ class CombinedEmployeesWorkPlan:
     __unused_employees: dict[DATE, dict[str, SIGNAL_WORK]]
 
     def __init__(
-            self, employee_1: EmployeeWorkPlan, employee_2: EmployeeWorkPlan = None
+        self, employee_1: EmployeeWorkPlan, employee_2: EmployeeWorkPlan = None
     ):
         self.name = f"{employee_1.name}"
         self.employee_1 = employee_1
@@ -31,7 +31,7 @@ class CombinedEmployeesWorkPlan:
         return self.__employee_work_plan
 
     def get_unused_employees(
-            self, start: datetime, end: datetime
+        self, start: datetime, end: datetime
     ) -> dict[DATE, dict[str, SIGNAL_WORK]]:
         """Возвращает сотрудников, которые не были задействованы в работе."""
         if self.employee_2:
@@ -46,9 +46,10 @@ class CombinedEmployeesWorkPlan:
         for (date_1, name_1), (_, name_2) in self.__zip_employees_schedule(start, end):
             temp = {self.employee_1.name: name_1}
             if name_1 != name_2:
-
                 if name_1 in [SIGNAL_WEEKEND]:
-                    if today_unused := list(self.__unused_employees.get(date_1, {}).keys()):
+                    if today_unused := list(
+                        self.__unused_employees.get(date_1, {}).keys()
+                    ):
                         temp[self.employee_2.name] = today_unused[0]
                     else:
                         temp.update({self.employee_2.name: name_2})
@@ -97,7 +98,7 @@ class CombinedEmployeesWorkPlan:
 
         self.__unused_employees = {}
         for date_1, values_1 in self.employee_1.get_unused_employees(
-                start, end
+            start, end
         ).items():
             self.__unused_employees[date_1] = {**values_1}
 
