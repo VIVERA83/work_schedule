@@ -3,6 +3,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field, field_validator
 from pydantic_core.core_schema import ValidationInfo
+from fastapi import Query
 
 
 class WorkerScheduleCreateSchema(BaseModel):
@@ -31,6 +32,20 @@ WorkerScheduleSchema = Annotated[
         examples=[{"20-01-2025": "P", "21-01-2025": "B"}],
     ),
 ]
+
+START_DATE = Query(
+    description="дата начала графика построения графика",
+    examples=["01-01-2025"],
+    default=datetime(
+        year=datetime.now().year, month=datetime.now().month, day=datetime.now().day
+    ))
+
+END_DATE = Query(
+    description="дата начала графика построения графика",
+    examples=["20-01-2025"],
+    default=datetime(
+        year=datetime.now().year, month=datetime.now().month, day=datetime.now().day
+    ))
 
 
 class ScheduleHistorySchema(BaseModel):

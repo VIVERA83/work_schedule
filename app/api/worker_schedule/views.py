@@ -7,7 +7,7 @@ from starlette.responses import FileResponse
 from api.base.route import BaseView
 from api.worker_schedule.schemes import (
     WorkerScheduleCreateSchema,
-    WorkerScheduleSchema,
+    WorkerScheduleSchema, START_DATE, END_DATE,
 )
 from api.worker_schedule.utils import delete_file
 
@@ -38,7 +38,7 @@ class WorkerScheduleViews(BaseView):
         return await self.manager.drivers_planner.get_schedule(**data.model_dump())
 
     async def download_excel_file_driver_schedule(
-        self, start_date: datetime, end_date: datetime
+            self, start_date: datetime = START_DATE, end_date: datetime = END_DATE
     ):
         path_to_file = (
             await self.manager.drivers_planner.export_driver_schedule_to_excel(
