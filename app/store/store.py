@@ -3,6 +3,7 @@ from logging import Logger
 from store.db.postgres.accessor import PostgresAccessor
 from store.work_schedule.car.accessor import CarAccessor
 from store.work_schedule.car_schedule_history.accessor import CarScheduleHistoryAccessor
+from store.work_schedule.crew.accessor import CrewAccessor
 from store.work_schedule.driver.accessor import DriverAccessor
 from store.work_schedule.drivers_planner.accessor import DriversPlannerAccessor
 from store.work_schedule.schedule_type.accessor import ScheduleTypeAccessor
@@ -19,6 +20,7 @@ class Store:
         self.schedule_type = ScheduleTypeAccessor(self.accessor, loger)
         self.work_schedule_history = WorkScheduleHistoryAccessor(self.accessor, loger)
         self.car_schedule_history = CarScheduleHistoryAccessor(self.accessor, loger)
+        self.crew = CrewAccessor(self.accessor, loger)
         self.drivers_planner = DriversPlannerAccessor(self.accessor, loger)
 
     async def connect(self):
