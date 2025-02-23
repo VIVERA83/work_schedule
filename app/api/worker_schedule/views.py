@@ -49,4 +49,5 @@ class WorkerScheduleViews(BaseView):
             path_to_file,
             filename=os.path.basename(path_to_file),
             background=BackgroundTask(delete_file, path_to_file, self.logger),
+            headers={"Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
         )
