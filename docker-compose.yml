@@ -4,7 +4,7 @@ services:
     container_name: postgres_workspace
     image: postgres:15
     volumes:
-      - postgres_ii_volume:/var/lib/postgresql/data/
+      - postgres_volume:/var/lib/postgresql/data/
     env_file:
       - .env
     healthcheck:
@@ -16,6 +16,25 @@ services:
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
 
+  migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile_migrations
+    env_file:
+      - .env
+    depends_on:
+      - postgres_workspace
+
+  app:
+    restart: always
+    container_name: app
+    build: .
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres_workspace
 
 volumes:
-  postgres_ii_volume:
+  postgres_volume:

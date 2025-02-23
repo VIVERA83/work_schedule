@@ -2,13 +2,14 @@
 # Byte-compiled / optimized / DLL files
 /app/static
 /temp
+/app/log.txt
+/work_schedul/.~lock.test.xlsx#
 __pycache__/
 *.py[cod]
 *$py.class
 .env
 # C extensions
 *.so
-
 # Distribution / packaging
 .Python
 build/
