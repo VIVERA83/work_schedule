@@ -93,8 +93,11 @@ pip install -r requirements.txt
 # Установка миграций 
 alembic upgrade head
 
+# Перейдите в директорию приложения
+cd app
+
 # Запустите сервер
-uvicorn main:app --reload  
+uvicorn core.setup:setup_app --reload  
 ```
 Либо с помощью Docker:
 ```bash
