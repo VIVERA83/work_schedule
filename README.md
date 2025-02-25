@@ -82,10 +82,10 @@
 Создайте в корневом каталоге проекта файл `env` как в примере [example.env](example.env)
 ```bash
 # Клонируйте репозиторий
-git clone https://github.com/ваш-username/ваш-репозиторий.git
+git clone https://github.com/VIVERA83/work_schedule.git
 
 # Перейдите в директорию проекта
-cd ваш-репозиторий
+cd work_schedule
 
 # Установите зависимости
 pip install -r requirements.txt
