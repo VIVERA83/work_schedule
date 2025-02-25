@@ -3,7 +3,15 @@ from datetime import datetime
 from sqlalchemy import text, TextClause
 
 SQL_QUERY_STRING = str
-sql_query_current_worker_schedule = """
+
+
+def get_sql_query_current_worker_schedule(pg_schema: str):
+    """Получить SQL запрос, который возвращает текущий график работы водителя.
+
+     :param pg_schema: Postgres схема
+     :return: SQL_QUERY_STRING
+     """
+    return text(f"""
 select
 d."name",
 wsh."date" as schedule_start_date,
@@ -11,17 +19,17 @@ st.work_days,
 st.weekend_days,
 wsh.is_working,
 wsh.what_day 
-from work_schedule.driver d
-join work_schedule.work_schedule_history wsh on wsh.id = d.id
-join work_schedule.schedule_types st on st.id = wsh.id_schedule_type 
+from {pg_schema}.driver d
+join {pg_schema}.work_schedule_history wsh on wsh.id = d.id
+join {pg_schema}.schedule_types st on st.id = wsh.id_schedule_type 
 where d.id = :driver_id
 order by wsh.date desc
 ;
-"""
+""")
 
 
 def get_sql_query_crews(
-    pg_schema: str, start_date: datetime, end_date: datetime
+        pg_schema: str, start_date: datetime, end_date: datetime
 ) -> TextClause:
     """Получить SQL запрос, который возвращает экипаж из машин и водителей.
 

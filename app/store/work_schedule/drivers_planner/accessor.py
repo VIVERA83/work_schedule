@@ -8,7 +8,7 @@ from store.work_schedule.drivers_planner.exceptions import (
 )
 
 from store.work_schedule.drivers_planner.sql import (
-    sql_query_current_worker_schedule,
+    get_sql_query_current_worker_schedule,
     get_sql_query_crews,
 )
 
@@ -23,9 +23,9 @@ class DriversPlannerAccessor(BaseAccessor):
         :param driver_id: Идентификатор водителя
         :return: RowMapping
         """
-        smtp = self.accessor.get_query_from_text(sql_query_current_worker_schedule)
+        sql = get_sql_query_current_worker_schedule(self.accessor.settings.postgres_schema)
         async with self.accessor.session as session:
-            result = await session.execute(smtp, {"driver_id": driver_id})
+            result = await session.execute(sql, {"driver_id": driver_id})
         return result.mappings().one()
 
     async def get_crew_schedule(self, start_date: datetime, end_date: datetime) -> list:
