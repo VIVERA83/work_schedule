@@ -1,7 +1,7 @@
 from store.work_schedule.base.accessor import BaseAccessor
-from store.work_schedule.models import CrewCarsModel
+from store.work_schedule.models import CrewDriverModel
 
 
-class CrewCarAccessor(BaseAccessor):
+class CrewDriverAccessor(BaseAccessor):
     class Meta:
-        model = CrewCarsModel
+        model = CrewDriverModel

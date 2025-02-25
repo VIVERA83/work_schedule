@@ -4,8 +4,8 @@ from store.db.postgres.accessor import PostgresAccessor
 from store.work_schedule.car.accessor import CarAccessor
 from store.work_schedule.car_schedule_history.accessor import CarScheduleHistoryAccessor
 from store.work_schedule.crew.accessor import CrewAccessor
-from store.work_schedule.crew_car.accessor import CrewDriverAccessor
-from store.work_schedule.crew_driver.accessor import CrewCarAccessor
+from store.work_schedule.crew_car.accessor import CrewCarAccessor
+from store.work_schedule.crew_driver.accessor import CrewDriverAccessor
 from store.work_schedule.driver.accessor import DriverAccessor
 from store.work_schedule.drivers_planner.accessor import DriversPlannerAccessor
 from store.work_schedule.schedule_type.accessor import ScheduleTypeAccessor
