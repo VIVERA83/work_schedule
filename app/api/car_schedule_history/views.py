@@ -1,5 +1,5 @@
 from api.base.route import BaseView
-from api.base.schemes import ID
+from api.base.schemes import ID_PATH
 from api.car_schedule_history.schemes import (
     CarScheduleHistoryCreateSchema,
     CarScheduleHistorySchema,
@@ -16,8 +16,6 @@ class CarScheduleHistoryViews(BaseView):
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],
-                "path": "/{id_}",
-                "annotations": {"id_": ID},
                 "response_model": CarScheduleHistorySchema,
             },
             "create": {
@@ -36,7 +34,7 @@ class CarScheduleHistoryViews(BaseView):
             "delete_by_id": {
                 "methods": ["DELETE"],
                 "path": "/{id_}",
-                "annotations": {"id_": ID},
+                "annotations": {"id_": ID_PATH},
                 "response_model": CarScheduleHistorySchema,
             },
             "update": {

@@ -1,6 +1,7 @@
 from logging import Logger
 from typing import Any
 
+from api.base.schemes import PAGE, PAGE_SIZE
 from api.base.types import EndpointType, ParamsType
 from fastapi import APIRouter
 
@@ -15,10 +16,10 @@ class BaseView(APIRouter):
         endpoints: EndpointType | dict[str, ParamsType]
 
     def __init__(
-        self,
-        prefix: str,
-        tags: list[str],
-        logger: Logger,
+            self,
+            prefix: str,
+            tags: list[str],
+            logger: Logger,
     ):
         super().__init__(prefix=prefix, tags=tags)
         self.logger = logger
@@ -59,6 +60,9 @@ class BaseView(APIRouter):
             else:
                 raise AttributeError(f"Не указан метод {func_name}")
 
+    async def get_all(self, page: int = PAGE, page_size: int = PAGE_SIZE):
+        return await self.store.get_all((page - 1) * page_size, page_size)
+
     async def get_by_id(self, id_: Any):
         return await self.store.get_by_id(id_)
 
@@ -66,7 +70,7 @@ class BaseView(APIRouter):
         return await self.store.create(**data.model_dump())
 
     async def update(self, data: Any):
-        return await self.store.update(**data.model_dump())
+        return await self.store.update(**data.model_dump(exclude_none=True))
 
     async def delete_by_id(self, id_: Any):
         return await self.store.delete_by_id(id_)

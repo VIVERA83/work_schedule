@@ -1,5 +1,5 @@
 from api.base.route import BaseView
-from api.base.schemes import ID
+from api.base.schemes import ID_PATH
 from api.crew.schemes import CrewSchema, CrewCreateSchema, CrewUpdateSchema
 from core.lifespan import store
 
@@ -11,8 +11,6 @@ class CrewViews(BaseView):
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],
-                "path": "/{id_}",
-                "annotations": {"id_": ID},
                 "response_model": CrewSchema,
             },
             "create": {
@@ -23,7 +21,7 @@ class CrewViews(BaseView):
             "delete_by_id": {
                 "methods": ["DELETE"],
                 "path": "/{id_}",
-                "annotations": {"id_": ID},
+                "annotations": {"id_": ID_PATH},
                 "response_model": CrewSchema,
             },
             "update": {

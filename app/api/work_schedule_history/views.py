@@ -1,5 +1,5 @@
 from api.base.route import BaseView
-from api.base.schemes import ID
+from api.base.schemes import ID_PATH
 from api.work_schedule_history.schemes import (
     WorkScheduleHistoryCreateSchema,
     WorkScheduleHistorySchema,
@@ -14,8 +14,6 @@ class WorkScheduleHistoryViews(BaseView):
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],
-                "path": "/{id_}",
-                "annotations": {"id_": ID},
                 "response_model": WorkScheduleHistorySchema,
             },
             "create": {
@@ -34,7 +32,7 @@ class WorkScheduleHistoryViews(BaseView):
             "delete_by_id": {
                 "methods": ["DELETE"],
                 "path": "/{id_}",
-                "annotations": {"id_": ID},
+                "annotations": {"id_": ID_PATH},
                 "response_model": WorkScheduleHistorySchema,
             },
             "update": {

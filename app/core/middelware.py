@@ -27,7 +27,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             return response
         except Exception as error:
-            traceback.print_exc()
+            # traceback.print_exc()
             await save_log_file(
                 "log.txt",
                 traceback.format_exc(),
