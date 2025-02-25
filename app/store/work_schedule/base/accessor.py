@@ -4,7 +4,7 @@ from typing import Callable, ParamSpec, Type, TypeVar
 from uuid import UUID
 
 from asyncpg import UniqueViolationError
-from icecream import ic
+
 from sqlalchemy.exc import IntegrityError, NoResultFound, DBAPIError
 from store.db.postgres.accessor import PostgresAccessor
 from store.db.postgres.types import Model

@@ -2,9 +2,6 @@
 
 import uvicorn
 from core.settings import UvicornSettings
-from icecream import ic
-
-ic.includeContext = True
 
 if __name__ == "__main__":
     settings = UvicornSettings()
