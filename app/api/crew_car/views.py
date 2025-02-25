@@ -9,8 +9,14 @@ class CrewCarViews(BaseView):
     class Meta:
         store = store.crew_car
         endpoints = {
+            "get_all": {
+                "methods": ["GET"],
+                "response_model": list[CrewCarSchema],
+            },
             "get_by_id": {
                 "methods": ["GET"],
+                "path": "/{id_}",  # Path parameters
+                "annotations": {"id_": ID_PATH},  # Path parameters
                 "response_model": CrewCarSchema,
             },
             "create": {

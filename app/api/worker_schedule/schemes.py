@@ -5,25 +5,9 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic_core.core_schema import ValidationInfo
 from fastapi import Query
 
-
-class WorkerScheduleCreateSchema(BaseModel):
-    id_: int = Field(description="идентификатор объекта", examples=["1"])
-    start_date: datetime = Field(
-        description="дата начала графика построения графика",
-        default=datetime(
-            year=datetime.now().year, month=datetime.now().month, day=datetime.now().day
-        ),
-    )
-    end_date: datetime = Field(
-        description="дата окончания построения графика",
-        default=datetime(
-            year=datetime.now().year,
-            month=datetime.now().month,
-            # может выпадать ошибка, из-за того сложение дней которые выходят за рамки месяца
-            day=datetime.now().day,
-        ),
-    )
-
+from api.base.fields import DATE_START, DATE_END, WHAT_DAY, WORK_DAYS, IS_WORKING, WEEKEND_DAYS, CAR_MODEL, CAR_NUMBER, \
+    CAR_NAME, DRIVER_NAME
+from api.base.schemes import IdSchema
 
 WorkerScheduleSchema = Annotated[
     dict[str, Literal["P", "B"]],
@@ -38,30 +22,36 @@ START_DATE = Query(
     examples=["01-01-2025"],
     default=datetime(
         year=datetime.now().year, month=datetime.now().month, day=datetime.now().day
-    ))
+    ),
+)
 
 END_DATE = Query(
     description="дата начала графика построения графика",
     examples=["20-01-2025"],
     default=datetime(
         year=datetime.now().year, month=datetime.now().month, day=datetime.now().day
-    ))
+    ),
+)
+
+
+class WorkerScheduleCreateSchema(IdSchema):
+    start_date: datetime = DATE_START
+    end_date: datetime = DATE_END
 
 
 class ScheduleHistorySchema(BaseModel):
-    what_day: int = Field()
-    work_days: int = Field()
-    is_working: bool = Field()
-    weekend_days: int = Field()
-    schedule_start_date: datetime = Field()
+    what_day: int = WHAT_DAY
+    work_days: int = WORK_DAYS
+    is_working: bool = IS_WORKING
+    weekend_days: int = WEEKEND_DAYS
+    schedule_start_date: datetime = DATE_START
 
 
-class CarSchema(BaseModel):
-    id: int = Field()
-    model: str = Field()
-    number: str = Field()
-    schedules: list[ScheduleHistorySchema] = Field()
-    name: str = Field()
+class CarSchema(IdSchema):
+    model: str = CAR_MODEL
+    number: str = CAR_NUMBER
+    schedules: list[ScheduleHistorySchema]
+    name: str = CAR_NAME
 
     @field_validator("name", mode="before")
     def _(cls, value: str, values: ValidationInfo) -> str:
@@ -69,13 +59,11 @@ class CarSchema(BaseModel):
         return f"{value} {values.data['model']} {values.data['number']}"
 
 
-class DriverSchema(BaseModel):
-    id: int = Field()
-    name: str = Field()
-    schedules: list[ScheduleHistorySchema] = Field()
+class DriverSchema(IdSchema):
+    name: str = DRIVER_NAME
+    schedules: list[ScheduleHistorySchema]
 
 
-class CrewSchema(BaseModel):
-    id: int = Field()
-    cars: list[CarSchema] = Field()
-    drivers: list[DriverSchema] = Field()
+class CrewSchema(IdSchema):
+    cars: list[CarSchema]
+    drivers: list[DriverSchema]

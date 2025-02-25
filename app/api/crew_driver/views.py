@@ -1,17 +1,26 @@
 from api.base.route import BaseView
 from api.base.schemes import ID_PATH
 
-from api.crew_driver.schemes import CrewDriverSchema, CrewDriverCreateSchema, CrewDriverUpdateSchema
+from api.crew_driver.schemes import (
+    CrewDriverSchema,
+    CrewDriverCreateSchema,
+    CrewDriverUpdateSchema,
+)
 from core.lifespan import store
-
 
 
 class CrewDriverViews(BaseView):
     class Meta:
         store = store.crew_driver
         endpoints = {
+            "get_all": {
+                "methods": ["GET"],
+                "response_model": list[CrewDriverSchema],
+            },
             "get_by_id": {
                 "methods": ["GET"],
+                "path": "/{id_}",  # Path parameters
+                "annotations": {"id_": ID_PATH},  # Path parameters
                 "response_model": CrewDriverSchema,
             },
             "create": {

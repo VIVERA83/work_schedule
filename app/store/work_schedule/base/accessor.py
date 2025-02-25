@@ -65,7 +65,7 @@ class BaseAccessor:
         )
 
     def _exception_handler(
-            self: Callable[_PWrapped, _RWrapped],
+        self: Callable[_PWrapped, _RWrapped],
     ) -> Callable[_PWrapped, _RWrapped]:
         @wraps(self)
         async def wrapper(cls, *args, **kwargs):
@@ -141,10 +141,13 @@ class BaseAccessor:
 
     @_exception_handler  # noqa
     async def get_all(self, offset: int, limit: int) -> list[Model]:
-        smtp = self.accessor.get_query_select_by_model(self.Meta.model).limit(limit).offset(offset)
+        smtp = (
+            self.accessor.get_query_select_by_model(self.Meta.model)
+            .limit(limit)
+            .offset(offset)
+        )
         result = await self.accessor.query_execute(smtp)
-        self.logger.debug(f"{self.__class__.__name__} get_all: {self.Meta.model.__name__} {offset=} {limit=}")
-        return [
-            model[self.Meta.model.__name__]
-            for model in result.mappings().all()
-        ]
+        self.logger.debug(
+            f"{self.__class__.__name__} get_all: {self.Meta.model.__name__} {offset=} {limit=}"
+        )
+        return [model[self.Meta.model.__name__] for model in result.mappings().all()]

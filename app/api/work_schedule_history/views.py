@@ -14,6 +14,8 @@ class WorkScheduleHistoryViews(BaseView):
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],
+                "path": "/{id_}",  # Path parameters
+                "annotations": {"id_": ID_PATH},  # Path parameters
                 "response_model": WorkScheduleHistorySchema,
             },
             "create": {

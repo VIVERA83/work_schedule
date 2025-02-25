@@ -8,8 +8,14 @@ class DriverViews(BaseView):
     class Meta:
         store = store.driver
         endpoints = {
+            "get_all": {
+                "methods": ["GET"],
+                "response_model": list[DriverSchema],
+            },
             "get_by_id": {
                 "methods": ["GET"],
+                "path": "/{id_}",  # Path parameters
+                "annotations": {"id_": ID_PATH},  # Path parameters
                 "response_model": DriverSchema,
             },
             "create": {

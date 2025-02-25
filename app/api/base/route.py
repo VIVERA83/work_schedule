@@ -16,10 +16,10 @@ class BaseView(APIRouter):
         endpoints: EndpointType | dict[str, ParamsType]
 
     def __init__(
-            self,
-            prefix: str,
-            tags: list[str],
-            logger: Logger,
+        self,
+        prefix: str,
+        tags: list[str],
+        logger: Logger,
     ):
         super().__init__(prefix=prefix, tags=tags)
         self.logger = logger

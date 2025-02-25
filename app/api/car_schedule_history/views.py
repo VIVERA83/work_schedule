@@ -16,6 +16,8 @@ class CarScheduleHistoryViews(BaseView):
         endpoints = {
             "get_by_id": {
                 "methods": ["GET"],
+                "path": "/{id_}",  # Path parameters
+                "annotations": {"id_": ID_PATH},  # Path parameters
                 "response_model": CarScheduleHistorySchema,
             },
             "create": {
@@ -34,7 +36,7 @@ class CarScheduleHistoryViews(BaseView):
             "delete_by_id": {
                 "methods": ["DELETE"],
                 "path": "/{id_}",
-                "annotations": {"id_": ID_PATH},
+                "annotations": {"id": ID_PATH},
                 "response_model": CarScheduleHistorySchema,
             },
             "update": {

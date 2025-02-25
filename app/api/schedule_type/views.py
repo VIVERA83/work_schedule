@@ -12,8 +12,14 @@ class ScheduleType(BaseView):
     class Meta:
         store = store.schedule_type
         endpoints = {
+            "get_all": {
+                "methods": ["GET"],
+                "response_model": list[ScheduleTypeSchema],
+            },
             "get_by_id": {
                 "methods": ["GET"],
+                "path": "/{id_}",  # Path parameters
+                "annotations": {"id_": ID_PATH},  # Path parameters
                 "response_model": ScheduleTypeSchema,
             },
             "create": {

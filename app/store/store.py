@@ -27,6 +27,7 @@ class Store:
         self.crew_car = CrewCarAccessor(self.accessor, loger)
 
         self.drivers_planner = DriversPlannerAccessor(self.accessor, loger)
+
     async def connect(self):
         await self.accessor.connect()
 

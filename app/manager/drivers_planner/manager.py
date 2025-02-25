@@ -17,15 +17,15 @@ from store.excel.dispatchplan import StatisticCalculator, DispatchPlan
 
 class DriversPlannerManager(BaseManager):
     async def get_schedule(
-        self, id_: int, start_date: datetime, end_date: datetime
+        self, id: int, start_date: datetime, end_date: datetime
     ) -> dict[str, Any]:
         """Возвращает график работы водителя по id.
-        :param id_: Идентификатор водителя
+        :param id: Идентификатор водителя
         :param start_date: Начало диапазона
         :param end_date: Конец диапазона
         :return: dict[str, Any]
         """
-        result = await self.store.drivers_planner.get_current_worker_schedule_by_id(id_)
+        result = await self.store.drivers_planner.get_current_worker_schedule_by_id(id)
         return WorkerSchedule(**result).get_schedule(start_date, end_date)
 
     @exception_handler("export_driver_schedule_to_excel")

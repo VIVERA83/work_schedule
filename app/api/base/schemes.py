@@ -18,22 +18,20 @@ ID: int = Query(
 )
 
 PAGE: int = Query(
+    default=1,
     gt=0,
     description="номер страницы",
     examples=[1],
-
 )
 
 PAGE_SIZE: int = Query(
+    default=10,
     gt=0,
-    lt=100,
+    lt=101,
     description="размер страницы",
     examples=[10],
 )
 
 
 class IdSchema(BaseModel):
-    id: int = Field(
-        gt=0,
-        description="идентификатор объекта",
-        examples=[1])
+    id: int = Field(gt=0, description="идентификатор объекта", examples=[1])
