@@ -26,10 +26,14 @@ PAGE: int = Query(
 
 PAGE_SIZE: int = Query(
     gt=0,
+    lt=100,
     description="размер страницы",
     examples=[10],
 )
 
 
 class IdSchema(BaseModel):
-    id: int = Field(description="идентификатор объекта", examples=["1"])
+    id: int = Field(
+        gt=0,
+        description="идентификатор объекта",
+        examples=[1])
